@@ -4,7 +4,10 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/usr/local/cuda-12.1/include/**"
+                "/usr/local/cuda-12.1/include/**",
+                "${workspaceFolder}/cpp",
+                "${workspaceFolder}/cpp/include",
+                "${workspaceFolder}/cpp/include/runtime"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",

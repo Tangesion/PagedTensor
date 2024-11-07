@@ -59,6 +59,11 @@
         "__nullptr": "cpp",
         "random": "cpp",
         "__bit_reference": "cpp",
-        "__split_buffer": "cpp"
+        "__split_buffer": "cpp",
+        "locale": "cpp",
+        "__config": "cpp",
+        "__hash_table": "cpp",
+        "__locale": "cpp",
+        "ios": "cpp"
     }
 }
