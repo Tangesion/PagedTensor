@@ -1,4 +1,4 @@
-# Install script for directory: /mnt/sevenT/tgx/projects/inference-frame/cpp/src
+# Install script for directory: /home/gexingt/tgx/projects/inference-frame/cpp/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -44,7 +44,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/mnt/sevenT/tgx/projects/inference-frame/cpp/build/src/runtime/cmake_install.cmake")
+  include("/home/gexingt/tgx/projects/inference-frame/cpp/build/src/runtime/cmake_install.cmake")
 
 endif()
 

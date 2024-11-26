@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/mnt/sevenT/tgx/projects/inference-frame/cpp/include -I/usr/local/cuda-11.8/include
+CXX_INCLUDES = -I/home/gexingt/tgx/projects/inference-frame/cpp/include -I/usr/local/cuda-11.8/include
 
 CXX_FLAGS = -std=gnu++1z
 

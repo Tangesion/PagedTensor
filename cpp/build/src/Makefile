@@ -57,10 +57,10 @@ RM = /usr/local/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /mnt/sevenT/tgx/projects/inference-frame/cpp
+CMAKE_SOURCE_DIR = /home/gexingt/tgx/projects/inference-frame/cpp
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/sevenT/tgx/projects/inference-frame/cpp/build
+CMAKE_BINARY_DIR = /home/gexingt/tgx/projects/inference-frame/cpp/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,14 +87,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build && $(CMAKE_COMMAND) -E cmake_progress_start /mnt/sevenT/tgx/projects/inference-frame/cpp/build/CMakeFiles /mnt/sevenT/tgx/projects/inference-frame/cpp/build/src//CMakeFiles/progress.marks
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/sevenT/tgx/projects/inference-frame/cpp/build/CMakeFiles 0
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/gexingt/tgx/projects/inference-frame/cpp/build/CMakeFiles /home/gexingt/tgx/projects/inference-frame/cpp/build/src//CMakeFiles/progress.marks
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/gexingt/tgx/projects/inference-frame/cpp/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/clean
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/clean
 .PHONY : clean
 
 # The main clean target
@@ -103,17 +103,17 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/preinstall
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/preinstall
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Help Target
@@ -135,6 +135,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

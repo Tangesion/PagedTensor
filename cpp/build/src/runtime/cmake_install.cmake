@@ -1,4 +1,4 @@
-# Install script for directory: /mnt/sevenT/tgx/projects/inference-frame/cpp/src/runtime
+# Install script for directory: /home/gexingt/tgx/projects/inference-frame/cpp/src/runtime
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

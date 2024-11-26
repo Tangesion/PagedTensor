@@ -11,6 +11,7 @@
 
 namespace inference_frame::runtime
 {
+    
     class BufferManager
     {
     public:
@@ -22,5 +23,6 @@ namespace inference_frame::runtime
 
         static auto constexpr KBYTE_TYPE = DataType::kUINT8;
         [[nodiscard]] static TensorPtr cpu(Dims dims, DataType type = KBYTE_TYPE);
+        [[nodiscard]] static TensorPtr gpu(Dims dims, DataType type = KBYTE_TYPE);
     };
 }

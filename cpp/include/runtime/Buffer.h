@@ -47,6 +47,9 @@ namespace inference_frame::runtime
         using DataType = inference_frame::common::DataType;
         using SharedPtr = std::shared_ptr<Buffer>;
         using UniquePtr = std::unique_ptr<Buffer>;
+
+        // virtual void generateRandomData() = 0;
+
         [[nodiscard]] virtual void *data() = 0;
 
         [[nodiscard]] virtual void const *data() const = 0;

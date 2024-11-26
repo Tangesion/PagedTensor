@@ -1,7 +1,7 @@
 src/runtime/CMakeFiles/runtime.dir/Tensor.cpp.o: \
- /mnt/sevenT/tgx/projects/inference-frame/cpp/src/runtime/Tensor.cpp \
+ /home/gexingt/tgx/projects/inference-frame/cpp/src/runtime/Tensor.cpp \
  /usr/include/stdc-predef.h \
- /mnt/sevenT/tgx/projects/inference-frame/cpp/include/runtime/Tensor.h \
+ /home/gexingt/tgx/projects/inference-frame/cpp/include/runtime/Tensor.h \
  /usr/include/c++/7/cstdint \
  /usr/include/x86_64-linux-gnu/c++/7/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/7/bits/os_defines.h \
@@ -133,9 +133,10 @@ src/runtime/CMakeFiles/runtime.dir/Tensor.cpp.o: \
  /usr/include/c++/7/bits/atomic_base.h \
  /usr/include/c++/7/bits/atomic_lockfree_defines.h \
  /usr/include/c++/7/backward/auto_ptr.h \
- /mnt/sevenT/tgx/projects/inference-frame/cpp/include/common/DataType.h \
+ /home/gexingt/tgx/projects/inference-frame/cpp/include/common/DataType.h \
  /usr/include/c++/7/numeric /usr/include/c++/7/bits/stl_numeric.h \
- /mnt/sevenT/tgx/projects/inference-frame/cpp/include/runtime/Buffer.h \
+ /home/gexingt/tgx/projects/inference-frame/cpp/include/runtime/Buffer.h \
+ /home/gexingt/tgx/projects/inference-frame/cpp/include/common/assert.h \
  /usr/include/c++/7/iostream /usr/include/c++/7/ostream \
  /usr/include/c++/7/ios /usr/include/c++/7/bits/ios_base.h \
  /usr/include/c++/7/bits/locale_classes.h \

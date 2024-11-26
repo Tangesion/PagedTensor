@@ -64,6 +64,7 @@
         "__config": "cpp",
         "__hash_table": "cpp",
         "__locale": "cpp",
-        "ios": "cpp"
+        "ios": "cpp",
+        "__functional_03": "cpp"
     }
 }

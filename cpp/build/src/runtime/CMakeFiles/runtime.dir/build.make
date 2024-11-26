@@ -53,10 +53,10 @@ RM = /usr/local/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /mnt/sevenT/tgx/projects/inference-frame/cpp
+CMAKE_SOURCE_DIR = /home/gexingt/tgx/projects/inference-frame/cpp
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/sevenT/tgx/projects/inference-frame/cpp/build
+CMAKE_BINARY_DIR = /home/gexingt/tgx/projects/inference-frame/cpp/build
 
 # Include any dependencies generated for this target.
 include src/runtime/CMakeFiles/runtime.dir/depend.make
@@ -70,46 +70,46 @@ include src/runtime/CMakeFiles/runtime.dir/progress.make
 include src/runtime/CMakeFiles/runtime.dir/flags.make
 
 src/runtime/CMakeFiles/runtime.dir/Buffer.cpp.o: src/runtime/CMakeFiles/runtime.dir/flags.make
-src/runtime/CMakeFiles/runtime.dir/Buffer.cpp.o: /mnt/sevenT/tgx/projects/inference-frame/cpp/src/runtime/Buffer.cpp
+src/runtime/CMakeFiles/runtime.dir/Buffer.cpp.o: /home/gexingt/tgx/projects/inference-frame/cpp/src/runtime/Buffer.cpp
 src/runtime/CMakeFiles/runtime.dir/Buffer.cpp.o: src/runtime/CMakeFiles/runtime.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/sevenT/tgx/projects/inference-frame/cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/runtime/CMakeFiles/runtime.dir/Buffer.cpp.o"
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build/src/runtime && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/runtime/CMakeFiles/runtime.dir/Buffer.cpp.o -MF CMakeFiles/runtime.dir/Buffer.cpp.o.d -o CMakeFiles/runtime.dir/Buffer.cpp.o -c /mnt/sevenT/tgx/projects/inference-frame/cpp/src/runtime/Buffer.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/gexingt/tgx/projects/inference-frame/cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/runtime/CMakeFiles/runtime.dir/Buffer.cpp.o"
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build/src/runtime && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/runtime/CMakeFiles/runtime.dir/Buffer.cpp.o -MF CMakeFiles/runtime.dir/Buffer.cpp.o.d -o CMakeFiles/runtime.dir/Buffer.cpp.o -c /home/gexingt/tgx/projects/inference-frame/cpp/src/runtime/Buffer.cpp
 
 src/runtime/CMakeFiles/runtime.dir/Buffer.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/runtime.dir/Buffer.cpp.i"
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build/src/runtime && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/sevenT/tgx/projects/inference-frame/cpp/src/runtime/Buffer.cpp > CMakeFiles/runtime.dir/Buffer.cpp.i
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build/src/runtime && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/gexingt/tgx/projects/inference-frame/cpp/src/runtime/Buffer.cpp > CMakeFiles/runtime.dir/Buffer.cpp.i
 
 src/runtime/CMakeFiles/runtime.dir/Buffer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/runtime.dir/Buffer.cpp.s"
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build/src/runtime && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/sevenT/tgx/projects/inference-frame/cpp/src/runtime/Buffer.cpp -o CMakeFiles/runtime.dir/Buffer.cpp.s
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build/src/runtime && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/gexingt/tgx/projects/inference-frame/cpp/src/runtime/Buffer.cpp -o CMakeFiles/runtime.dir/Buffer.cpp.s
 
 src/runtime/CMakeFiles/runtime.dir/BufferManager.cpp.o: src/runtime/CMakeFiles/runtime.dir/flags.make
-src/runtime/CMakeFiles/runtime.dir/BufferManager.cpp.o: /mnt/sevenT/tgx/projects/inference-frame/cpp/src/runtime/BufferManager.cpp
+src/runtime/CMakeFiles/runtime.dir/BufferManager.cpp.o: /home/gexingt/tgx/projects/inference-frame/cpp/src/runtime/BufferManager.cpp
 src/runtime/CMakeFiles/runtime.dir/BufferManager.cpp.o: src/runtime/CMakeFiles/runtime.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/sevenT/tgx/projects/inference-frame/cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object src/runtime/CMakeFiles/runtime.dir/BufferManager.cpp.o"
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build/src/runtime && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/runtime/CMakeFiles/runtime.dir/BufferManager.cpp.o -MF CMakeFiles/runtime.dir/BufferManager.cpp.o.d -o CMakeFiles/runtime.dir/BufferManager.cpp.o -c /mnt/sevenT/tgx/projects/inference-frame/cpp/src/runtime/BufferManager.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/gexingt/tgx/projects/inference-frame/cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object src/runtime/CMakeFiles/runtime.dir/BufferManager.cpp.o"
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build/src/runtime && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/runtime/CMakeFiles/runtime.dir/BufferManager.cpp.o -MF CMakeFiles/runtime.dir/BufferManager.cpp.o.d -o CMakeFiles/runtime.dir/BufferManager.cpp.o -c /home/gexingt/tgx/projects/inference-frame/cpp/src/runtime/BufferManager.cpp
 
 src/runtime/CMakeFiles/runtime.dir/BufferManager.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/runtime.dir/BufferManager.cpp.i"
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build/src/runtime && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/sevenT/tgx/projects/inference-frame/cpp/src/runtime/BufferManager.cpp > CMakeFiles/runtime.dir/BufferManager.cpp.i
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build/src/runtime && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/gexingt/tgx/projects/inference-frame/cpp/src/runtime/BufferManager.cpp > CMakeFiles/runtime.dir/BufferManager.cpp.i
 
 src/runtime/CMakeFiles/runtime.dir/BufferManager.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/runtime.dir/BufferManager.cpp.s"
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build/src/runtime && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/sevenT/tgx/projects/inference-frame/cpp/src/runtime/BufferManager.cpp -o CMakeFiles/runtime.dir/BufferManager.cpp.s
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build/src/runtime && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/gexingt/tgx/projects/inference-frame/cpp/src/runtime/BufferManager.cpp -o CMakeFiles/runtime.dir/BufferManager.cpp.s
 
 src/runtime/CMakeFiles/runtime.dir/Tensor.cpp.o: src/runtime/CMakeFiles/runtime.dir/flags.make
-src/runtime/CMakeFiles/runtime.dir/Tensor.cpp.o: /mnt/sevenT/tgx/projects/inference-frame/cpp/src/runtime/Tensor.cpp
+src/runtime/CMakeFiles/runtime.dir/Tensor.cpp.o: /home/gexingt/tgx/projects/inference-frame/cpp/src/runtime/Tensor.cpp
 src/runtime/CMakeFiles/runtime.dir/Tensor.cpp.o: src/runtime/CMakeFiles/runtime.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/sevenT/tgx/projects/inference-frame/cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object src/runtime/CMakeFiles/runtime.dir/Tensor.cpp.o"
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build/src/runtime && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/runtime/CMakeFiles/runtime.dir/Tensor.cpp.o -MF CMakeFiles/runtime.dir/Tensor.cpp.o.d -o CMakeFiles/runtime.dir/Tensor.cpp.o -c /mnt/sevenT/tgx/projects/inference-frame/cpp/src/runtime/Tensor.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/gexingt/tgx/projects/inference-frame/cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object src/runtime/CMakeFiles/runtime.dir/Tensor.cpp.o"
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build/src/runtime && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/runtime/CMakeFiles/runtime.dir/Tensor.cpp.o -MF CMakeFiles/runtime.dir/Tensor.cpp.o.d -o CMakeFiles/runtime.dir/Tensor.cpp.o -c /home/gexingt/tgx/projects/inference-frame/cpp/src/runtime/Tensor.cpp
 
 src/runtime/CMakeFiles/runtime.dir/Tensor.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/runtime.dir/Tensor.cpp.i"
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build/src/runtime && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/sevenT/tgx/projects/inference-frame/cpp/src/runtime/Tensor.cpp > CMakeFiles/runtime.dir/Tensor.cpp.i
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build/src/runtime && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/gexingt/tgx/projects/inference-frame/cpp/src/runtime/Tensor.cpp > CMakeFiles/runtime.dir/Tensor.cpp.i
 
 src/runtime/CMakeFiles/runtime.dir/Tensor.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/runtime.dir/Tensor.cpp.s"
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build/src/runtime && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/sevenT/tgx/projects/inference-frame/cpp/src/runtime/Tensor.cpp -o CMakeFiles/runtime.dir/Tensor.cpp.s
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build/src/runtime && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/gexingt/tgx/projects/inference-frame/cpp/src/runtime/Tensor.cpp -o CMakeFiles/runtime.dir/Tensor.cpp.s
 
 # Object files for target runtime
 runtime_OBJECTS = \
@@ -120,24 +120,24 @@ runtime_OBJECTS = \
 # External object files for target runtime
 runtime_EXTERNAL_OBJECTS =
 
-/mnt/sevenT/tgx/projects/inference-frame/cpp/lib/libruntime.a: src/runtime/CMakeFiles/runtime.dir/Buffer.cpp.o
-/mnt/sevenT/tgx/projects/inference-frame/cpp/lib/libruntime.a: src/runtime/CMakeFiles/runtime.dir/BufferManager.cpp.o
-/mnt/sevenT/tgx/projects/inference-frame/cpp/lib/libruntime.a: src/runtime/CMakeFiles/runtime.dir/Tensor.cpp.o
-/mnt/sevenT/tgx/projects/inference-frame/cpp/lib/libruntime.a: src/runtime/CMakeFiles/runtime.dir/build.make
-/mnt/sevenT/tgx/projects/inference-frame/cpp/lib/libruntime.a: src/runtime/CMakeFiles/runtime.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/mnt/sevenT/tgx/projects/inference-frame/cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX static library /mnt/sevenT/tgx/projects/inference-frame/cpp/lib/libruntime.a"
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build/src/runtime && $(CMAKE_COMMAND) -P CMakeFiles/runtime.dir/cmake_clean_target.cmake
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build/src/runtime && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/runtime.dir/link.txt --verbose=$(VERBOSE)
+/home/gexingt/tgx/projects/inference-frame/cpp/lib/libruntime.a: src/runtime/CMakeFiles/runtime.dir/Buffer.cpp.o
+/home/gexingt/tgx/projects/inference-frame/cpp/lib/libruntime.a: src/runtime/CMakeFiles/runtime.dir/BufferManager.cpp.o
+/home/gexingt/tgx/projects/inference-frame/cpp/lib/libruntime.a: src/runtime/CMakeFiles/runtime.dir/Tensor.cpp.o
+/home/gexingt/tgx/projects/inference-frame/cpp/lib/libruntime.a: src/runtime/CMakeFiles/runtime.dir/build.make
+/home/gexingt/tgx/projects/inference-frame/cpp/lib/libruntime.a: src/runtime/CMakeFiles/runtime.dir/link.txt
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/gexingt/tgx/projects/inference-frame/cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX static library /home/gexingt/tgx/projects/inference-frame/cpp/lib/libruntime.a"
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build/src/runtime && $(CMAKE_COMMAND) -P CMakeFiles/runtime.dir/cmake_clean_target.cmake
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build/src/runtime && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/runtime.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
-src/runtime/CMakeFiles/runtime.dir/build: /mnt/sevenT/tgx/projects/inference-frame/cpp/lib/libruntime.a
+src/runtime/CMakeFiles/runtime.dir/build: /home/gexingt/tgx/projects/inference-frame/cpp/lib/libruntime.a
 .PHONY : src/runtime/CMakeFiles/runtime.dir/build
 
 src/runtime/CMakeFiles/runtime.dir/clean:
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build/src/runtime && $(CMAKE_COMMAND) -P CMakeFiles/runtime.dir/cmake_clean.cmake
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build/src/runtime && $(CMAKE_COMMAND) -P CMakeFiles/runtime.dir/cmake_clean.cmake
 .PHONY : src/runtime/CMakeFiles/runtime.dir/clean
 
 src/runtime/CMakeFiles/runtime.dir/depend:
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /mnt/sevenT/tgx/projects/inference-frame/cpp /mnt/sevenT/tgx/projects/inference-frame/cpp/src/runtime /mnt/sevenT/tgx/projects/inference-frame/cpp/build /mnt/sevenT/tgx/projects/inference-frame/cpp/build/src/runtime /mnt/sevenT/tgx/projects/inference-frame/cpp/build/src/runtime/CMakeFiles/runtime.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/gexingt/tgx/projects/inference-frame/cpp /home/gexingt/tgx/projects/inference-frame/cpp/src/runtime /home/gexingt/tgx/projects/inference-frame/cpp/build /home/gexingt/tgx/projects/inference-frame/cpp/build/src/runtime /home/gexingt/tgx/projects/inference-frame/cpp/build/src/runtime/CMakeFiles/runtime.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : src/runtime/CMakeFiles/runtime.dir/depend
 

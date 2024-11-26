@@ -36,7 +36,7 @@ Tensor::Shape Tensor::makeShape(std::initializer_list<Tensor::DimType64> const &
     return shape;
 }
 
-void Tensor::printShape()
+void Tensor::printShape() const
 {
     Shape shape = this->getShape();
     std::string str = "shape [";
@@ -50,4 +50,57 @@ void Tensor::printShape()
     }
     str += "]";
     std::cout << str << std::endl;
+}
+
+namespace
+{
+    template <typename T>
+    const T *printRecursive(const T *arr, const int32_t rank, const int64_t *lengths, std::ostream &out)
+    {
+        const char *p_sep = "";
+        out << "[";
+        if (rank > 1)
+        {
+            for (int64_t i = 0; i < lengths[0]; i++)
+            {
+                out << p_sep;
+                arr = printRecursive(arr, rank - 1, lengths + 1, out);
+                p_sep = "\n";
+            }
+        }
+        else
+        {
+            for (int64_t i = 0; i < lengths[0]; i++)
+            {
+                out << p_sep << *arr++;
+                p_sep = ", ";
+            }
+        }
+        out << "]";
+        return arr;
+    }
+
+    template <typename T>
+    void printTensor(Tensor const &tensor, std::ostream &out)
+    {
+        tensor.printShape();
+        out << "values: " << std::endl;
+
+        T const *data = static_cast<T const *>(tensor.data());
+        printRecursive(data, tensor.getShape().nbDims, tensor.getShape().d, out);
+    }
+
+}
+
+std::ostream &inference_frame::runtime::operator<<(std::ostream &output, Tensor const &tensor)
+{
+    switch (tensor.getDataType())
+    {
+    case DataType::kFLOAT:
+        printTensor<float>(tensor, output);
+        break;
+    default:
+        break;
+    }
+    return output;
 }

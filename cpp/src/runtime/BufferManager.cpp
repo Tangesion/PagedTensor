@@ -9,4 +9,9 @@ namespace inference_frame::runtime
         return std::make_unique<HostTensor>(dims, type);
     }
 
+    BufferManager::TensorPtr BufferManager::gpu(Dims dims, DataType type)
+    {
+        // return std::make_unique<>
+    }
+
 }

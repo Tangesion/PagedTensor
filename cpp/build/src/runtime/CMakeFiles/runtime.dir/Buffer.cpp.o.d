@@ -1,7 +1,7 @@
 src/runtime/CMakeFiles/runtime.dir/Buffer.cpp.o: \
- /mnt/sevenT/tgx/projects/inference-frame/cpp/src/runtime/Buffer.cpp \
+ /home/gexingt/tgx/projects/inference-frame/cpp/src/runtime/Buffer.cpp \
  /usr/include/stdc-predef.h \
- /mnt/sevenT/tgx/projects/inference-frame/cpp/include/runtime/Buffer.h \
+ /home/gexingt/tgx/projects/inference-frame/cpp/include/runtime/Buffer.h \
  /usr/include/c++/7/cstdint \
  /usr/include/x86_64-linux-gnu/c++/7/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/7/bits/os_defines.h \
@@ -133,7 +133,7 @@ src/runtime/CMakeFiles/runtime.dir/Buffer.cpp.o: \
  /usr/include/c++/7/bits/atomic_base.h \
  /usr/include/c++/7/bits/atomic_lockfree_defines.h \
  /usr/include/c++/7/backward/auto_ptr.h \
- /mnt/sevenT/tgx/projects/inference-frame/cpp/include/common/DataType.h \
+ /home/gexingt/tgx/projects/inference-frame/cpp/include/common/DataType.h \
  /usr/local/cuda-11.8/include/cuda_runtime_api.h \
  /usr/local/cuda-11.8/include/crt/host_defines.h \
  /usr/local/cuda-11.8/include/builtin_types.h \
@@ -151,7 +151,7 @@ src/runtime/CMakeFiles/runtime.dir/Buffer.cpp.o: \
  /usr/local/cuda-11.8/include/surface_types.h \
  /usr/local/cuda-11.8/include/texture_types.h \
  /usr/local/cuda-11.8/include/cuda_device_runtime_api.h \
- /mnt/sevenT/tgx/projects/inference-frame/cpp/include/common/cudaUtiles.h \
+ /home/gexingt/tgx/projects/inference-frame/cpp/include/common/cudaUtiles.h \
  /usr/local/cuda-11.8/include/cuda_runtime.h \
  /usr/local/cuda-11.8/include/crt/host_config.h \
  /usr/local/cuda-11.8/include/library_types.h \

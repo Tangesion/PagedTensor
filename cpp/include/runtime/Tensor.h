@@ -7,6 +7,7 @@
 #include <numeric>
 #include <stdexcept>
 #include "Buffer.h"
+#include "common/assert.h"
 
 namespace inference_frame::runtime
 {
@@ -49,15 +50,11 @@ namespace inference_frame::runtime
 
         static Shape makeShape(std::initializer_list<DimType64> const &dims);
 
-        void printShape();
+        void printShape() const;
 
     protected:
         Tensor() = default;
     };
 
-    class TensorView : virtual public Tensor
-    {
-    public:
-    };
-
+    std::ostream &operator<<(std::ostream &output, Tensor const &tensor);
 } // namespaece inference_frame::runtime

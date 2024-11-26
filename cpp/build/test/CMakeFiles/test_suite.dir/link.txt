@@ -1,1 +1,1 @@
-/usr/bin/c++ CMakeFiles/test_suite.dir/test.cpp.o -o test_suite  /mnt/sevenT/tgx/projects/inference-frame/cpp/lib/libruntime.a /usr/local/cuda-11.8/lib64/libcudart_static.a -lpthread -ldl /usr/lib/x86_64-linux-gnu/librt.so 
+/usr/bin/c++ CMakeFiles/test_suite.dir/test.cpp.o -o test_suite  /home/gexingt/tgx/projects/inference-frame/cpp/lib/libruntime.a /usr/local/cuda-11.8/lib64/libcudart_static.a -lpthread -ldl /usr/lib/x86_64-linux-gnu/librt.so 

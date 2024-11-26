@@ -57,10 +57,10 @@ RM = /usr/local/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /mnt/sevenT/tgx/projects/inference-frame/cpp
+CMAKE_SOURCE_DIR = /home/gexingt/tgx/projects/inference-frame/cpp
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/sevenT/tgx/projects/inference-frame/cpp/build
+CMAKE_BINARY_DIR = /home/gexingt/tgx/projects/inference-frame/cpp/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,14 +87,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build && $(CMAKE_COMMAND) -E cmake_progress_start /mnt/sevenT/tgx/projects/inference-frame/cpp/build/CMakeFiles /mnt/sevenT/tgx/projects/inference-frame/cpp/build/src/runtime//CMakeFiles/progress.marks
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/runtime/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/sevenT/tgx/projects/inference-frame/cpp/build/CMakeFiles 0
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/gexingt/tgx/projects/inference-frame/cpp/build/CMakeFiles /home/gexingt/tgx/projects/inference-frame/cpp/build/src/runtime//CMakeFiles/progress.marks
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/runtime/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/gexingt/tgx/projects/inference-frame/cpp/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/runtime/clean
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/runtime/clean
 .PHONY : clean
 
 # The main clean target
@@ -103,22 +103,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/runtime/preinstall
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/runtime/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/runtime/preinstall
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/runtime/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 src/runtime/CMakeFiles/runtime.dir/rule:
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/runtime/CMakeFiles/runtime.dir/rule
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/runtime/CMakeFiles/runtime.dir/rule
 .PHONY : src/runtime/CMakeFiles/runtime.dir/rule
 
 # Convenience name for target.
@@ -127,7 +127,7 @@ runtime: src/runtime/CMakeFiles/runtime.dir/rule
 
 # fast build rule for target.
 runtime/fast:
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f src/runtime/CMakeFiles/runtime.dir/build.make src/runtime/CMakeFiles/runtime.dir/build
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f src/runtime/CMakeFiles/runtime.dir/build.make src/runtime/CMakeFiles/runtime.dir/build
 .PHONY : runtime/fast
 
 Buffer.o: Buffer.cpp.o
@@ -135,7 +135,7 @@ Buffer.o: Buffer.cpp.o
 
 # target to build an object file
 Buffer.cpp.o:
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f src/runtime/CMakeFiles/runtime.dir/build.make src/runtime/CMakeFiles/runtime.dir/Buffer.cpp.o
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f src/runtime/CMakeFiles/runtime.dir/build.make src/runtime/CMakeFiles/runtime.dir/Buffer.cpp.o
 .PHONY : Buffer.cpp.o
 
 Buffer.i: Buffer.cpp.i
@@ -143,7 +143,7 @@ Buffer.i: Buffer.cpp.i
 
 # target to preprocess a source file
 Buffer.cpp.i:
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f src/runtime/CMakeFiles/runtime.dir/build.make src/runtime/CMakeFiles/runtime.dir/Buffer.cpp.i
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f src/runtime/CMakeFiles/runtime.dir/build.make src/runtime/CMakeFiles/runtime.dir/Buffer.cpp.i
 .PHONY : Buffer.cpp.i
 
 Buffer.s: Buffer.cpp.s
@@ -151,7 +151,7 @@ Buffer.s: Buffer.cpp.s
 
 # target to generate assembly for a file
 Buffer.cpp.s:
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f src/runtime/CMakeFiles/runtime.dir/build.make src/runtime/CMakeFiles/runtime.dir/Buffer.cpp.s
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f src/runtime/CMakeFiles/runtime.dir/build.make src/runtime/CMakeFiles/runtime.dir/Buffer.cpp.s
 .PHONY : Buffer.cpp.s
 
 BufferManager.o: BufferManager.cpp.o
@@ -159,7 +159,7 @@ BufferManager.o: BufferManager.cpp.o
 
 # target to build an object file
 BufferManager.cpp.o:
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f src/runtime/CMakeFiles/runtime.dir/build.make src/runtime/CMakeFiles/runtime.dir/BufferManager.cpp.o
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f src/runtime/CMakeFiles/runtime.dir/build.make src/runtime/CMakeFiles/runtime.dir/BufferManager.cpp.o
 .PHONY : BufferManager.cpp.o
 
 BufferManager.i: BufferManager.cpp.i
@@ -167,7 +167,7 @@ BufferManager.i: BufferManager.cpp.i
 
 # target to preprocess a source file
 BufferManager.cpp.i:
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f src/runtime/CMakeFiles/runtime.dir/build.make src/runtime/CMakeFiles/runtime.dir/BufferManager.cpp.i
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f src/runtime/CMakeFiles/runtime.dir/build.make src/runtime/CMakeFiles/runtime.dir/BufferManager.cpp.i
 .PHONY : BufferManager.cpp.i
 
 BufferManager.s: BufferManager.cpp.s
@@ -175,7 +175,7 @@ BufferManager.s: BufferManager.cpp.s
 
 # target to generate assembly for a file
 BufferManager.cpp.s:
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f src/runtime/CMakeFiles/runtime.dir/build.make src/runtime/CMakeFiles/runtime.dir/BufferManager.cpp.s
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f src/runtime/CMakeFiles/runtime.dir/build.make src/runtime/CMakeFiles/runtime.dir/BufferManager.cpp.s
 .PHONY : BufferManager.cpp.s
 
 Tensor.o: Tensor.cpp.o
@@ -183,7 +183,7 @@ Tensor.o: Tensor.cpp.o
 
 # target to build an object file
 Tensor.cpp.o:
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f src/runtime/CMakeFiles/runtime.dir/build.make src/runtime/CMakeFiles/runtime.dir/Tensor.cpp.o
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f src/runtime/CMakeFiles/runtime.dir/build.make src/runtime/CMakeFiles/runtime.dir/Tensor.cpp.o
 .PHONY : Tensor.cpp.o
 
 Tensor.i: Tensor.cpp.i
@@ -191,7 +191,7 @@ Tensor.i: Tensor.cpp.i
 
 # target to preprocess a source file
 Tensor.cpp.i:
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f src/runtime/CMakeFiles/runtime.dir/build.make src/runtime/CMakeFiles/runtime.dir/Tensor.cpp.i
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f src/runtime/CMakeFiles/runtime.dir/build.make src/runtime/CMakeFiles/runtime.dir/Tensor.cpp.i
 .PHONY : Tensor.cpp.i
 
 Tensor.s: Tensor.cpp.s
@@ -199,7 +199,7 @@ Tensor.s: Tensor.cpp.s
 
 # target to generate assembly for a file
 Tensor.cpp.s:
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f src/runtime/CMakeFiles/runtime.dir/build.make src/runtime/CMakeFiles/runtime.dir/Tensor.cpp.s
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build && $(MAKE) $(MAKESILENT) -f src/runtime/CMakeFiles/runtime.dir/build.make src/runtime/CMakeFiles/runtime.dir/Tensor.cpp.s
 .PHONY : Tensor.cpp.s
 
 # Help Target
@@ -231,6 +231,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /mnt/sevenT/tgx/projects/inference-frame/cpp/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/gexingt/tgx/projects/inference-frame/cpp/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

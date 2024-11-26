@@ -1,2 +1,2 @@
-/usr/bin/ar qc /mnt/sevenT/tgx/projects/inference-frame/cpp/lib/libruntime.a CMakeFiles/runtime.dir/Buffer.cpp.o CMakeFiles/runtime.dir/BufferManager.cpp.o CMakeFiles/runtime.dir/Tensor.cpp.o
-/usr/bin/ranlib /mnt/sevenT/tgx/projects/inference-frame/cpp/lib/libruntime.a
+/usr/bin/ar qc /home/gexingt/tgx/projects/inference-frame/cpp/lib/libruntime.a CMakeFiles/runtime.dir/Buffer.cpp.o CMakeFiles/runtime.dir/BufferManager.cpp.o CMakeFiles/runtime.dir/Tensor.cpp.o
+/usr/bin/ranlib /home/gexingt/tgx/projects/inference-frame/cpp/lib/libruntime.a

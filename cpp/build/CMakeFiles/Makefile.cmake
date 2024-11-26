@@ -7,13 +7,13 @@ set(CMAKE_DEPENDS_GENERATOR "Unix Makefiles")
 # The top level Makefile was generated from the following files:
 set(CMAKE_MAKEFILE_DEPENDS
   "CMakeCache.txt"
-  "/mnt/sevenT/tgx/projects/inference-frame/cpp/CMakeLists.txt"
+  "/home/gexingt/tgx/projects/inference-frame/cpp/CMakeLists.txt"
   "CMakeFiles/3.27.3/CMakeCCompiler.cmake"
   "CMakeFiles/3.27.3/CMakeCXXCompiler.cmake"
   "CMakeFiles/3.27.3/CMakeSystem.cmake"
-  "/mnt/sevenT/tgx/projects/inference-frame/cpp/src/CMakeLists.txt"
-  "/mnt/sevenT/tgx/projects/inference-frame/cpp/src/runtime/CMakeLists.txt"
-  "/mnt/sevenT/tgx/projects/inference-frame/cpp/test/CMakeLists.txt"
+  "/home/gexingt/tgx/projects/inference-frame/cpp/src/CMakeLists.txt"
+  "/home/gexingt/tgx/projects/inference-frame/cpp/src/runtime/CMakeLists.txt"
+  "/home/gexingt/tgx/projects/inference-frame/cpp/test/CMakeLists.txt"
   "/usr/local/share/cmake-3.27/Modules/CMakeCInformation.cmake"
   "/usr/local/share/cmake-3.27/Modules/CMakeCXXInformation.cmake"
   "/usr/local/share/cmake-3.27/Modules/CMakeCommonLanguageInclude.cmake"
