@@ -55,17 +55,25 @@ void Tensor::printShape() const
 namespace
 {
     template <typename T>
-    const T *printRecursive(const T *arr, const int32_t rank, const int64_t *lengths, std::ostream &out)
+    const T *printRecursive(const T *arr, const int32_t rank, const int64_t *lengths, const int32_t staticRank, std::ostream &out)
     {
-        const char *p_sep = "";
+        std::string p_sep = "";
         out << "[";
         if (rank > 1)
         {
             for (int64_t i = 0; i < lengths[0]; i++)
             {
                 out << p_sep;
-                arr = printRecursive(arr, rank - 1, lengths + 1, out);
-                p_sep = "\n";
+                p_sep = "";
+                arr = printRecursive(arr, rank - 1, lengths + 1, staticRank, out);
+                for (int32_t j = 1; j < rank; j++)
+                {
+                    p_sep += "\n";
+                }
+                for (int32_t j = 0; j <= staticRank - rank; j++)
+                {
+                    p_sep += " ";
+                }
             }
         }
         else
@@ -77,6 +85,7 @@ namespace
             }
         }
         out << "]";
+        // out << std::endl;
         return arr;
     }
 
@@ -87,7 +96,7 @@ namespace
         out << "values: " << std::endl;
 
         T const *data = static_cast<T const *>(tensor.data());
-        printRecursive(data, tensor.getShape().nbDims, tensor.getShape().d, out);
+        printRecursive(data, tensor.getShape().nbDims, tensor.getShape().d, tensor.getShape().nbDims, out);
     }
 
 }
