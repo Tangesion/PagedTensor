@@ -68,5 +68,22 @@ namespace inference_frame::func
             std::exit(EXIT_FAILURE);
         }
     }
+    runtime::Tensor::SharedPtr reShape(runtime::Tensor::SharedPtr tensor, std::initializer_list<runtime::Tensor::DimType64> const &dims_list)
+    {
+        try
+        {
+            std::size_t size = tensor->getSize();
+            runtime::Tensor::Shape dims = runtime::Tensor::makeShape(dims_list);
+            CHECK_WITH_INFO(size == runtime::Tensor::volume(dims), "New shape size must be equal to the original size");
+
+            tensor->reshape(dims);
+            return tensor;
+        }
+        catch (const std::exception &e)
+        {
+            std::cerr << e.what() << '\n';
+            std::exit(EXIT_FAILURE);
+        }
+    }
 
 }

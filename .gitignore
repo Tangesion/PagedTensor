@@ -1,0 +1,42 @@
+# 忽略构建目录
+/build/
+/cpp/build/
+
+# 忽略 CMake 生成的文件
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CTestTestfile.cmake
+Makefile
+
+# 忽略编译生成的文件
+*.o
+*.obj
+*.so
+*.a
+*.lib
+*.dll
+*.exe
+
+# 忽略临时文件
+*.log
+*.tmp
+*.swp
+*.bak
+*.old
+
+# 忽略 IDE 生成的文件
+.vscode/
+.idea/
+*.sln
+*.vcxproj
+*.user
+*.ncb
+*.suo
+*.opt
+*.plg
+
+# 忽略其他不需要的文件
+*.DS_Store
+*.pyc
+__pycache__/

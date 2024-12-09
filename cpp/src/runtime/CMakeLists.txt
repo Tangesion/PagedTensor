@@ -7,7 +7,7 @@ set(SRC
     Tensor.cpp
 )
 set(LIBRARY_OUTPUT_PATH ${LIB_PATH})
-add_library(runtime STATIC ${SRC})
+add_library(runtime SHARED ${SRC})
 
 target_include_directories(runtime PUBLIC ${HEAD_PATH})
 target_include_directories(runtime PUBLIC ${CUDA_INCLUDE_DIRS})

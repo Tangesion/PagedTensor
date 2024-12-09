@@ -155,26 +155,6 @@ namespace inference_frame::runtime
         {
             return mBuffer;
         }
-        /*
-        void generateRandomData() override
-        {
-
-            switch (mType)
-            {
-            case DataType::kFLOAT:
-                mBuffer = static_cast<float *>(mBuffer);
-                break;
-
-            default:
-                break;
-            }
-
-            for (std::size_t i = 0; i < mSize; ++i)
-            {
-                mBuffer[i] = static_cast<float>(rand()) / RAND_MAX;
-            }
-        }
-        */
 
         [[nodiscard]] void const *data() const override
         {
@@ -282,6 +262,7 @@ namespace inference_frame::runtime
 
         void reshape(Shape const &dims) override
         {
+            // std::cout << "Derived!" << std::endl;
             Base::resize(volume(dims));
             mDims = dims;
         }
