@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 3.0)
 project(runtime)
 #aux_source_directory(. SRC)
 set(SRC
-    Buffer.cpp
-    BufferManager.cpp
-    Tensor.cpp
+    buffer.cpp
+    bufferManager.cpp
+    tensor.cpp
 )
 set(LIBRARY_OUTPUT_PATH ${LIB_PATH})
 add_library(runtime SHARED ${SRC})

@@ -1,7 +1,7 @@
 #pragma once
-#include "runtime/Tensor.h"
-#include "runtime/Buffer.h"
-#include "runtime/BufferManager.h"
+#include "runtime/tensor.h"
+#include "runtime/buffer.h"
+#include "runtime/bufferManager.h"
 #include "common/assert.h"
 #include <cstdlib>
 
@@ -84,6 +84,21 @@ namespace inference_frame::func
             std::cerr << e.what() << '\n';
             std::exit(EXIT_FAILURE);
         }
+    }
+
+    template <runtime::Tensor::DataType T>
+    struct DataTypeInfo;
+
+    template <>
+    struct DataTypeInfo<runtime::Tensor::DataType::kFLOAT>
+    {
+        using Type = float;
+    };
+
+    template <runtime::Tensor::DataType T>
+    typename DataTypeInfo<T>::Type *getData(runtime::Tensor::SharedPtr tensor)
+    {
+        return static_cast<typename DataTypeInfo<T>::Type *>(tensor->data());
     }
 
 }

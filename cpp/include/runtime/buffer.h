@@ -2,7 +2,7 @@
 
 #include <cstdint>
 #include <memory>
-#include "common/DataType.h"
+#include "common/dataType.h"
 
 namespace inference_frame::runtime
 {

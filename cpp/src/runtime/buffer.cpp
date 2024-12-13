@@ -1,14 +1,15 @@
-#include "runtime/Buffer.h"
+#include "runtime/buffer.h"
 #include <cuda_runtime_api.h>
 #include "common/cudaUtiles.h"
 #include <stdexcept>
+#include "func/threadPool.h"
 
 using namespace inference_frame::runtime;
 
 MemoryType Buffer::memoryType(void const *data)
 {
     cudaPointerAttributes attributes{};
-    //TLLM_CUDA_CHECK(::cudaPointerGetAttributes(&attributes, data));
+    // TLLM_CUDA_CHECK(::cudaPointerGetAttributes(&attributes, data));
     switch (attributes.type)
     {
     case cudaMemoryTypeHost:

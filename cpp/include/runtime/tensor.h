@@ -3,10 +3,10 @@
 
 #include <cstdint>
 #include <memory>
-#include "common/DataType.h"
+#include "common/dataType.h"
 #include <numeric>
 #include <stdexcept>
-#include "Buffer.h"
+#include "buffer.h"
 #include "common/assert.h"
 
 namespace inference_frame::runtime

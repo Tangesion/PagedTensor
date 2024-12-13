@@ -4,9 +4,9 @@
 #include <memory>
 #include <vector>
 
-#include "Buffer.h"
-#include "common/DataType.h"
-#include "Tensor.h"
+#include "buffer.h"
+#include "common/dataType.h"
+#include "tensor.h"
 #include "common/assert.h"
 
 namespace inference_frame::runtime

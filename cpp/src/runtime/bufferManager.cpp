@@ -1,4 +1,4 @@
-#include "runtime/BufferManager.h"
+#include "runtime/bufferManager.h"
 #include <memory>
 
 namespace inference_frame::runtime

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Buffer.h"
-#include "Tensor.h"
+#include "buffer.h"
+#include "tensor.h"
 #include "common/assert.h"
-#include "common/DataType.h"
+#include "common/dataType.h"
 #include "runtime/llmBuffer.h"
 
 #include <cstring>
@@ -11,7 +11,7 @@
 
 namespace inference_frame::runtime
 {
-    
+
     class BufferManager
     {
     public:

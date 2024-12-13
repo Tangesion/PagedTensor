@@ -1,4 +1,4 @@
-#include "runtime/Tensor.h"
+#include "runtime/tensor.h"
 #include <iostream>
 
 using namespace inference_frame::runtime;
