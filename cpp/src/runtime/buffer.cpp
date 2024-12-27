@@ -2,7 +2,7 @@
 #include <cuda_runtime_api.h>
 #include "common/cudaUtiles.h"
 #include <stdexcept>
-#include "func/threadPool.h"
+// #include "func/threadPool.h"
 
 using namespace inference_frame::runtime;
 
@@ -21,7 +21,6 @@ MemoryType Buffer::memoryType(void const *data)
     case cudaMemoryTypeUnregistered:
         return MemoryType::kCPU;
     }
-
     // TLLM_THROW("Unsupported memory type");
     throw std::runtime_error("Unsupported memory type");
 }

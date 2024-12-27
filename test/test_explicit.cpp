@@ -35,7 +35,6 @@ int main()
 {
     A a1 = 1;
     funcA(a1); // 可以隐式转换
-
     B b1(2);
     funcB(b1);                // 错误：只能显式转换
     funcB(static_cast<B>(3)); // 正确：显式转换

@@ -19,12 +19,12 @@ set(RUNTIME_LIB runtime)
 find_package(CUDA REQUIRED)
 
 # 设置编译类型为 Debug
-set(CMAKE_BUILD_TYPE Debug)
+#set(CMAKE_BUILD_TYPE Debug)
 
 # 添加调试信息并禁用优化
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0")
-
-
+#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0")
+# 启用优化
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 #include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 #include_directories(${CUDA_INCLUDE_DIRS})
 

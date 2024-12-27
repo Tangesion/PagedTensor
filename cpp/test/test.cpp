@@ -40,11 +40,12 @@ TEST(TensorTest, test)
 
 TEST(MatmulTest, oneThreadTestTime)
 {
+    inference_frame::kernel::cpu::MatmulType matmulType = inference_frame::kernel::cpu::MatmulType::kMatmulOneThread;
     Tensor::SharedPtr inp = inference_frame::func::randTensor({1, 1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
     Tensor::SharedPtr weight = inference_frame::func::randTensor({4096, 4096}, DataType::kFLOAT, MemoryType::kCPU);
     // Tensor::SharedPtr bias = nullptr;
     Tensor::SharedPtr out = inference_frame::func::createTensor({1, 1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
-    inference_frame::kernel::cpu::matmulWeightLaunch(out, inp, weight, nullptr);
+    inference_frame::kernel::cpu::matmulWeightLaunch(out, inp, weight, nullptr, matmulType);
 }
 
 TEST(MatmulTest, threadPoolTestTime)
@@ -53,7 +54,16 @@ TEST(MatmulTest, threadPoolTestTime)
     Tensor::SharedPtr weight = inference_frame::func::randTensor({4096, 4096}, DataType::kFLOAT, MemoryType::kCPU);
     // Tensor::SharedPtr bias = nullptr;
     Tensor::SharedPtr out = inference_frame::func::createTensor({1, 1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
-    inference_frame::kernel::cpu::matmulWeightThreadPoolLaunch(out, inp, weight, nullptr);
+    inference_frame::kernel::cpu::matmulWeightLaunch(out, inp, weight, nullptr, inference_frame::kernel::cpu::MatmulType::kMatmulThreadPool);
+}
+
+TEST(MatmulTest, multiThreadTestTime)
+{
+    Tensor::SharedPtr inp = inference_frame::func::randTensor({1, 1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
+    Tensor::SharedPtr weight = inference_frame::func::randTensor({4096, 4096}, DataType::kFLOAT, MemoryType::kCPU);
+    // Tensor::SharedPtr bias = nullptr;
+    Tensor::SharedPtr out = inference_frame::func::createTensor({1, 1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
+    inference_frame::kernel::cpu::matmulWeightLaunch(out, inp, weight, nullptr, inference_frame::kernel::cpu::MatmulType::KMatmulMultiThread);
 }
 
 TEST(MatmulTest, equal)
@@ -63,8 +73,8 @@ TEST(MatmulTest, equal)
     // Tensor::SharedPtr bias = nullptr;
     Tensor::SharedPtr out1 = inference_frame::func::createTensor({1, 1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
     Tensor::SharedPtr out2 = inference_frame::func::createTensor({1, 1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
-    inference_frame::kernel::cpu::matmulWeightLaunch(out1, inp, weight, nullptr);
-    inference_frame::kernel::cpu::matmulWeightThreadPoolLaunch(out2, inp, weight, nullptr);
+    inference_frame::kernel::cpu::matmulWeightLaunch(out1, inp, weight, nullptr, inference_frame::kernel::cpu::MatmulType::kMatmulOneThread);
+    inference_frame::kernel::cpu::matmulWeightLaunch(out2, inp, weight, nullptr, inference_frame::kernel::cpu::MatmulType::KMatmulMultiThread);
     auto *data1 = inference_frame::func::getData<Tensor::DataType::kFLOAT>(out1);
     auto *data2 = inference_frame::func::getData<Tensor::DataType::kFLOAT>(out2);
     for (int i = 0; i < out1->getSize(); i++)
