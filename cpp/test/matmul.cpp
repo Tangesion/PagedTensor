@@ -6,6 +6,7 @@
 #include <fstream>
 // #include <nlohmann/json.hpp>
 #include <gtest/gtest.h>
+#include "kernel/launch/matmul.h"
 
 using namespace inference_frame::runtime;
 
@@ -45,7 +46,8 @@ TEST(MatmulTest, oneThreadTestTime)
     Tensor::SharedPtr weight = inference_frame::func::randTensor({4096, 4096}, DataType::kFLOAT, MemoryType::kCPU);
     // Tensor::SharedPtr bias = nullptr;
     Tensor::SharedPtr out = inference_frame::func::createTensor({1, 1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
-    inference_frame::kernel::cpu::matmulWeightLaunch(out, inp, weight, nullptr, matmulType);
+    // inference_frame::kernel::cpu::matmulWeightLaunch(out, inp, weight, nullptr, matmulType);
+    inference_frame::kernel::launch::matmulWeight(out, inp, weight, nullptr, matmulType);
 }
 
 TEST(MatmulTest, threadPoolTestTime)
@@ -54,7 +56,8 @@ TEST(MatmulTest, threadPoolTestTime)
     Tensor::SharedPtr weight = inference_frame::func::randTensor({4096, 4096}, DataType::kFLOAT, MemoryType::kCPU);
     // Tensor::SharedPtr bias = nullptr;
     Tensor::SharedPtr out = inference_frame::func::createTensor({1, 1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
-    inference_frame::kernel::cpu::matmulWeightLaunch(out, inp, weight, nullptr, inference_frame::kernel::cpu::MatmulType::kMatmulThreadPool);
+    // inference_frame::kernel::cpu::matmulWeightLaunch(out, inp, weight, nullptr, inference_frame::kernel::cpu::MatmulType::kMatmulThreadPool);
+    inference_frame::kernel::launch::matmulWeight(out, inp, weight, nullptr, inference_frame::kernel::cpu::MatmulType::kMatmulThreadPool);
 }
 
 TEST(MatmulTest, multiThreadTestTime)
@@ -63,7 +66,8 @@ TEST(MatmulTest, multiThreadTestTime)
     Tensor::SharedPtr weight = inference_frame::func::randTensor({4096, 4096}, DataType::kFLOAT, MemoryType::kCPU);
     // Tensor::SharedPtr bias = nullptr;
     Tensor::SharedPtr out = inference_frame::func::createTensor({1, 1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
-    inference_frame::kernel::cpu::matmulWeightLaunch(out, inp, weight, nullptr, inference_frame::kernel::cpu::MatmulType::KMatmulMultiThread);
+    // inference_frame::kernel::cpu::matmulWeightLaunch(out, inp, weight, nullptr, inference_frame::kernel::cpu::MatmulType::KMatmulMultiThread);
+    inference_frame::kernel::launch::matmulWeight(out, inp, weight, nullptr, inference_frame::kernel::cpu::MatmulType::KMatmulMultiThread);
 }
 
 TEST(MatmulTest, equal)

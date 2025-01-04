@@ -8,7 +8,7 @@ set(CMAKE_PREFIX_PATH "/home/gexingt/tgx/lib")
 
 add_subdirectory(${CPP_PATH}/thirdparty/googletest-1.15.2 ${CMAKE_BINARY_DIR}/googletest)
 
-find_package(nlohmann_json 3.2.0 REQUIRED)
+#find_package(nlohmann_json 3.2.0 REQUIRED)
 
 # 设置编译类型为 Debug
 #set(CMAKE_BUILD_TYPE Debug)
@@ -24,15 +24,31 @@ if(OpenMP_CXX_FOUND)
 endif()
 
 
-# 创建一个可执行文件
-add_executable(test_suite ${TEST_SOURCES})
 
 
-# 包含头文件目录（局部作用范围）
-target_include_directories(test_suite PRIVATE ${HEAD_PATH})
-target_include_directories(test_suite PRIVATE ${CPP_PATH}/thirdparty/googletest-1.15.2/googletest/include)
 
-# 链接 runtime 库
-target_link_libraries(test_suite PRIVATE runtime nlohmann_json::nlohmann_json gtest gtest_main OpenMP::OpenMP_CXX)
+# 定义测试源文件列表
+set(TEST_SOURCES
+    attention.cpp
+    matmul.cpp
+)
 
-add_test(NAME test_suite COMMAND test_suite)
+
+# 为每个测试源文件创建一个可执行文件
+foreach(TEST_SOURCE ${TEST_SOURCES})
+    # 获取文件名（不带扩展名）
+    get_filename_component(TEST_NAME ${TEST_SOURCE} NAME_WE)
+    
+    # 创建可执行文件
+    add_executable(${TEST_NAME} ${TEST_SOURCE})
+
+    # 包含头文件目录（局部作用范围）
+    target_include_directories(${TEST_NAME} PRIVATE ${HEAD_PATH})
+    target_include_directories(${TEST_NAME} PRIVATE ${CPP_PATH}/thirdparty/googletest-1.15.2/googletest/include)
+    
+    # 链接库
+    target_link_libraries(${TEST_NAME} PRIVATE runtime gtest gtest_main OpenMP::OpenMP_CXX)
+    
+    # 添加测试
+    add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
+endforeach()
