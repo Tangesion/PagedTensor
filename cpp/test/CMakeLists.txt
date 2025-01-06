@@ -1,8 +1,6 @@
 # 收集测试源文件
 #aux_source_directory(. TEST_SOURCES)
-set(TEST_SOURCES
-    test.cpp
-)
+
 
 set(CMAKE_PREFIX_PATH "/home/gexingt/tgx/lib")
 
@@ -31,6 +29,7 @@ endif()
 set(TEST_SOURCES
     attention.cpp
     matmul.cpp
+    rmsnorm.cpp
 )
 
 

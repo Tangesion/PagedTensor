@@ -4,6 +4,7 @@
 #include "runtime/bufferManager.h"
 #include "common/assert.h"
 #include <cstdlib>
+#include <variant>
 
 namespace inference_frame::func
 {
@@ -95,10 +96,32 @@ namespace inference_frame::func
         using Type = float;
     };
 
+    template <>
+    struct DataTypeInfo<runtime::Tensor::DataType::kINT32>
+    {
+        using Type = int32_t;
+    };
+
+    using TensorDataVariant = std::variant<float*, int32_t*>;
+
     template <runtime::Tensor::DataType T>
     typename DataTypeInfo<T>::Type *getData(runtime::Tensor::SharedPtr tensor)
     {
         return static_cast<typename DataTypeInfo<T>::Type *>(tensor->data());
+    }
+
+    TensorDataVariant getData(runtime::Tensor::SharedPtr tensor)
+    {
+        switch (tensor->getDataType())
+        {
+        case runtime::Tensor::DataType::kFLOAT:
+            return getData<runtime::Tensor::DataType::kFLOAT>(tensor);
+        case runtime::Tensor::DataType::kINT32:
+            return getData<runtime::Tensor::DataType::kINT32>(tensor);
+        default:
+            JUST_THROW("Unsupported data type");
+            break;
+        }
     }
 
 }

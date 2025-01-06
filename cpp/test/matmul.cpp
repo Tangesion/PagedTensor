@@ -32,11 +32,24 @@ using namespace inference_frame::runtime;
 TEST(TensorTest, test)
 {
     Tensor::SharedPtr tensor = inference_frame::func::randTensor({2, 2, 3, 4}, DataType::kFLOAT, MemoryType::kCPU);
+    Tensor::DataType dataType = tensor->getDataType();
     std::cout << *tensor << std::endl;
     // tensor->reshape({4, 3, 4});
     inference_frame::func::reShape(tensor, {4, 3, 4});
     std::cout << *tensor << std::endl;
-    auto *data = inference_frame::func::getData<Tensor::DataType::kFLOAT>(tensor);
+    auto data = inference_frame::func::getData(tensor);
+    std::visit([&](auto &&ptr)
+               {
+        using T = std::decay_t<decltype(ptr)>;
+        if constexpr (std::is_same_v<T, float*>) {
+            std::cout << "Data type is float*" << std::endl;
+            // 使用 ptr...
+        } else if constexpr (std::is_same_v<T, int32_t*>) {
+            std::cout << "Data type is int32_t*" << std::endl;
+            // 使用 ptr...
+        } else {
+            throw std::runtime_error("Unsupported data type");
+        } }, data);
 }
 
 TEST(MatmulTest, oneThreadTestTime)

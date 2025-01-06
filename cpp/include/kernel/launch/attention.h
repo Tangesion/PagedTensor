@@ -34,21 +34,36 @@ namespace inference_frame::kernel::launch
         int64_t H = out->getShape().d[2];
         int64_t D = out->getShape().d[3];
 
-        auto *outData = inference_frame::func::getData<DataType::kFLOAT>(out);
-        auto *queryData = inference_frame::func::getData<DataType::kFLOAT>(query);
-        auto *keyData = inference_frame::func::getData<DataType::kFLOAT>(key);
-        auto *valueData = inference_frame::func::getData<DataType::kFLOAT>(value);
-        auto *interAttnData = inference_frame::func::getData<DataType::kFLOAT>(interAttn);
-
-        switch (attentionType)
+        switch (dataTypeOut)
         {
-        case kernel_cpu::AttentionType::kAttentionOneThread:
-            kernel_cpu::attentionForwardOneThread(outData, queryData, keyData, valueData, interAttnData, isPrefill, B, NH, H, D);
-            break;
-        case kernel_cpu::AttentionType::kAttentionMultiThread:
-            kernel_cpu::attentionForwardMultiThread(outData, queryData, keyData, valueData, interAttnData, isPrefill, B, NH, H, D);
+        case DataType::kFLOAT:
+        {
+            auto *outData = static_cast<float *>(out->data());
+            auto *queryData = static_cast<float *>(query->data());
+            auto *keyData = static_cast<float *>(key->data());
+            auto *valueData = static_cast<float *>(value->data());
+            auto *interAttnData = static_cast<float *>(interAttn->data());
+            switch (attentionType)
+            {
+            case kernel_cpu::AttentionType::kAttentionOneThread:
+                kernel_cpu::attentionForwardOneThread(outData, queryData, keyData, valueData, interAttnData, isPrefill, B, NH, H, D);
+                break;
+            case kernel_cpu::AttentionType::kAttentionMultiThread:
+                kernel_cpu::attentionForwardMultiThread(outData, queryData, keyData, valueData, interAttnData, isPrefill, B, NH, H, D);
+                break;
+            }
             break;
         }
-    }
 
+        default:
+            break;
+        }
+
+        // auto *outData = inference_frame::func::getData<DataType::kFLOAT>(out);
+        // auto *queryData = inference_frame::func::getData<DataType::kFLOAT>(query);
+        // auto *keyData = inference_frame::func::getData<DataType::kFLOAT>(key);
+        // auto *valueData = inference_frame::func::getData<DataType::kFLOAT>(value);
+        // auto *interAttnData = inference_frame::func::getData<DataType::kFLOAT>(interAttn);
+        //
+    }
 } // namespace inference_frame::kernel::launch

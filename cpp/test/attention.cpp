@@ -49,6 +49,20 @@ TEST(AttentionTest, decodeMultiThreadTestTime)
     std::cout << "Execution time: " << duration.count() << " seconds" << std::endl;
 }
 
+// TEST(AttentionTest, FP16)
+//{
+//     SharedPtr out = randTensor({1, 32, 1, 128}, DataType::kHALF, MemoryType::kCPU);
+//     SharedPtr query = randTensor({1, 32, 1, 128}, DataType::kHALF, MemoryType::kCPU);
+//     SharedPtr key = randTensor({1, 32, 1024, 128}, DataType::kHALF, MemoryType::kCPU);
+//     SharedPtr value = randTensor({1, 32, 1024, 128}, DataType::kHALF, MemoryType::kCPU);
+//     SharedPtr interAttn = createTensor({1, 32, 1024, 1024}, DataType::kHALF, MemoryType::kCPU);
+//     auto start = std::chrono::high_resolution_clock::now();
+//     attentionForward(out, query, key, value, interAttn, false, AttentionType::kAttentionMultiThread);
+//     auto end = std::chrono::high_resolution_clock::now();
+//     std::chrono::duration<double> duration = end - start;
+//     std::cout << "Execution time: " << duration.count() << " seconds" << std::endl;
+// }
+
 TEST(AttentionTest, decodeOneThreadTestTime)
 {
     SharedPtr out = randTensor({1, 32, 1, 128}, DataType::kFLOAT, MemoryType::kCPU);

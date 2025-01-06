@@ -28,21 +28,30 @@ namespace inference_frame::kernel::launch
         int64_t C = inp->getShape().d[2];
         int64_t OC = weight->getShape().d[0];
 
-        auto *outData = inference_frame::func::getData<DataType::kFLOAT>(out);
-        auto *inpData = inference_frame::func::getData<DataType::kFLOAT>(inp);
-        auto *weightData = inference_frame::func::getData<DataType::kFLOAT>(weight);
-        auto *biasData = bias == nullptr ? nullptr : inference_frame::func::getData<DataType::kFLOAT>(bias);
-
-        switch (matmulType)
+        switch (dataTypeOut)
         {
-        case kernel_cpu::MatmulType::kMatmulOneThread:
-            kernel_cpu::matmulWeight(outData, inpData, weightData, biasData, B, H, C, OC);
+        case DataType::kFLOAT:
+        {
+            auto *outData = static_cast<float *>(out->data());
+            auto *inpData = static_cast<float *>(inp->data());
+            auto *weightData = static_cast<float *>(weight->data());
+            auto *biasData = bias == nullptr ? nullptr : static_cast<float *>(bias->data());
+            switch (matmulType)
+            {
+            case kernel_cpu::MatmulType::kMatmulOneThread:
+                kernel_cpu::matmulWeight(outData, inpData, weightData, biasData, B, H, C, OC);
+                break;
+            case kernel_cpu::MatmulType::KMatmulMultiThread:
+                kernel_cpu::matmulWeightMultiThread(outData, inpData, weightData, biasData, B, H, C, OC);
+                break;
+            case kernel_cpu::MatmulType::kMatmulThreadPool:
+                kernel_cpu::matmulWeightThreadPool(outData, inpData, weightData, biasData, B, H, C, OC);
+                break;
+            }
             break;
-        case kernel_cpu::MatmulType::KMatmulMultiThread:
-            kernel_cpu::matmulWeightMultiThread(outData, inpData, weightData, biasData, B, H, C, OC);
-            break;
-        case kernel_cpu::MatmulType::kMatmulThreadPool:
-            kernel_cpu::matmulWeightThreadPool(outData, inpData, weightData, biasData, B, H, C, OC);
+        }
+
+        default:
             break;
         }
     }
