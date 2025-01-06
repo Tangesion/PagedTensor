@@ -1,7 +1,6 @@
 #pragma once
 #include "kernel/cpu/attention.h"
 #include "runtime/tensor.h"
-#include "func/func.h"
 
 namespace inference_frame::kernel::launch
 {

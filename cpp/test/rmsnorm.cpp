@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <func/func.h>
 #include <chrono>
 #include "kernel/launch/rmsnorm.h"
 

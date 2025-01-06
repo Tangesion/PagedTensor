@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <chrono>
+#include <func/func.h>
 #include "kernel/launch/attention.h"
 
 using MemoryType = inference_frame::runtime::MemoryType;

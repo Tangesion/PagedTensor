@@ -30,6 +30,7 @@ set(TEST_SOURCES
     attention.cpp
     matmul.cpp
     rmsnorm.cpp
+    rope.cpp
 )
 
 

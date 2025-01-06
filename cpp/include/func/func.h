@@ -55,6 +55,15 @@ namespace inference_frame::func
                 }
                 break;
             }
+            case runtime::Tensor::DataType::kINT64:
+            {
+                auto *data = static_cast<int64_t *>(tensor->data());
+                for (int i = 0; i < tensor->getSize(); i++)
+                {
+                    data[i] = rand() % 100;
+                }
+                break;
+            }
             default:
             {
                 JUST_THROW("Unsupported data type");
@@ -102,7 +111,7 @@ namespace inference_frame::func
         using Type = int32_t;
     };
 
-    using TensorDataVariant = std::variant<float*, int32_t*>;
+    using TensorDataVariant = std::variant<float *, int32_t *>;
 
     template <runtime::Tensor::DataType T>
     typename DataTypeInfo<T>::Type *getData(runtime::Tensor::SharedPtr tensor)
