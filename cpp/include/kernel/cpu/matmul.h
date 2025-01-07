@@ -1,11 +1,8 @@
 #pragma once
-#include <iostream>
 // #include <omp.h>
 #include <cstdlib>
 #include <memory>
 #include "func/threadPool.h"
-#include "func/func.h"
-#include "runtime/tensor.h"
 
 #define THREADS_NUM 28
 
@@ -136,50 +133,6 @@ namespace inference_frame::kernel::cpu
         }
     }
 
-    using namespace inference_frame::runtime;
-    void matmulWeightLaunch(Tensor::SharedPtr out, Tensor::SharedPtr inp, Tensor::SharedPtr weight, Tensor::SharedPtr bias, MatmulType matmulType)
-    {
-
-        DataType dataTypeInp = inp->getDataType();
-        DataType dataTypeWeight = weight->getDataType();
-        DataType dataTypeOut = out->getDataType();
-        try
-        {
-            CHECK_WITH_INFO(dataTypeInp == dataTypeWeight, "Data type of input and weight must be the same");
-            CHECK_WITH_INFO(dataTypeOut == dataTypeInp, "Data type of output and input must be the same");
-        }
-        catch (const std::exception &e)
-        {
-            std::cerr << e.what() << '\n';
-            std::exit(EXIT_FAILURE);
-        }
-
-        int64_t B = inp->getShape().d[0];
-        int64_t H = inp->getShape().d[1];
-        int64_t C = inp->getShape().d[2];
-        int64_t OC = weight->getShape().d[0];
-
-        auto *outData = inference_frame::func::getData<Tensor::DataType::kFLOAT>(out);
-        auto *inpData = inference_frame::func::getData<Tensor::DataType::kFLOAT>(inp);
-        auto *weightData = inference_frame::func::getData<Tensor::DataType::kFLOAT>(weight);
-        auto *biasData = bias == nullptr ? nullptr : inference_frame::func::getData<Tensor::DataType::kFLOAT>(bias);
-
-        switch (matmulType)
-        {
-        case MatmulType::kMatmulOneThread:
-            matmulWeight(outData, inpData, weightData, biasData, B, H, C, OC);
-            break;
-        case MatmulType::KMatmulMultiThread:
-            matmulWeightMultiThread(outData, inpData, weightData, biasData, B, H, C, OC);
-            break;
-        case MatmulType::kMatmulThreadPool:
-            matmulWeightThreadPool(outData, inpData, weightData, biasData, B, H, C, OC);
-            break;
-        }
-
-        matmulWeight(outData, inpData, weightData, biasData, B, H, C, OC);
-
-        // matmul<float>(static_cast<float *>(out->data()), static_cast<float *>(inp->data()), static_cast<float *>(weight->data()), nullptr, 1, 2, 3, 4);
-    }
+    // matmul<float>(static_cast<float *>(out->data()), static_cast<float *>(inp->data()), static_cast<float *>(weight->data()), nullptr, 1, 2, 3, 4);
 
 } // namespace inference_frame::kernel::cpu

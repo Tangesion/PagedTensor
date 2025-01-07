@@ -31,6 +31,7 @@ set(TEST_SOURCES
     matmul.cpp
     rmsnorm.cpp
     rope.cpp
+    ffn.cpp
 )
 
 
