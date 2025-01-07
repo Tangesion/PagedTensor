@@ -32,6 +32,7 @@ set(TEST_SOURCES
     rmsnorm.cpp
     rope.cpp
     ffn.cpp
+    transpose.cpp
 )
 
 
