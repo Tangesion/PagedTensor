@@ -1,13 +1,14 @@
 #pragma once
+#include "runtime/tensor.h"
 #include "kernel/cpu/matmul.h"
 
 namespace inference_frame::kernel::launch
 {
     namespace kernel_cpu = inference_frame::kernel::cpu;
-    using SharedPtr = inference_frame::runtime::Tensor::SharedPtr;
+    using UniquePtr = inference_frame::runtime::Tensor::UniquePtr;
     using DataType = inference_frame::runtime::Tensor::DataType;
 
-    void matmulWeight(SharedPtr out, SharedPtr inp, SharedPtr weight, SharedPtr bias, cpu::MatmulType matmulType)
+    void matmulWeight(UniquePtr &out, UniquePtr &inp, UniquePtr &weight, const UniquePtr &bias, const cpu::MatmulType matmulType)
     {
         DataType dataTypeInp = inp->getDataType();
         DataType dataTypeWeight = weight->getDataType();

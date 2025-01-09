@@ -7,11 +7,11 @@
 namespace inference_frame::kernel::launch
 {
     namespace kernel_cpu = inference_frame::kernel::cpu;
-    using SharedPtr = inference_frame::runtime::Tensor::SharedPtr;
+    using UniquePtr = inference_frame::runtime::Tensor::UniquePtr;
     using DataType = inference_frame::runtime::Tensor::DataType;
     using MemoryType = inference_frame::runtime::MemoryType;
 
-    void ffnForwardOneThread(SharedPtr out, SharedPtr inp, SharedPtr gateProj, SharedPtr upProj, SharedPtr downProj)
+    void ffnForwardOneThread(UniquePtr &out, UniquePtr &inp, UniquePtr &gateProj, UniquePtr &upProj, UniquePtr &downProj)
     {
         DataType dataTypeOut = out->getDataType();
         DataType dataTypeInp = inp->getDataType();
@@ -60,7 +60,7 @@ namespace inference_frame::kernel::launch
         }
     }
 
-    void ffnForwardMultiThreads(SharedPtr out, SharedPtr inp, SharedPtr gateProj, SharedPtr upProj, SharedPtr downProj)
+    void ffnForwardMultiThreads(UniquePtr &out, UniquePtr &inp, UniquePtr &gateProj, UniquePtr &upProj, UniquePtr &downProj)
     {
         DataType dataTypeOut = out->getDataType();
         DataType dataTypeInp = inp->getDataType();
@@ -106,7 +106,7 @@ namespace inference_frame::kernel::launch
         }
     }
 
-    void ffnForward(SharedPtr out, SharedPtr inp, SharedPtr gateProj, SharedPtr upProj, SharedPtr downProj, const bool isMultiThread = true)
+    void ffnForward(UniquePtr &out, UniquePtr &inp, UniquePtr &gateProj, UniquePtr &upProj, UniquePtr &downProj, const bool isMultiThread = true)
     {
         if (isMultiThread)
         {

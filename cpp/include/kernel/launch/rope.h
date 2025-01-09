@@ -5,10 +5,11 @@
 namespace inference_frame::kernel::launch
 {
     namespace kernel_cpu = inference_frame::kernel::cpu;
-    using SharedPtr = inference_frame::runtime::Tensor::SharedPtr;
+    using UniquePtr = inference_frame::runtime::Tensor::UniquePtr;
+    using UniquePtrConst = inference_frame::runtime::Tensor::UniqueConstPtr;
     using DataType = inference_frame::runtime::Tensor::DataType;
 
-    void precomputeFreqsCosSin(SharedPtr freqsCosSin, const size_t dim, const size_t maxPos, const float theta = 10000.0, const bool isMultiThread = true)
+    void precomputeFreqsCosSin(UniquePtr &freqsCosSin, const size_t dim, const size_t maxPos, const float theta = 10000.0, const bool isMultiThread = true)
     {
         DataType dataTypeFreqsCosSin = freqsCosSin->getDataType();
         try
@@ -42,7 +43,7 @@ namespace inference_frame::kernel::launch
             break;
         }
     }
-    void applyRope(SharedPtr out, SharedPtr inp, SharedPtr freqsCosSin, SharedPtr pos, const bool isMultiThread = true)
+    void applyRope(UniquePtr &out, UniquePtr &inp, UniquePtr &freqsCosSin, UniquePtr &pos, const bool isMultiThread = true)
     {
         DataType dataTypeOut = out->getDataType();
         DataType dataTypeInp = inp->getDataType();

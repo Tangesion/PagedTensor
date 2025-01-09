@@ -5,10 +5,10 @@
 namespace inference_frame::kernel::launch
 {
     namespace kernel_cpu = inference_frame::kernel::cpu;
-    using SharedPtr = inference_frame::runtime::Tensor::SharedPtr;
+    using UniquePtr = inference_frame::runtime::Tensor::UniquePtr;
     using DataType = inference_frame::runtime::Tensor::DataType;
 
-    void rmsNorm(SharedPtr out, SharedPtr inp, SharedPtr weight, bool isMultiThread)
+    void rmsNorm(UniquePtr &out, UniquePtr &inp, UniquePtr &weight, const bool isMultiThread)
     {
         DataType dataTypeOut = out->getDataType();
         DataType dataTypeInp = inp->getDataType();

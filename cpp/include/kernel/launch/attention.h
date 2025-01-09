@@ -5,10 +5,10 @@
 namespace inference_frame::kernel::launch
 {
     namespace kernel_cpu = inference_frame::kernel::cpu;
-    using SharedPtr = inference_frame::runtime::Tensor::SharedPtr;
+    using UniquePtr = inference_frame::runtime::Tensor::UniquePtr;
     using DataType = inference_frame::runtime::Tensor::DataType;
 
-    void attentionForward(SharedPtr out, SharedPtr query, SharedPtr key, SharedPtr value, SharedPtr interAttn, bool isPrefill, cpu::AttentionType attentionType)
+    void attentionForward(UniquePtr &out, UniquePtr &query, UniquePtr &key, UniquePtr &value, UniquePtr &interAttn, const bool isPrefill, const cpu::AttentionType attentionType)
     {
         DataType dataTypeOut = out->getDataType();
         DataType dataTypeQuery = query->getDataType();

@@ -5,11 +5,11 @@
 namespace inference_frame::kernel::launch
 {
     namespace kernel_cpu = inference_frame::kernel::cpu;
-    using SharedPtr = inference_frame::runtime::Tensor::SharedPtr;
+    using UniquePtr = inference_frame::runtime::Tensor::UniquePtr;
     using DataType = inference_frame::runtime::Tensor::DataType;
     using MemoryType = inference_frame::runtime::MemoryType;
 
-    void transposeOneThread(SharedPtr out, SharedPtr inp)
+    void transposeOneThread(UniquePtr &out, UniquePtr &inp)
     {
         DataType dataTypeOut = out->getDataType();
         DataType dataTypeInp = inp->getDataType();
@@ -33,16 +33,17 @@ namespace inference_frame::kernel::launch
         {
             auto *outData = static_cast<float *>(out->data());
             auto *inpData = static_cast<float *>(inp->data());
-            kernel_cpu::transpose(outData, inpData, B, NH, H, D);
+            kernel_cpu::transpose(inpData, outData, B, NH, H, D);
             break;
         }
 
         default:
             break;
         }
+        inp.reset();
     }
 
-    void transposeMultiThread(SharedPtr out, SharedPtr inp)
+    void transposeMultiThread(UniquePtr &out, UniquePtr &inp)
     {
         DataType dataTypeOut = out->getDataType();
         DataType dataTypeInp = inp->getDataType();
@@ -66,16 +67,17 @@ namespace inference_frame::kernel::launch
         {
             auto *outData = static_cast<float *>(out->data());
             auto *inpData = static_cast<float *>(inp->data());
-            kernel_cpu::transposeMultiThread(outData, inpData, B, NH, H, D);
+            kernel_cpu::transposeMultiThread(inpData, outData, B, NH, H, D);
             break;
         }
 
         default:
             break;
         }
+        inp.reset();
     }
 
-    void transpose(SharedPtr out, SharedPtr inp, const bool isMultiThread = true)
+    void transpose(UniquePtr &out, UniquePtr &inp, const bool isMultiThread = true)
     {
         if (isMultiThread)
         {

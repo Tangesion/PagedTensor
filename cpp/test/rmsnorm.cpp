@@ -9,9 +9,9 @@ using namespace inference_frame::func;
 
 TEST(rmsNormTest, muliThreadPrefillTestTime)
 {
-    SharedPtr out = createTensor({1, 32, 1024, 128}, DataType::kFLOAT, MemoryType::kCPU);
-    SharedPtr inp = randTensor({1, 32, 1024, 128}, DataType::kFLOAT, MemoryType::kCPU);
-    SharedPtr weight = randTensor({1, 32, 1024, 128}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr out = createTensor({1, 32, 1024, 128}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr inp = randTensor({1, 32, 1024, 128}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr weight = randTensor({1, 32, 1024, 128}, DataType::kFLOAT, MemoryType::kCPU);
     auto start = std::chrono::high_resolution_clock::now();
     rmsNorm(out, inp, weight, true);
     auto end = std::chrono::high_resolution_clock::now();
@@ -20,9 +20,9 @@ TEST(rmsNormTest, muliThreadPrefillTestTime)
 }
 TEST(rmsNormTest, oneThreadPrefillTestTime)
 {
-    SharedPtr out = createTensor({1, 32, 1024, 128}, DataType::kFLOAT, MemoryType::kCPU);
-    SharedPtr inp = randTensor({1, 32, 1024, 128}, DataType::kFLOAT, MemoryType::kCPU);
-    SharedPtr weight = randTensor({1, 32, 1024, 128}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr out = createTensor({1, 32, 1024, 128}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr inp = randTensor({1, 32, 1024, 128}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr weight = randTensor({1, 32, 1024, 128}, DataType::kFLOAT, MemoryType::kCPU);
     auto start = std::chrono::high_resolution_clock::now();
     rmsNorm(out, inp, weight, false);
     auto end = std::chrono::high_resolution_clock::now();
@@ -31,9 +31,9 @@ TEST(rmsNormTest, oneThreadPrefillTestTime)
 }
 TEST(rmsNormTest, muliThreadDecodeTestTime)
 {
-    SharedPtr out = createTensor({1, 32, 1, 128}, DataType::kFLOAT, MemoryType::kCPU);
-    SharedPtr inp = randTensor({1, 32, 1, 128}, DataType::kFLOAT, MemoryType::kCPU);
-    SharedPtr weight = randTensor({1, 32, 1024, 128}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr out = createTensor({1, 32, 1, 128}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr inp = randTensor({1, 32, 1, 128}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr weight = randTensor({1, 32, 1024, 128}, DataType::kFLOAT, MemoryType::kCPU);
     auto start = std::chrono::high_resolution_clock::now();
     rmsNorm(out, inp, weight, true);
     auto end = std::chrono::high_resolution_clock::now();
@@ -42,9 +42,9 @@ TEST(rmsNormTest, muliThreadDecodeTestTime)
 }
 TEST(rmsNormTest, oneThreadDecodeTestTime)
 {
-    SharedPtr out = createTensor({1, 32, 1, 128}, DataType::kFLOAT, MemoryType::kCPU);
-    SharedPtr inp = randTensor({1, 32, 1, 128}, DataType::kFLOAT, MemoryType::kCPU);
-    SharedPtr weight = randTensor({1, 32, 1024, 128}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr out = createTensor({1, 32, 1, 128}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr inp = randTensor({1, 32, 1, 128}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr weight = randTensor({1, 32, 1024, 128}, DataType::kFLOAT, MemoryType::kCPU);
     auto start = std::chrono::high_resolution_clock::now();
     rmsNorm(out, inp, weight, false);
     auto end = std::chrono::high_resolution_clock::now();

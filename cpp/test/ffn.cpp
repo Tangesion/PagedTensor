@@ -9,11 +9,11 @@ using namespace inference_frame::func;
 
 // TEST(ffnTest, ffnOneThreadPrefillTime)
 //{
-//     SharedPtr inp = randTensor({1, 1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
-//     SharedPtr gateProj = randTensor({11008, 4096}, DataType::kFLOAT, MemoryType::kCPU);
-//     SharedPtr upProj = randTensor({11008, 4096}, DataType::kFLOAT, MemoryType::kCPU);
-//     SharedPtr downProj = randTensor({4096, 11008}, DataType::kFLOAT, MemoryType::kCPU);
-//     SharedPtr out = createTensor({1, 1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
+//     UniquePtr inp = randTensor({1, 1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
+//     UniquePtr gateProj = randTensor({11008, 4096}, DataType::kFLOAT, MemoryType::kCPU);
+//     UniquePtr upProj = randTensor({11008, 4096}, DataType::kFLOAT, MemoryType::kCPU);
+//     UniquePtr downProj = randTensor({4096, 11008}, DataType::kFLOAT, MemoryType::kCPU);
+//     UniquePtr out = createTensor({1, 1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
 //     auto start = std::chrono::high_resolution_clock::now();
 //     ffnForward(out, inp, gateProj, upProj, downProj, false);
 //     auto end = std::chrono::high_resolution_clock::now();
@@ -23,11 +23,11 @@ using namespace inference_frame::func;
 
 TEST(ffnTest, ffnMultiThreadPrefillTime)
 {
-    SharedPtr inp = randTensor({1, 1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
-    SharedPtr gateProj = randTensor({11008, 4096}, DataType::kFLOAT, MemoryType::kCPU);
-    SharedPtr upProj = randTensor({11008, 4096}, DataType::kFLOAT, MemoryType::kCPU);
-    SharedPtr downProj = randTensor({4096, 11008}, DataType::kFLOAT, MemoryType::kCPU);
-    SharedPtr out = createTensor({1, 1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr inp = randTensor({1, 1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr gateProj = randTensor({11008, 4096}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr upProj = randTensor({11008, 4096}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr downProj = randTensor({4096, 11008}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr out = createTensor({1, 1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
     auto start = std::chrono::high_resolution_clock::now();
     ffnForward(out, inp, gateProj, upProj, downProj, true);
     auto end = std::chrono::high_resolution_clock::now();
@@ -37,11 +37,11 @@ TEST(ffnTest, ffnMultiThreadPrefillTime)
 
 TEST(ffnTest, ffnOneThreadDecodeTime)
 {
-    SharedPtr inp = randTensor({1, 1, 4096}, DataType::kFLOAT, MemoryType::kCPU);
-    SharedPtr gateProj = randTensor({11008, 4096}, DataType::kFLOAT, MemoryType::kCPU);
-    SharedPtr upProj = randTensor({11008, 4096}, DataType::kFLOAT, MemoryType::kCPU);
-    SharedPtr downProj = randTensor({4096, 11008}, DataType::kFLOAT, MemoryType::kCPU);
-    SharedPtr out = createTensor({1, 1, 4096}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr inp = randTensor({1, 1, 4096}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr gateProj = randTensor({11008, 4096}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr upProj = randTensor({11008, 4096}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr downProj = randTensor({4096, 11008}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr out = createTensor({1, 1, 4096}, DataType::kFLOAT, MemoryType::kCPU);
     auto start = std::chrono::high_resolution_clock::now();
     ffnForward(out, inp, gateProj, upProj, downProj, false);
     auto end = std::chrono::high_resolution_clock::now();
@@ -51,11 +51,11 @@ TEST(ffnTest, ffnOneThreadDecodeTime)
 
 TEST(ffnTest, ffnMultiThreadDecodeTime)
 {
-    SharedPtr inp = randTensor({1, 1, 4096}, DataType::kFLOAT, MemoryType::kCPU);
-    SharedPtr gateProj = randTensor({11008, 4096}, DataType::kFLOAT, MemoryType::kCPU);
-    SharedPtr upProj = randTensor({11008, 4096}, DataType::kFLOAT, MemoryType::kCPU);
-    SharedPtr downProj = randTensor({4096, 11008}, DataType::kFLOAT, MemoryType::kCPU);
-    SharedPtr out = createTensor({1, 1, 4096}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr inp = randTensor({1, 1, 4096}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr gateProj = randTensor({11008, 4096}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr upProj = randTensor({11008, 4096}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr downProj = randTensor({4096, 11008}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr out = createTensor({1, 1, 4096}, DataType::kFLOAT, MemoryType::kCPU);
     auto start = std::chrono::high_resolution_clock::now();
     ffnForward(out, inp, gateProj, upProj, downProj, true);
     auto end = std::chrono::high_resolution_clock::now();

@@ -9,7 +9,7 @@ using namespace inference_frame::func;
 
 TEST(ropeTest, precomputeFreqsCosSinTime)
 {
-    SharedPtr freqsCosSin = createTensor({1024, 2, 128}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr freqsCosSin = createTensor({1024, 2, 128}, DataType::kFLOAT, MemoryType::kCPU);
     auto start2 = std::chrono::high_resolution_clock::now();
     precomputeFreqsCosSin(freqsCosSin, 128, 1024, 10000.0, false);
     auto end2 = std::chrono::high_resolution_clock::now();
@@ -24,10 +24,10 @@ TEST(ropeTest, precomputeFreqsCosSinTime)
 
 TEST(ropeTest, applyRopeTime)
 {
-    SharedPtr out = createTensor({1, 32, 1024, 128}, DataType::kFLOAT, MemoryType::kCPU);
-    SharedPtr inp = randTensor({1, 32, 1024, 128}, DataType::kFLOAT, MemoryType::kCPU);
-    SharedPtr freqsCosSin = randTensor({1024, 2, 128}, DataType::kFLOAT, MemoryType::kCPU);
-    SharedPtr pos = randTensor({1024}, DataType::kINT64, MemoryType::kCPU);
+    UniquePtr out = createTensor({1, 32, 1024, 128}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr inp = randTensor({1, 32, 1024, 128}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr freqsCosSin = randTensor({1024, 2, 128}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr pos = randTensor({1024}, DataType::kINT64, MemoryType::kCPU);
     auto start = std::chrono::high_resolution_clock::now();
     applyRope(out, inp, freqsCosSin, pos, true);
     auto end = std::chrono::high_resolution_clock::now();

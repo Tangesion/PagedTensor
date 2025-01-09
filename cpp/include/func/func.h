@@ -9,13 +9,13 @@
 namespace inference_frame::func
 {
 
-    runtime::Tensor::SharedPtr createTensor(std::initializer_list<runtime::Tensor::DimType64> const &dims_list, runtime::Tensor::DataType const &type, runtime::MemoryType device)
+    runtime::Tensor::UniquePtr createTensor(std::initializer_list<runtime::Tensor::DimType64> const &dims_list, runtime::Tensor::DataType const &type, runtime::MemoryType device)
     {
 
         try
         {
             auto dims = runtime::Tensor::makeShape(dims_list);
-            runtime::Tensor::SharedPtr tensor = nullptr;
+            runtime::Tensor::UniquePtr tensor = nullptr;
             switch (device)
             {
             case runtime::MemoryType::kCPU:
@@ -38,9 +38,9 @@ namespace inference_frame::func
         }
     }
 
-    runtime::Tensor::SharedPtr randTensor(std::initializer_list<runtime::Tensor::DimType64> const &dims_list, runtime::Tensor::DataType const &type, runtime::MemoryType device)
+    runtime::Tensor::UniquePtr randTensor(std::initializer_list<runtime::Tensor::DimType64> const &dims_list, runtime::Tensor::DataType const &type, runtime::MemoryType device)
     {
-        runtime::Tensor::SharedPtr tensor = createTensor(dims_list, type, device);
+        runtime::Tensor::UniquePtr tensor = createTensor(dims_list, type, device);
         // std::cout << "Tensor created" << std::endl;
         try
         {
@@ -78,7 +78,7 @@ namespace inference_frame::func
             std::exit(EXIT_FAILURE);
         }
     }
-    runtime::Tensor::SharedPtr reShape(runtime::Tensor::SharedPtr tensor, std::initializer_list<runtime::Tensor::DimType64> const &dims_list)
+    void reShape(runtime::Tensor::UniquePtr &tensor, std::initializer_list<runtime::Tensor::DimType64> const &dims_list)
     {
         try
         {
@@ -87,7 +87,6 @@ namespace inference_frame::func
             CHECK_WITH_INFO(size == runtime::Tensor::volume(dims), "New shape size must be equal to the original size");
 
             tensor->reshape(dims);
-            return tensor;
         }
         catch (const std::exception &e)
         {
@@ -96,41 +95,41 @@ namespace inference_frame::func
         }
     }
 
-    template <runtime::Tensor::DataType T>
-    struct DataTypeInfo;
+    // template <runtime::Tensor::DataType T>
+    // struct DataTypeInfo;
 
-    template <>
-    struct DataTypeInfo<runtime::Tensor::DataType::kFLOAT>
-    {
-        using Type = float;
-    };
+    // template <>
+    // struct DataTypeInfo<runtime::Tensor::DataType::kFLOAT>
+    // {
+    //     using Type = float;
+    // };
 
-    template <>
-    struct DataTypeInfo<runtime::Tensor::DataType::kINT32>
-    {
-        using Type = int32_t;
-    };
+    // template <>
+    // struct DataTypeInfo<runtime::Tensor::DataType::kINT32>
+    // {
+    //     using Type = int32_t;
+    // };
 
-    using TensorDataVariant = std::variant<float *, int32_t *>;
+    // using TensorDataVariant = std::variant<float *, int32_t *>;
 
-    template <runtime::Tensor::DataType T>
-    typename DataTypeInfo<T>::Type *getData(runtime::Tensor::SharedPtr tensor)
-    {
-        return static_cast<typename DataTypeInfo<T>::Type *>(tensor->data());
-    }
+    // template <runtime::Tensor::DataType T>
+    // typename DataTypeInfo<T>::Type *getData(runtime::Tensor::UniquePtr tensor)
+    // {
+    //     return static_cast<typename DataTypeInfo<T>::Type *>(tensor->data());
+    // }
 
-    TensorDataVariant getData(runtime::Tensor::SharedPtr tensor)
-    {
-        switch (tensor->getDataType())
-        {
-        case runtime::Tensor::DataType::kFLOAT:
-            return getData<runtime::Tensor::DataType::kFLOAT>(tensor);
-        case runtime::Tensor::DataType::kINT32:
-            return getData<runtime::Tensor::DataType::kINT32>(tensor);
-        default:
-            JUST_THROW("Unsupported data type");
-            break;
-        }
-    }
+    // TensorDataVariant getData(runtime::Tensor::UniquePtr tensor)
+    // {
+    //     switch (tensor->getDataType())
+    //     {
+    //     case runtime::Tensor::DataType::kFLOAT:
+    //         return getData<runtime::Tensor::DataType::kFLOAT>(tensor);
+    //     case runtime::Tensor::DataType::kINT32:
+    //         return getData<runtime::Tensor::DataType::kINT32>(tensor);
+    //     default:
+    //         JUST_THROW("Unsupported data type");
+    //         break;
+    //     }
+    // }
 
 }
