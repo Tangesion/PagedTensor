@@ -11,15 +11,14 @@ torch::Tensor precomputeFreqsCosSinBind(const long dim, const long maxPos, const
 torch::Tensor applyRopeMultiThreadBind(torch::Tensor inp, torch::Tensor freqsCosSin, torch::Tensor pos)
 {
     auto B = inp.size(0);
-    auto NH = inp.size(1);
-    auto H = inp.size(2);
+    auto NH = inp.size(2);
+    auto H = inp.size(1);
     auto D = inp.size(3);
 
-    torch::Tensor out = torch::zeros_like(inp);
+    // torch::Tensor out = torch::zeros_like(inp);
     inference_frame::kernel::cpu::applyRopeMultiThread(
-        out.data_ptr<float>(),
         inp.data_ptr<float>(), freqsCosSin.data_ptr<float>(), B, NH, H, D, pos.data_ptr<size_t>());
-    return out;
+    return inp;
 }
 
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m)

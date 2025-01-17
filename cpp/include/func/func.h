@@ -95,6 +95,18 @@ namespace inference_frame::func
         }
     }
 
+    runtime::Tensor::UniquePtr makeRange(const int64_t start, const int64_t end, const int64_t span, runtime::MemoryType device)
+    {
+        std::initializer_list<runtime::Tensor::DimType64> dims_list = {end - start};
+        runtime::Tensor::UniquePtr tensor = createTensor(dims_list, runtime::Tensor::DataType::kINT64, device);
+        auto *data = static_cast<int64_t *>(tensor->data());
+        for (int i = 0; i < tensor->getSize(); i++)
+        {
+            data[i] = start + i * span;
+        }
+        return tensor;
+    }
+
     // template <runtime::Tensor::DataType T>
     // struct DataTypeInfo;
 

@@ -1,4 +1,5 @@
 #include "runtime/tensor.h"
+#include "runtime/llmBuffer.h"
 #include <iostream>
 
 using namespace inference_frame::runtime;
@@ -18,14 +19,15 @@ Tensor::UniquePtr Tensor::wrap(void *data, DataType type, Shape const &shape, st
     switch (memoryType)
     {
     case MemoryType::kCPU:
-        // tensor.reset( // NOLINT(modernize-make-unique)
-        //     new GenericTensor<CpuBorrowingAllocator>(
-        //         shape, capacity, type, CpuBorrowingAllocator(data, capacityInBytes)));
+        tensor.reset( // NOLINT(modernize-make-unique)
+            new GenericTensor<CpuBorrowingAllocator>(
+                shape, capacity, type, CpuBorrowingAllocator(data, capacityInBytes)));
         break;
 
     default:
         break;
     }
+    return tensor;
 }
 
 Tensor::Shape Tensor::makeShape(std::initializer_list<Tensor::DimType64> const &dims)

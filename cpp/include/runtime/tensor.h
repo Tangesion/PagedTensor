@@ -34,7 +34,10 @@ namespace inference_frame::runtime
         using DimType64 = std::remove_reference_t<decltype(Shape::d[0])>;
 
         static UniquePtr wrap(void *data, DataType type, Shape const &shape, std::size_t capacity);
-
+        static UniquePtr wrap(void *data, DataType type, Shape const &shape)
+        {
+            return wrap(data, type, shape, volume(shape));
+        }
         Tensor &operator=(Tensor const &) = delete;
         Tensor(Tensor const &) = delete;
         ~Tensor() override = default;

@@ -28,7 +28,7 @@ namespace inference_frame::runtime
             return ptr;
         }
 
-        void *deallocate(void *ptr, std::size_t n)
+        void deallocate(void *ptr, std::size_t n)
         {
             if (ptr)
             {
@@ -85,7 +85,7 @@ namespace inference_frame::runtime
         }
 
     protected:
-        void allocateImpl(void *ptr, std::size_t n) // NOLINT(readability-convert-member-functions-to-static)
+        void allocateImpl(void **ptr, std::size_t n) // NOLINT(readability-convert-member-functions-to-static)
         {
             if (n <= mCapacity)
             {

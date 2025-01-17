@@ -33,6 +33,7 @@ set(TEST_SOURCES
     rope.cpp
     ffn.cpp
     transpose.cpp
+    tensorTest.cpp
 )
 
 

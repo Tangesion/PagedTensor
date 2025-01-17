@@ -1,32 +1,24 @@
 #include <iostream>
 #include <thread>
+#include <condition_variable>
+#include <mutex>
 
-void foo(int &x)
+std::condition_variable cv;
+std::mutex mtx;
+
+void test()
 {
-    x += 1;
+    std::unique_lock<std::mutex> lock(mtx);
+    cv.wait(lock); // 等待条件变量的通知
+    std::cout << "Thread finished execution" << std::endl;
 }
-
-class A
-{
-public:
-    void foo(int &x)
-    {
-        x += 1;
-    }
-    static void bar(int &x)
-    {
-        x += 1;
-    }
-};
 
 int main()
 {
-    A a;
-    int x = 5;
-    std::thread t1(&A::foo, &a, std::ref(x));
-    std::thread t2(A::bar, std::ref(x));
-    // std::thread t1(foo, x);
-    t1.join();
-    t2.join();
-    std::cout << "x = " << x << std::endl; // 输出修改后的x值
+    std::thread t(test);
+    t.detach(); // 分离线程，后台任务独立运行
+
+    // std::this_thread::sleep_for(std::chrono::seconds(3)); // 确保主线程不会过早退出
+
+    return 0;
 }

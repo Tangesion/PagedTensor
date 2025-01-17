@@ -43,16 +43,14 @@ namespace inference_frame::kernel::launch
             break;
         }
     }
-    void applyRope(UniquePtr &out, UniquePtr &inp, UniquePtr &freqsCosSin, UniquePtr &pos, const bool isMultiThread = true)
+    void applyRope(UniquePtr &inp, UniquePtr &freqsCosSin, UniquePtr &pos, const bool isMultiThread = true)
     {
-        DataType dataTypeOut = out->getDataType();
         DataType dataTypeInp = inp->getDataType();
         DataType dataTypeFreqsCosSin = freqsCosSin->getDataType();
         DataType dataTypePos = pos->getDataType();
         try
         {
-            CHECK_WITH_INFO(dataTypeOut == dataTypeInp, "Data type of output and input must be the same");
-            CHECK_WITH_INFO(dataTypeOut == dataTypeFreqsCosSin, "Data type of output and freqsCosSin must be the same");
+            CHECK_WITH_INFO(dataTypeInp == dataTypeFreqsCosSin, "Data type of output and freqsCosSin must be the same");
         }
         catch (const std::exception &e)
         {
@@ -60,26 +58,25 @@ namespace inference_frame::kernel::launch
             std::exit(EXIT_FAILURE);
         }
 
-        int64_t B = out->getShape().d[0];
-        int64_t NH = out->getShape().d[1];
-        int64_t H = out->getShape().d[2];
-        int64_t D = out->getShape().d[3];
+        int64_t B = inp->getShape().d[0];
+        int64_t NH = inp->getShape().d[2];
+        int64_t H = inp->getShape().d[1];
+        int64_t D = inp->getShape().d[3];
 
-        switch (dataTypeOut)
+        switch (dataTypeInp)
         {
         case DataType::kFLOAT:
         {
-            auto *outData = static_cast<float *>(out->data());
             auto *inpData = static_cast<float *>(inp->data());
             auto *freqsCosSinData = static_cast<float *>(freqsCosSin->data());
             auto *posData = static_cast<size_t *>(pos->data());
             if (isMultiThread)
             {
-                kernel_cpu::applyRopeMultiThread(outData, inpData, freqsCosSinData, B, NH, H, D, posData);
+                kernel_cpu::applyRopeMultiThread(inpData, freqsCosSinData, B, NH, H, D, posData);
             }
             else
             {
-                kernel_cpu::applyRopeOneThread(outData, inpData, freqsCosSinData, B, NH, H, D, posData);
+                kernel_cpu::applyRopeOneThread(inpData, freqsCosSinData, B, NH, H, D, posData);
             }
             break;
         }
