@@ -1,7 +1,11 @@
 import torch
+import os
 from torch.utils.cpp_extension import load
 
-
+current_dir = os.path.dirname(os.path.abspath(__file__))
+extension_path = os.path.join(current_dir, 'extension.cpp')
+include_path = os.path.join(current_dir, '../../cpp/include')
+cpu_rope = load(name='cpu_rope', sources=[extension_path], extra_cflags=['-O3'], extra_include_paths=[include_path])
 
 def get_cos_sin(x, position_ids, inv_freq):
     inv_freq_expanded = inv_freq[None, :, None].float().expand(position_ids.shape[0], -1, 1)
@@ -51,7 +55,9 @@ def apply_rotary_pos_emb(q, cos, sin, position_ids=None, unsqueeze_dim=1):
     q_embed = (q * cos) + (rotate_half(q) * sin)
     return q_embed
 
-cpu_rope = load(name='cpu_rope', sources=['extension.cpp'], extra_cflags=['-O3'], extra_include_paths=['/home/gexingt/tgx/projects/inference-frame/cpp/include'])
+
+
+#cpu_rope = load(name='cpu_rope', sources=['extension.cpp'], extra_cflags=['-O3'], extra_include_paths=['/home/gexingt/tgx/projects/inference-frame/cpp/include'])
 dim = 128
 max_len = 4096
 theta = 10000

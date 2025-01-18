@@ -1,7 +1,14 @@
 import torch
+import os
 from torch.utils.cpp_extension import load
 
-cpu_transpose = load(name='cpu_transpose', sources=['extension.cpp'], extra_cflags=['-O3'], extra_include_paths=['/home/gexingt/tgx/projects/inference-frame/cpp/include'])
+current_dir = os.path.dirname(os.path.abspath(__file__))
+source_path = os.path.join(current_dir, 'extension.cpp')
+include_path = os.path.join(current_dir, '../../cpp/include')
+
+cpu_transpose = load(name='cpu_transpose', sources=[source_path], extra_cflags=['-O3'], extra_include_paths=[include_path])
+
+#cpu_transpose = load(name='cpu_transpose', sources=['extension.cpp'], extra_cflags=['-O3'], extra_include_paths=['/home/gexingt/tgx/projects/inference-frame/cpp/include'])
 
 batch_size = 1
 seq_len = 1024

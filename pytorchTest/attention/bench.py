@@ -2,8 +2,13 @@ import torch
 from torch.nn import functional as F
 from torch.utils.cpp_extension import load
 import math
+import os
 
-cpu_attn = load(name='cpu_attn', sources=['extension.cpp'], extra_cflags=['-O3'], extra_include_paths=['/home/gexingt/tgx/projects/inference-frame/cpp/include'])
+current_dir = os.path.dirname(os.path.abspath(__file__))
+extension_path = os.path.join(current_dir, 'extension.cpp')
+include_path = os.path.join(current_dir, '../../cpp/include')
+
+cpu_attn = load(name='cpu_attn', sources=[extension_path], extra_cflags=['-O3'], extra_include_paths=[include_path])
 
 batch_size = 1
 n_head = 1

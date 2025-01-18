@@ -6,7 +6,6 @@ torch::Tensor rmsnormBind(torch::Tensor inp, torch::Tensor weight)
     auto B = inp.size(0);
     auto H = inp.size(1);
     auto C = inp.size(2);
-
     torch::Tensor out = torch::zeros_like(inp);
     inference_frame::kernel::cpu::rmsNormMultiThread(
         out.data_ptr<float>(),
