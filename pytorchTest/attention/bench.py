@@ -6,9 +6,10 @@ import os
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 extension_path = os.path.join(current_dir, 'extension.cpp')
+source_path = os.path.join(current_dir, '../../cpp/src/kernel/cpu/attention.cpp')
 include_path = os.path.join(current_dir, '../../cpp/include')
 
-cpu_attn = load(name='cpu_attn', sources=[extension_path], extra_cflags=['-O3'], extra_include_paths=[include_path])
+cpu_attn = load(name='cpu_attn', sources=[extension_path, source_path], extra_cflags=['-O3'], extra_include_paths=[include_path])
 
 batch_size = 1
 n_head = 1

@@ -1,0 +1,21 @@
+cmake_minimum_required(VERSION 3.10)
+
+project(pytorchTest VERSION 1.0)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+set(LIB_PATH ${CMAKE_SOURCE_DIR}/../cpp/lib)
+set(HEAD_PATH ${CMAKE_SOURCE_DIR}/../cpp/include)
+set(CPP_PATH ${CMAKE_SOURCE_DIR}/../cpp)
+
+message(STATUS "LIB_PATH: ${LIB_PATH}")
+message(STATUS "HEAD_PATH: ${HEAD_PATH}")
+message(STATUS "CPP_PATH: ${CPP_PATH}")
+
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+
+list(APPEND CMAKE_PREFIX_PATH "/home/tgx/Downloads/anaconda/yes/envs/cuda/lib/python3.10/site-packages/pybind11/share/cmake/pybind11")
+
+add_subdirectory(attentionClass)

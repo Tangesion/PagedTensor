@@ -6,8 +6,9 @@ from torch.utils.cpp_extension import load
 current_dir = os.path.dirname(os.path.abspath(__file__))
 extension_path = os.path.join(current_dir, 'extension.cpp')
 include_path = os.path.join(current_dir, '../../cpp/include')
-
-cpu_ffn = load(name='cpu_ffn', sources=[extension_path], extra_cflags=['-O3'], extra_include_paths=[include_path])
+source_path = os.path.join(current_dir, '../../cpp/src/kernel/cpu/ffn.cpp')
+matmul_path = os.path.join(current_dir, '../../cpp/src/kernel/cpu/matmul.cpp')
+cpu_ffn = load(name='cpu_ffn', sources=[extension_path, source_path, matmul_path], extra_cflags=['-O3'], extra_include_paths=[include_path])
 
 #cpu_ffn = load(name='cpu_ffn', sources=['extension.cpp'], extra_cflags=['-O3'], extra_include_paths=['/home/gexingt/tgx/projects/inference-frame/cpp/include'])
 

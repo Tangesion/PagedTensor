@@ -1,12 +1,12 @@
 #pragma once
-#include "include/common/assert.h"
-#include "include/func/func.h"
-#include "include/kernel/launch/attention.h"
-#include "include/kernel/launch/ffn.h"
-#include "include/kernel/launch/matmul.h"
-#include "include/kernel/launch/rope.h"
-#include "include/kernel/launch/rmsnorm.h"
-#include "include/kernel/launch/transpose.h"
+#include "common/assert.h"
+#include "func/func.h"
+#include "kernel/launch/attention.h"
+#include "kernel/launch/ffn.h"
+#include "kernel/launch/matmul.h"
+#include "kernel/launch/rope.h"
+#include "kernel/launch/rmsnorm.h"
+#include "kernel/launch/transpose.h"
 
 using namespace inference_frame::runtime;
 
@@ -76,7 +76,7 @@ namespace inference_frame::llama2
     class LlamaRMSNorm
     {
     public:
-        LlamaRMSNorm(const size_t start, const size_t hiddenSize, void *modelWeight, const DataType &dataType);
+        LlamaRMSNorm(const size_t start, const size_t hiddenSize, char *modelWeight, const DataType &dataType);
         void forward(Tensor::UniquePtr &out, Tensor::UniquePtr &inp);
 
     private:
@@ -127,7 +127,7 @@ namespace inference_frame::llama2
     class LlamaAttention
     {
     public:
-        LlamaAttention(LlamaConfig &config, const size_t layerIdx, void *modelWeight, const size_t start);
+        LlamaAttention(LlamaConfig &config, const size_t layerIdx, char *modelWeight, const size_t start);
         void forward(Tensor::UniquePtr hiddenStatesOut,
                      Tensor::UniquePtr hiddenStatesIn,
                      const size_t layerIdx,

@@ -1,1 +1,5 @@
 add_subdirectory(runtime)
+add_subdirectory(func)
+add_subdirectory(kernel/cpu)
+add_subdirectory(kernel/launch)
+add_subdirectory(model)

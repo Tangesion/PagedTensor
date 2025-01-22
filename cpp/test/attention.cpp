@@ -5,6 +5,7 @@
 
 using MemoryType = inference_frame::runtime::MemoryType;
 using AttentionType = inference_frame::kernel::cpu::AttentionType;
+using DataType = inference_frame::runtime::Tensor::DataType;
 using namespace inference_frame::kernel::launch;
 using namespace inference_frame::func;
 

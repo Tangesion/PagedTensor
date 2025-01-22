@@ -23,10 +23,8 @@ namespace inference_frame::common
     } while (0)
 
 #define JUST_THROW(info)                                                      \
-    \  
     do                                                                        \
     {                                                                         \
         inference_frame::common::throwRuntimeError(__FILE__, __LINE__, info); \
-    }                                                                         \
-    while (0)
+    } while (0)
 }

@@ -1,5 +1,5 @@
 # 忽略构建目录
-/build/
+build/
 /cpp/build/
 
 # 忽略 CMake 生成的文件

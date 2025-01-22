@@ -6,8 +6,8 @@ from torch.utils.cpp_extension import load
 current_dir = os.path.dirname(os.path.abspath(__file__))
 extension_path = os.path.join(current_dir, 'extension.cpp')
 include_path = os.path.join(current_dir, '../../cpp/include')
-
-cpu_rmsnorm = load(name='cpu_rmsnorm', sources=[extension_path], extra_cflags=['-O3'], extra_include_paths=[include_path])
+source_path = os.path.join(current_dir, '../../cpp/src/kernel/cpu/rmsnorm.cpp')
+cpu_rmsnorm = load(name='cpu_rmsnorm', sources=[extension_path, source_path], extra_cflags=['-O3'], extra_include_paths=[include_path])
 
 #cpu_rmsnorm = load(name='cpu_rmsnorm', sources=['extension.cpp'], extra_cflags=['-O3'], extra_include_paths=['/home/gexingt/tgx/projects/inference-frame/cpp/include'])
 

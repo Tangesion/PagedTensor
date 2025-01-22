@@ -1,9 +1,9 @@
-#include "include/model/llama2.h"
+#include "model/llama2.h"
 
 using namespace inference_frame::llama2;
 typedef Tensor::DimType64 CastInt64;
 
-LlamaRMSNorm::LlamaRMSNorm(const size_t start, const size_t hiddenSize, void *modelWeight, const DataType &dataType)
+LlamaRMSNorm::LlamaRMSNorm(const size_t start, const size_t hiddenSize, char *modelWeight, const DataType &dataType)
     : isMultiThread(false)
 {
     size_t typeSize = inference_frame::common::getTypeSize(dataType);
@@ -73,7 +73,7 @@ void AttentionSpace::transToDecode(LlamaConfig &config)
         DataType::kFLOAT, MemoryType::kCPU);
 }
 
-LlamaAttention::LlamaAttention(LlamaConfig &config, const size_t layerIdx, void *modelWeight, const size_t start)
+LlamaAttention::LlamaAttention(LlamaConfig &config, const size_t layerIdx, char *modelWeight, const size_t start)
     : hiddenSize(config.hiddenSize), numAttentionHeads(config.numAttentionHeads), headDims(config.hiddenSize / config.numAttentionHeads), prefillLength(config.prefillLength), maxPos(config.maxPositionEmbeddings), typeSize(config.typeSize)
 
 {
@@ -105,8 +105,8 @@ void LlamaAttention::forward(Tensor::UniquePtr hiddenStatesOut,
         void *kvCacheData = attentionSpace.kvCache->data();
         size_t offsetK = layerIdx * 2 * bsz * maxPos * hiddenSize;
         size_t offsetV = offsetK + bsz * maxPos * hiddenSize;
-        Tensor::UniquePtr keyStates = Tensor::wrap(kvCacheData + offsetK * typeSize, DataType::kFLOAT, kvShape);
-        Tensor::UniquePtr valueStates = Tensor::wrap(kvCacheData + offsetV * typeSize, DataType::kFLOAT, kvShape);
+        Tensor::UniquePtr keyStates = Tensor::wrap(static_cast<char *>(kvCacheData) + offsetK * typeSize, DataType::kFLOAT, kvShape);
+        Tensor::UniquePtr valueStates = Tensor::wrap(static_cast<char *>(kvCacheData) + offsetV * typeSize, DataType::kFLOAT, kvShape);
         kernel::launch::matmulWeight(attentionSpace.queryStates, hiddenStatesIn, qProjWeight, nullptr, kernel::cpu::MatmulType::KMatmulMultiThread);
         kernel::launch::matmulWeight(keyStates, hiddenStatesIn, kProjWeight, nullptr, kernel::cpu::MatmulType::KMatmulMultiThread);
         kernel::launch::matmulWeight(valueStates, hiddenStatesIn, vProjWeight, nullptr, kernel::cpu::MatmulType::KMatmulMultiThread);

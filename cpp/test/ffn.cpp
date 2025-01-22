@@ -4,6 +4,7 @@
 #include "kernel/launch/ffn.h"
 
 using MemoryType = inference_frame::runtime::MemoryType;
+using DataType = inference_frame::runtime::Tensor::DataType;
 using namespace inference_frame::kernel::launch;
 using namespace inference_frame::func;
 

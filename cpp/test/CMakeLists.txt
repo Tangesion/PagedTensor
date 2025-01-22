@@ -21,10 +21,6 @@ if(OpenMP_CXX_FOUND)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif()
 
-
-
-
-
 # 定义测试源文件列表
 set(TEST_SOURCES
     attention.cpp
@@ -50,7 +46,7 @@ foreach(TEST_SOURCE ${TEST_SOURCES})
     target_include_directories(${TEST_NAME} PRIVATE ${CPP_PATH}/thirdparty/googletest-1.15.2/googletest/include)
     
     # 链接库
-    target_link_libraries(${TEST_NAME} PRIVATE runtime gtest gtest_main OpenMP::OpenMP_CXX)
+    target_link_libraries(${TEST_NAME} PRIVATE func kernel_launch gtest gtest_main)
     
     # 添加测试
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})

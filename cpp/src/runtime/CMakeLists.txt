@@ -14,3 +14,5 @@ target_include_directories(runtime PUBLIC ${CUDA_INCLUDE_DIRS})
 
 # 链接 CUDA 库
 target_link_libraries(runtime ${CUDA_LIBRARIES})
+
+set_target_properties(runtime PROPERTIES POSITION_INDEPENDENT_CODE ON)
