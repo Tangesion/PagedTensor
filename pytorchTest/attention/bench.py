@@ -12,9 +12,9 @@ include_path = os.path.join(current_dir, '../../cpp/include')
 cpu_attn = load(name='cpu_attn', sources=[extension_path, source_path], extra_cflags=['-O3'], extra_include_paths=[include_path])
 
 batch_size = 1
-n_head = 1
+n_head = 32
 seq_len = 4
-head_embd = 4
+head_embd = 128
 
 q = torch.randn(batch_size, n_head, seq_len, head_embd, dtype=torch.float32)
 k = torch.randn(batch_size, n_head, seq_len, head_embd, dtype=torch.float32)

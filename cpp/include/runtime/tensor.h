@@ -1,6 +1,6 @@
 
 #pragma once
-
+#include <vector>
 #include <cstdint>
 #include <memory>
 #include "common/dataType.h"
@@ -52,6 +52,8 @@ namespace toy::runtime
         }
 
         static Shape makeShape(std::initializer_list<DimType64> const &dims);
+
+        static Shape makeShape(std::vector<int64_t> const &dims);
 
         void printShape() const;
 

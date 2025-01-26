@@ -91,13 +91,43 @@ namespace toy::func
 
     runtime::Tensor::UniquePtr makeRange(const int64_t start, const int64_t end, const int64_t span, runtime::MemoryType device)
     {
-        std::initializer_list<runtime::Tensor::DimType64> dims_list = {end - start};
+
+        if (end <= start)
+        {
+            throw std::invalid_argument("End must be greater than start.");
+        }
+        if (span <= 0)
+        {
+            throw std::invalid_argument("Span must be a positive integer.");
+        }
+
+        std::initializer_list<runtime::Tensor::DimType64> dims_list = {static_cast<runtime::Tensor::DimType64>((end - start + span - 1) / span)};
         runtime::Tensor::UniquePtr tensor = createTensor(dims_list, runtime::Tensor::DataType::kINT64, device);
+
         auto *data = static_cast<int64_t *>(tensor->data());
-        for (int i = 0; i < tensor->getSize(); i++)
+        for (size_t i = 0; i < tensor->getSize(); i++)
         {
             data[i] = start + i * span;
         }
+
         return tensor;
     }
+
+    // runtime::Tensor::UniquePtr torchToToy(torch::Tensor &tensor)
+    //{
+    //     void *data = tensor.data_ptr();
+    //     auto shape = tensor.sizes();
+    //     std::vector<int64_t> shapeVec(shape.begin(), shape.end());
+    //     runtime::Tensor::Shape shapeToy = runtime::Tensor::makeShape(shapeVec);
+    //     runtime::Tensor::UniquePtr toyTensor = runtime::Tensor::wrap(data, runtime::DataType::kFLOAT, shapeToy);
+    //     return toyTensor;
+    // }
+    //
+    // torch::Tensor toyToTorch(runtime::Tensor::UniquePtr &tensor)
+    //{
+    //    auto shape = tensor->getShape();
+    //    std::vector<int64_t> shapeVec(shape.d, shape.d + shape.nbDims);
+    //    torch::Tensor torchTensor = torch::from_blob(tensor->data(), shapeVec, torch::kFloat);
+    //    return torchTensor;
+    //}
 }

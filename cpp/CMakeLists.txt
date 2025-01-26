@@ -14,9 +14,11 @@ set(LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 set(HEAD_PATH ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(CPP_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
-set(RUNTIME_LIB runtime)
+set(LIBRARY_OUTPUT_PATH ${LIB_PATH})
 
 find_package(CUDA REQUIRED)
+
+find_package(OpenMP REQUIRED)
 
 # 设置编译类型为 Debug
 #set(CMAKE_BUILD_TYPE Debug)

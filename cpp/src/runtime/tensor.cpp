@@ -38,6 +38,14 @@ Tensor::Shape Tensor::makeShape(std::initializer_list<Tensor::DimType64> const &
     return shape;
 }
 
+Tensor::Shape Tensor::makeShape(std::vector<int64_t> const &dims)
+{
+    Dims shape{};
+    shape.nbDims = static_cast<decltype(Shape::nbDims)>(dims.size());
+    std::copy(dims.begin(), dims.end(), shape.d);
+    return shape;
+}
+
 void Tensor::printShape() const
 {
     Shape shape = this->getShape();
@@ -109,6 +117,9 @@ std::ostream &toy::runtime::operator<<(std::ostream &output, Tensor const &tenso
     {
     case DataType::kFLOAT:
         printTensor<float>(tensor, output);
+        break;
+    case DataType::kINT64:
+        printTensor<int64_t>(tensor, output);
         break;
     default:
         break;

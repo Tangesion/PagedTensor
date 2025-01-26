@@ -18,6 +18,7 @@ TEST(AttentionTest, multiThreadTestTime)
     UniquePtr interAttn = createTensor({1, 32, 1024, 1024}, DataType::kFLOAT, MemoryType::kCPU);
     auto start = std::chrono::high_resolution_clock::now();
     attentionForward(out, query, key, value, interAttn, true, AttentionType::kAttentionMultiThread);
+    // std::cout << *out << std::endl;
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end - start;
     std::cout << "Execution time: " << duration.count() << " seconds" << std::endl;
@@ -77,4 +78,16 @@ TEST(AttentionTest, decodeOneThreadTestTime)
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end - start;
     std::cout << "Execution time: " << duration.count() << " seconds" << std::endl;
+}
+
+TEST(AttentionTest, multiThreadTestPrint)
+{
+    UniquePtr out = randTensor({1, 32, 4, 128}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr query = randTensor({1, 32, 4, 128}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr key = randTensor({1, 32, 4, 128}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr value = randTensor({1, 32, 4, 128}, DataType::kFLOAT, MemoryType::kCPU);
+    UniquePtr interAttn = createTensor({1, 32, 4, 4}, DataType::kFLOAT, MemoryType::kCPU);
+    attentionForward(out, query, key, value, interAttn, true, AttentionType::kAttentionMultiThread);
+    std::cout << *interAttn << std::endl;
+    // std::cout << *out << std::endl;
 }

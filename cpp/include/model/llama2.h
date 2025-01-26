@@ -128,8 +128,8 @@ namespace toy::llama2
     {
     public:
         LlamaAttention(LlamaConfig &config, const size_t layerIdx, char *modelWeight, const size_t start);
-        void forward(Tensor::UniquePtr hiddenStatesOut,
-                     Tensor::UniquePtr hiddenStatesIn,
+        void forward(Tensor::UniquePtr &hiddenStatesOut,
+                     Tensor::UniquePtr &hiddenStatesIn,
                      const size_t layerIdx,
                      LlamaRotaryEmbedding &rotaryEmbedding,
                      AttentionSpace &attentionSpace);

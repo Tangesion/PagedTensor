@@ -14,12 +14,10 @@ add_subdirectory(${CPP_PATH}/thirdparty/googletest-1.15.2 ${CMAKE_BINARY_DIR}/go
 # 添加调试信息并禁用优化
 #set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0")
 
-find_package(OpenMP REQUIRED)
+#find_package(OpenMP REQUIRED)
 
 # 设置编译器标志以启用 OpenMP
-if(OpenMP_CXX_FOUND)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-endif()
+
 
 # 定义测试源文件列表
 set(TEST_SOURCES

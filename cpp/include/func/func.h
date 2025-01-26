@@ -5,6 +5,7 @@
 #include "common/assert.h"
 #include <cstdlib>
 #include <variant>
+// #include <torch/extension.h>
 
 namespace toy::func
 {
@@ -16,6 +17,10 @@ namespace toy::func
     void reShape(runtime::Tensor::UniquePtr &tensor, std::initializer_list<runtime::Tensor::DimType64> const &dims_list);
 
     runtime::Tensor::UniquePtr makeRange(const int64_t start, const int64_t end, const int64_t span, runtime::MemoryType device);
+
+    // runtime::Tensor::UniquePtr torchToToy(torch::Tensor &tensor);
+
+    // torch::Tensor toyToTorch(runtime::Tensor::Tensor::UniquePtr &tensor);
 
     // template <runtime::Tensor::DataType T>
     // struct DataTypeInfo;

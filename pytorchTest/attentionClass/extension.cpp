@@ -7,6 +7,7 @@
 #include <iomanip>
 #include <cstring>
 #include "model/llama2.h"
+#include "../utils/utlis.h"
 
 using namespace toy::llama2;
 class AttentionTest
@@ -19,6 +20,17 @@ public:
     torch::Tensor getVProj(LlamaConfig &config);
     torch::Tensor getOProj(LlamaConfig &config);
 
+    torch::Tensor forwardTest(torch::Tensor &output,
+                              torch::Tensor &input,
+                              const size_t layerIdx)
+    {
+        Tensor::UniquePtr outputToy = toy::utils::torchToToy(output);
+        Tensor::UniquePtr inputToy = toy::utils::torchToToy(input);
+        attention.forward(outputToy, inputToy, layerIdx, rotaryEmbedding, attentionSpace);
+        // std::cout << *outputToy << std::endl;
+        return output;
+    }
+
     void printMessage()
     {
         std::cout << "Bind AttentionTest successed!" << std::endl;
@@ -28,10 +40,12 @@ private:
     std::vector<char> modelWeight;
     size_t start;
     LlamaAttention attention;
+    LlamaRotaryEmbedding rotaryEmbedding;
+    AttentionSpace attentionSpace;
 };
 
 AttentionTest::AttentionTest(LlamaConfig &config, std::string modelPath)
-    : start(config.vocabSize * config.hiddenSize), attention(config, 0, nullptr, start)
+    : start(config.vocabSize * config.hiddenSize), attention(config, 0, nullptr, start), rotaryEmbedding(config), attentionSpace(config)
 {
     std::ifstream file(modelPath, std::ios::binary | std::ios::ate);
     if (!file.is_open())
@@ -116,5 +130,6 @@ PYBIND11_MODULE(attentionClass, m)
         .def("getQProj", &AttentionTest::getQProj)
         .def("getKProj", &AttentionTest::getKProj)
         .def("getVProj", &AttentionTest::getVProj)
-        .def("getOProj", &AttentionTest::getOProj);
+        .def("getOProj", &AttentionTest::getOProj)
+        .def("forwardTest", &AttentionTest::forwardTest);
 }

@@ -1,4 +1,6 @@
 #include "model/llama2.h"
+#include <iostream>
+#include <iomanip>
 
 using namespace toy::llama2;
 typedef Tensor::DimType64 CastInt64;
@@ -20,6 +22,9 @@ void LlamaRMSNorm::forward(Tensor::UniquePtr &out, Tensor::UniquePtr &inp)
 LlamaRotaryEmbedding::LlamaRotaryEmbedding(LlamaConfig &config)
     : isMultiThread(false), headDims(config.hiddenSize / config.numAttentionHeads), maxPos(config.maxPositionEmbeddings), theta(config.theta)
 {
+    freqsCosSin = func::createTensor(
+        {CastInt64(config.maxPositionEmbeddings), CastInt64(2), CastInt64(config.hiddenSize / 2)},
+        config.dataType, MemoryType::kCPU);
     kernel::launch::precomputeFreqsCosSin(freqsCosSin, headDims, maxPos, theta, isMultiThread);
 }
 
@@ -30,7 +35,9 @@ void LlamaRotaryEmbedding::forward(Tensor::UniquePtr &inp, Tensor::UniquePtr &po
 
 AttentionSpace::AttentionSpace(LlamaConfig &config)
 {
-
+    queryStates = func::createTensor(
+        {CastInt64(config.batch), CastInt64(config.prefillLength), CastInt64(config.hiddenSize)},
+        config.dataType, MemoryType::kCPU);
     queryStatesTransposed = func::createTensor(
         {CastInt64(config.batch), CastInt64(config.numAttentionHeads), CastInt64(config.prefillLength), CastInt64(config.hiddenSize / config.numAttentionHeads)},
         config.dataType, MemoryType::kCPU);
@@ -87,8 +94,8 @@ LlamaAttention::LlamaAttention(LlamaConfig &config, const size_t layerIdx, char 
     // qStatesPrefill = func::createTensor()
 }
 
-void LlamaAttention::forward(Tensor::UniquePtr hiddenStatesOut,
-                             Tensor::UniquePtr hiddenStatesIn,
+void LlamaAttention::forward(Tensor::UniquePtr &hiddenStatesOut,
+                             Tensor::UniquePtr &hiddenStatesIn,
                              const size_t layerIdx,
                              LlamaRotaryEmbedding &rotaryEmbedding,
                              AttentionSpace &attentionSpace)
@@ -118,8 +125,9 @@ void LlamaAttention::forward(Tensor::UniquePtr hiddenStatesOut,
         kernel::launch::transpose(attentionSpace.queryStatesTransposed, attentionSpace.queryStates, false);
         kernel::launch::transpose(attentionSpace.keyStatesTransposed, keyStates, false);
         kernel::launch::transpose(attentionSpace.valueStatesTransposed, valueStates, false);
-
         kernel::launch::attentionForward(attentionSpace.attentionOutput, attentionSpace.queryStatesTransposed, attentionSpace.keyStatesTransposed, attentionSpace.valueStatesTransposed, attentionSpace.attentionScores, isPrefill, kernel::cpu::AttentionType::kAttentionMultiThread);
+        // std::cout << *attentionSpace.attentionOutput << std::endl;
+
         kernel::launch::transpose(attentionSpace.attentionOutputTransposed, attentionSpace.attentionOutput, false);
         kernel::launch::matmulWeight(hiddenStatesOut, attentionSpace.attentionOutputTransposed, oProjWeight, nullptr, kernel::cpu::MatmulType::KMatmulMultiThread);
         func::reShape(hiddenStatesOut, {CastInt64(bsz), CastInt64(qLen), CastInt64(hiddenSize)});
