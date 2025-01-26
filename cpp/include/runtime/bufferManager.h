@@ -9,14 +9,14 @@
 #include <cstring>
 #include <memory>
 
-namespace inference_frame::runtime
+namespace toy::runtime
 {
 
     class BufferManager
     {
     public:
-        using BufferPtr = inference_frame::runtime::Buffer::UniquePtr;
-        using TensorPtr = inference_frame::runtime::Tensor::UniquePtr;
+        using BufferPtr = toy::runtime::Buffer::UniquePtr;
+        using TensorPtr = toy::runtime::Tensor::UniquePtr;
 
         explicit BufferManager() = default;
         ~BufferManager() = default;

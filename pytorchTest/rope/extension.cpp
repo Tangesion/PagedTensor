@@ -4,7 +4,7 @@
 torch::Tensor precomputeFreqsCosSinBind(const long dim, const long maxPos, const float theta = 10000.0)
 {
     auto freqsCosSin = torch::zeros({maxPos, 2, dim / 2}, torch::kFloat);
-    inference_frame::kernel::cpu::precomputeFreqsCosSinMultiThread(freqsCosSin.data_ptr<float>(), dim, maxPos, theta);
+    toy::kernel::cpu::precomputeFreqsCosSinMultiThread(freqsCosSin.data_ptr<float>(), dim, maxPos, theta);
     return freqsCosSin;
 }
 
@@ -16,7 +16,7 @@ torch::Tensor applyRopeMultiThreadBind(torch::Tensor inp, torch::Tensor freqsCos
     auto D = inp.size(3);
 
     // torch::Tensor out = torch::zeros_like(inp);
-    inference_frame::kernel::cpu::applyRopeMultiThread(
+    toy::kernel::cpu::applyRopeMultiThread(
         inp.data_ptr<float>(), freqsCosSin.data_ptr<float>(), B, NH, H, D, pos.data_ptr<size_t>());
     return inp;
 }

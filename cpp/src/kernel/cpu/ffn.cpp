@@ -1,7 +1,7 @@
 #include "kernel/cpu/ffn.h"
 
 // down_proj(self.act_fn(self.gate_proj(x)) * self.up_proj(x))
-namespace inference_frame::kernel::cpu
+namespace toy::kernel::cpu
 {
     void ffnForwardOneThread(
         float *out,

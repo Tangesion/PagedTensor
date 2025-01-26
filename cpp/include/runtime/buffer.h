@@ -4,7 +4,7 @@
 #include <memory>
 #include "common/dataType.h"
 
-namespace inference_frame::runtime
+namespace toy::runtime
 {
 
     enum class MemoryType : std::int32_t
@@ -16,7 +16,7 @@ namespace inference_frame::runtime
         kPINNEDPOOL = 4
     };
 
-    using DataType = inference_frame::common::DataType;
+    using DataType = toy::common::DataType;
 
     class BufferDataType
     {
@@ -33,7 +33,7 @@ namespace inference_frame::runtime
 
         [[nodiscard]] constexpr std::size_t getSize() const noexcept
         {
-            return inference_frame::common::getTypeSize(m_dataType);
+            return toy::common::getTypeSize(m_dataType);
         }
 
     private:
@@ -44,7 +44,7 @@ namespace inference_frame::runtime
     {
 
     public:
-        using DataType = inference_frame::common::DataType;
+        using DataType = toy::common::DataType;
         using SharedPtr = std::shared_ptr<Buffer>;
         using UniquePtr = std::unique_ptr<Buffer>;
 
@@ -84,4 +84,4 @@ namespace inference_frame::runtime
         }
     };
 
-} // namespace inference_frame::runtime
+} // namespace toy::runtime

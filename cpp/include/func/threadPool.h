@@ -6,7 +6,7 @@
 #include <mutex>
 #include <condition_variable>
 
-namespace inference_frame::func
+namespace toy::func
 {
     class ThreadPool
     {
@@ -63,4 +63,4 @@ namespace inference_frame::func
         std::condition_variable condition;
         bool stop;
     };
-} // namespace inference_frame::func
+} // namespace toy::func

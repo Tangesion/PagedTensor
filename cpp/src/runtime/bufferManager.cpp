@@ -1,7 +1,7 @@
 #include "runtime/bufferManager.h"
 #include <memory>
 
-namespace inference_frame::runtime
+namespace toy::runtime
 {
 
     BufferManager::TensorPtr BufferManager::cpu(Dims dims, DataType type)

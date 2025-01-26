@@ -8,9 +8,9 @@
 #include "kernel/launch/rmsnorm.h"
 #include "kernel/launch/transpose.h"
 
-using namespace inference_frame::runtime;
+using namespace toy::runtime;
 
-namespace inference_frame::llama2
+namespace toy::llama2
 {
 
     class WorkSpace
@@ -56,7 +56,7 @@ namespace inference_frame::llama2
                 std::cerr << e.what() << '\n';
                 std::exit(EXIT_FAILURE);
             }
-            typeSize = inference_frame::common::getTypeSize(dataType);
+            typeSize = toy::common::getTypeSize(dataType);
         }
         ~LlamaConfig() = default;
         size_t vocabSize;
@@ -145,5 +145,12 @@ namespace inference_frame::llama2
         Tensor::UniquePtr kProjWeight;
         Tensor::UniquePtr vProjWeight;
         Tensor::UniquePtr oProjWeight;
+
+    public:
+        Tensor::UniquePtr &getQProjWeight() { return qProjWeight; }
+        Tensor::UniquePtr &getKProjWeight() { return kProjWeight; }
+        Tensor::UniquePtr &getVProjWeight() { return vProjWeight; }
+        Tensor::UniquePtr &getOProjWeight() { return oProjWeight; }
     };
+
 }

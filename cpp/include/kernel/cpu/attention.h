@@ -10,7 +10,7 @@
 #define THREADS_NUM 56
 #endif
 
-namespace inference_frame::kernel::cpu
+namespace toy::kernel::cpu
 {
     enum AttentionType
     {
@@ -36,4 +36,4 @@ namespace inference_frame::kernel::cpu
         bool isPrefill,
         const size_t B, const size_t NH, const size_t H, const size_t D);
 
-} // namespace inference_frame::kernel::cpu
+} // namespace toy::kernel::cpu

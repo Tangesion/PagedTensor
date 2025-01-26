@@ -1,10 +1,10 @@
 #include "kernel/launch/attention.h"
 
-namespace inference_frame::kernel::launch
+namespace toy::kernel::launch
 {
-    namespace kernel_cpu = inference_frame::kernel::cpu;
-    using UniquePtr = inference_frame::runtime::Tensor::UniquePtr;
-    using DataType = inference_frame::runtime::Tensor::DataType;
+    namespace kernel_cpu = toy::kernel::cpu;
+    using UniquePtr = toy::runtime::Tensor::UniquePtr;
+    using DataType = toy::runtime::Tensor::DataType;
 
     void attentionForward(UniquePtr &out, UniquePtr &query, UniquePtr &key, UniquePtr &value, UniquePtr &interAttn, const bool isPrefill, const cpu::AttentionType attentionType)
     {
@@ -56,11 +56,11 @@ namespace inference_frame::kernel::launch
             break;
         }
 
-        // auto *outData = inference_frame::func::getData<DataType::kFLOAT>(out);
-        // auto *queryData = inference_frame::func::getData<DataType::kFLOAT>(query);
-        // auto *keyData = inference_frame::func::getData<DataType::kFLOAT>(key);
-        // auto *valueData = inference_frame::func::getData<DataType::kFLOAT>(value);
-        // auto *interAttnData = inference_frame::func::getData<DataType::kFLOAT>(interAttn);
+        // auto *outData = toy::func::getData<DataType::kFLOAT>(out);
+        // auto *queryData = toy::func::getData<DataType::kFLOAT>(query);
+        // auto *keyData = toy::func::getData<DataType::kFLOAT>(key);
+        // auto *valueData = toy::func::getData<DataType::kFLOAT>(value);
+        // auto *interAttnData = toy::func::getData<DataType::kFLOAT>(interAttn);
         //
     }
-} // namespace inference_frame::kernel::launch
+} // namespace toy::kernel::launch

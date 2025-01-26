@@ -1,12 +1,12 @@
 #include "kernel/cpu/transpose.h"
 #include "func/func.h"
 
-namespace inference_frame::kernel::launch
+namespace toy::kernel::launch
 {
-    namespace kernel_cpu = inference_frame::kernel::cpu;
-    using UniquePtr = inference_frame::runtime::Tensor::UniquePtr;
-    using DataType = inference_frame::runtime::Tensor::DataType;
-    using MemoryType = inference_frame::runtime::MemoryType;
+    namespace kernel_cpu = toy::kernel::cpu;
+    using UniquePtr = toy::runtime::Tensor::UniquePtr;
+    using DataType = toy::runtime::Tensor::DataType;
+    using MemoryType = toy::runtime::MemoryType;
 
     void transposeOneThread(UniquePtr &out, UniquePtr &inp)
     {

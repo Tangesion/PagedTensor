@@ -9,7 +9,7 @@
 #include "buffer.h"
 #include "common/assert.h"
 
-namespace inference_frame::runtime
+namespace toy::runtime
 {
 
     class Dims
@@ -30,7 +30,7 @@ namespace inference_frame::runtime
         using SharedPtr = std::shared_ptr<Tensor>;
         using UniqueConstPtr = std::unique_ptr<Tensor const>;
         using SharedConstPtr = std::shared_ptr<Tensor const>;
-        using DataType = inference_frame::common::DataType;
+        using DataType = toy::common::DataType;
         using DimType64 = std::remove_reference_t<decltype(Shape::d[0])>;
 
         static UniquePtr wrap(void *data, DataType type, Shape const &shape, std::size_t capacity);
@@ -60,4 +60,4 @@ namespace inference_frame::runtime
     };
 
     std::ostream &operator<<(std::ostream &output, Tensor const &tensor);
-} // namespaece inference_frame::runtime
+} // namespaece toy::runtime

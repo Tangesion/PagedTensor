@@ -1,6 +1,6 @@
 #include "kernel/cpu/matmul.h"
 
-namespace inference_frame::kernel::cpu
+namespace toy::kernel::cpu
 {
 
     // inp (B, T, C) weight (OC, C) bias (OC) out (B, T, OC)
@@ -74,7 +74,7 @@ namespace inference_frame::kernel::cpu
         const size_t C,
         const size_t OC)
     {
-        inference_frame::func::ThreadPool threadPool(THREADS_NUM);
+        toy::func::ThreadPool threadPool(THREADS_NUM);
         for (size_t b = 0; b < B; b++)
         {
             for (size_t h = 0; h < H; h++)
@@ -119,4 +119,4 @@ namespace inference_frame::kernel::cpu
 
     // matmul<float>(static_cast<float *>(out->data()), static_cast<float *>(inp->data()), static_cast<float *>(weight->data()), nullptr, 1, 2, 3, 4);
 
-} // namespace inference_frame::kernel::cpu
+} // namespace toy::kernel::cpu

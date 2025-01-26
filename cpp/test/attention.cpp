@@ -3,11 +3,11 @@
 #include <func/func.h>
 #include "kernel/launch/attention.h"
 
-using MemoryType = inference_frame::runtime::MemoryType;
-using AttentionType = inference_frame::kernel::cpu::AttentionType;
-using DataType = inference_frame::runtime::Tensor::DataType;
-using namespace inference_frame::kernel::launch;
-using namespace inference_frame::func;
+using MemoryType = toy::runtime::MemoryType;
+using AttentionType = toy::kernel::cpu::AttentionType;
+using DataType = toy::runtime::Tensor::DataType;
+using namespace toy::kernel::launch;
+using namespace toy::func;
 
 TEST(AttentionTest, multiThreadTestTime)
 {

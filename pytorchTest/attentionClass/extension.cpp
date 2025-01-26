@@ -8,7 +8,7 @@
 #include <cstring>
 #include "model/llama2.h"
 
-using namespace inference_frame::llama2;
+using namespace toy::llama2;
 class AttentionTest
 {
 public:
@@ -25,13 +25,13 @@ public:
     }
 
 private:
-    char *modelWeight;
+    std::vector<char> modelWeight;
     size_t start;
     LlamaAttention attention;
 };
 
 AttentionTest::AttentionTest(LlamaConfig &config, std::string modelPath)
-    : start(config.vocabSize), attention(config, 0, modelWeight, start)
+    : start(config.vocabSize * config.hiddenSize), attention(config, 0, nullptr, start)
 {
     std::ifstream file(modelPath, std::ios::binary | std::ios::ate);
     if (!file.is_open())
@@ -40,48 +40,59 @@ AttentionTest::AttentionTest(LlamaConfig &config, std::string modelPath)
         return;
     }
 
+    file.seekg(0, std::ios::end);
     std::streamsize fileSize = file.tellg();
     file.seekg(0, std::ios::beg);
 
+    if (fileSize <= 0)
+    {
+        std::cerr << "Invalid file size: " << fileSize << std::endl;
+        return;
+    }
+
+    std::cout << "fileSize(MB): " << std::fixed << std::setprecision(2) << static_cast<double>(fileSize) / (1024 * 1024) << std::endl;
     std::vector<char> buffer(fileSize);
-    if (!file.read(buffer.data(), fileSize))
+    modelWeight.resize(fileSize);
+    if (!file.read(modelWeight.data(), fileSize))
     {
         std::cerr << "read fail!: " << modelPath << std::endl;
         return;
     }
 
-    modelWeight = buffer.data();
+    std::cout << "File read successfully" << std::endl;
+
+    attention = LlamaAttention(config, 0, modelWeight.data(), start);
 }
 
 torch::Tensor AttentionTest::getQProj(LlamaConfig &config)
 {
-    void *qProjdata = modelWeight + start * config.typeSize;
+    void *qProjdata = attention.getQProjWeight()->data();
     torch::Tensor qProj = torch::from_blob(qProjdata, {static_cast<int64_t>(config.hiddenSize), static_cast<int64_t>(config.hiddenSize)}, torch::kFloat);
     return qProj;
 }
 torch::Tensor AttentionTest::getKProj(LlamaConfig &config)
 {
-    void *kProjdata = modelWeight + (start + config.hiddenSize * config.hiddenSize) * config.typeSize;
+    void *kProjdata = attention.getKProjWeight()->data();
     torch::Tensor kProj = torch::from_blob(kProjdata, {static_cast<int64_t>(config.hiddenSize), static_cast<int64_t>(config.hiddenSize)}, torch::kFloat);
     return kProj;
 }
 torch::Tensor AttentionTest::getVProj(LlamaConfig &config)
 {
-    void *vProjdata = modelWeight + (start + 2 * config.hiddenSize * config.hiddenSize) * config.typeSize;
+    void *vProjdata = attention.getVProjWeight()->data();
     torch::Tensor vProj = torch::from_blob(vProjdata, {static_cast<int64_t>(config.hiddenSize), static_cast<int64_t>(config.hiddenSize)}, torch::kFloat);
     return vProj;
 }
 torch::Tensor AttentionTest::getOProj(LlamaConfig &config)
 {
-    void *oProjdata = modelWeight + (start + 3 * config.hiddenSize * config.hiddenSize) * config.typeSize;
+    void *oProjdata = attention.getOProjWeight()->data();
     torch::Tensor oProj = torch::from_blob(oProjdata, {static_cast<int64_t>(config.hiddenSize), static_cast<int64_t>(config.hiddenSize)}, torch::kFloat);
     return oProj;
 }
 
 PYBIND11_MODULE(attentionClass, m)
 {
-    pybind11::enum_<inference_frame::common::DataType>(m, "DataType")
-        .value("FLOAT32", inference_frame::common::DataType::kFLOAT)
+    pybind11::enum_<toy::common::DataType>(m, "DataType")
+        .value("FLOAT32", toy::common::DataType::kFLOAT)
         .export_values();
 
     pybind11::class_<LlamaConfig>(m, "LlamaConfig")

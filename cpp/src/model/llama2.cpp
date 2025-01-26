@@ -1,12 +1,12 @@
 #include "model/llama2.h"
 
-using namespace inference_frame::llama2;
+using namespace toy::llama2;
 typedef Tensor::DimType64 CastInt64;
 
 LlamaRMSNorm::LlamaRMSNorm(const size_t start, const size_t hiddenSize, char *modelWeight, const DataType &dataType)
     : isMultiThread(false)
 {
-    size_t typeSize = inference_frame::common::getTypeSize(dataType);
+    size_t typeSize = toy::common::getTypeSize(dataType);
 
     Tensor::Shape weightShape = Tensor::makeShape({CastInt64(hiddenSize)});
     weight = Tensor::wrap(modelWeight + start * typeSize, dataType, weightShape, hiddenSize);

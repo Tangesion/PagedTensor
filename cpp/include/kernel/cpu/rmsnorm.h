@@ -7,7 +7,7 @@
 #define THREADS_NUM 56
 #endif
 
-namespace inference_frame::kernel::cpu
+namespace toy::kernel::cpu
 {
     void rmsNormOneThread(float *out, const float *inp, const float *weight, const size_t B, const size_t H, const size_t C);
 

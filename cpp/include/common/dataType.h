@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <cstdint>
 
-namespace inference_frame::common
+namespace toy::common
 {
 
     enum class DataType : int32_t
@@ -51,4 +51,4 @@ namespace inference_frame::common
         return 0;
     }
 
-} // namespace inference_frame::common
+} // namespace toy::common

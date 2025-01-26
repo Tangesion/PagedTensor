@@ -1,11 +1,11 @@
 #include "kernel/cpu/rmsnorm.h"
 #include "runtime/tensor.h"
 
-namespace inference_frame::kernel::launch
+namespace toy::kernel::launch
 {
-    namespace kernel_cpu = inference_frame::kernel::cpu;
-    using UniquePtr = inference_frame::runtime::Tensor::UniquePtr;
-    using DataType = inference_frame::runtime::Tensor::DataType;
+    namespace kernel_cpu = toy::kernel::cpu;
+    using UniquePtr = toy::runtime::Tensor::UniquePtr;
+    using DataType = toy::runtime::Tensor::DataType;
 
     void rmsNorm(UniquePtr &out, UniquePtr &inp, UniquePtr &weight, const bool isMultiThread)
     {

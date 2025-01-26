@@ -1,6 +1,6 @@
 #include "func/func.h"
 
-namespace inference_frame::func
+namespace toy::func
 {
     runtime::Tensor::UniquePtr createTensor(std::initializer_list<runtime::Tensor::DimType64> const &dims_list, runtime::Tensor::DataType const &type, runtime::MemoryType device)
     {

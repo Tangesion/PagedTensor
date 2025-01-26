@@ -2,7 +2,7 @@
 
 #define THREADS_NUM 56
 
-namespace inference_frame::kernel::cpu
+namespace toy::kernel::cpu
 {
     void precomputeFreqsCosSinOneThread(float *freqsCosSin, const size_t dim, const size_t maxPos, const float theta)
     {
@@ -41,7 +41,7 @@ namespace inference_frame::kernel::cpu
                 // size_t h = 0; h < H; h++
                 for (size_t nh = 0; nh < NH; nh++)
                 {
-                    float *inpBNH = inp + b * NH * H * D + nh * H * D + h * D;
+                    float *inpBNH = inp + b * NH * H * D + h * NH * D + nh * D;
                     const float *freqsCosSinH = freqsCosSin + pos[h] * D;
                     for (size_t qd = 0; qd < D / 2; qd++)
                     {
@@ -62,6 +62,7 @@ namespace inference_frame::kernel::cpu
 
     void applyRopeMultiThread(float *inp, const float *freqsCosSin, const size_t B, const size_t NH, const size_t H, const size_t D, const size_t *pos)
     {
+        // inp (B, H, NH , D)
 #pragma omp parallel for collapse(3) num_threads(THREADS_NUM)
         for (size_t b = 0; b < B; b++)
         {
@@ -69,7 +70,7 @@ namespace inference_frame::kernel::cpu
             {
                 for (size_t nh = 0; nh < NH; nh++)
                 {
-                    float *inpBNH = inp + b * NH * H * D + nh * H * D + h * D;
+                    float *inpBNH = inp + b * NH * H * D + h * NH * D + nh * D;
                     const float *freqsCosSinH = freqsCosSin + pos[h] * D;
                     for (size_t qd = 0; qd < D / 2; qd++)
                     {

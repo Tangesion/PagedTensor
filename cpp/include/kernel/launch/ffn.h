@@ -4,9 +4,9 @@
 #include "runtime/tensor.h"
 #include "func/func.h"
 
-namespace inference_frame::kernel::launch
+namespace toy::kernel::launch
 {
-    using UniquePtr = inference_frame::runtime::Tensor::UniquePtr;
+    using UniquePtr = toy::runtime::Tensor::UniquePtr;
 
     void ffnForwardOneThread(UniquePtr &out, UniquePtr &inp, UniquePtr &gateProj, UniquePtr &upProj, UniquePtr &downProj);
 

@@ -9,7 +9,7 @@
 #include "tensor.h"
 #include "common/assert.h"
 
-namespace inference_frame::runtime
+namespace toy::runtime
 {
     template <typename TDerived, MemoryType memoryType, bool count = false>
     class BaseAllocator

@@ -9,7 +9,7 @@ torch::Tensor transposeBind(torch::Tensor inp)
     auto D = inp.size(3);
 
     torch::Tensor out = torch::zeros({B, NH, H, D}, torch::kFloat);
-    inference_frame::kernel::cpu::transpose(
+    toy::kernel::cpu::transpose(
         inp.data_ptr<float>(),
         out.data_ptr<float>(),
         B,

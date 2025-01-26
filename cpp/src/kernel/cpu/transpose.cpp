@@ -1,6 +1,6 @@
 #include "kernel/cpu/transpose.h"
 
-namespace inference_frame::kernel::cpu
+namespace toy::kernel::cpu
 {
     void transpose(const float *inp, float *out, const size_t B, const size_t NH, const size_t H, const size_t D)
     {

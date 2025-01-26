@@ -9,7 +9,7 @@ std::tuple<torch::Tensor, torch::Tensor> attentionPrefillBind(torch::Tensor q, t
 
     torch::Tensor out = torch::zeros_like(q);
     torch::Tensor interAttn = torch::zeros({B, NH, H, H});
-    inference_frame::kernel::cpu::attentionForwardMultiThread(
+    toy::kernel::cpu::attentionForwardMultiThread(
         out.data_ptr<float>(),
         q.data_ptr<float>(), k.data_ptr<float>(), v.data_ptr<float>(),
         interAttn.data_ptr<float>(),
@@ -27,7 +27,7 @@ std::tuple<torch::Tensor, torch::Tensor> attentiondecodeBind(torch::Tensor q, to
 
     torch::Tensor out = torch::zeros_like(q);
     torch::Tensor interAttn = torch::zeros({B, NH, 1, H});
-    inference_frame::kernel::cpu::attentionForwardMultiThread(
+    toy::kernel::cpu::attentionForwardMultiThread(
         out.data_ptr<float>(),
         q.data_ptr<float>(), k.data_ptr<float>(), v.data_ptr<float>(),
         interAttn.data_ptr<float>(),

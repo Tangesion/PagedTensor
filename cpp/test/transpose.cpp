@@ -2,10 +2,10 @@
 #include <chrono>
 #include "kernel/launch/transpose.h"
 
-using MemoryType = inference_frame::runtime::MemoryType;
-using DataType = inference_frame::runtime::Tensor::DataType;
-using namespace inference_frame::kernel::launch;
-using namespace inference_frame::func;
+using MemoryType = toy::runtime::MemoryType;
+using DataType = toy::runtime::Tensor::DataType;
+using namespace toy::kernel::launch;
+using namespace toy::func;
 
 TEST(transposeTest, transposeOneThreadPrefillTime)
 {

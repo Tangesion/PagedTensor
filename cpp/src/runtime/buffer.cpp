@@ -4,7 +4,7 @@
 #include <stdexcept>
 // #include "func/threadPool.h"
 
-using namespace inference_frame::runtime;
+using namespace toy::runtime;
 
 MemoryType Buffer::memoryType(void const *data)
 {

@@ -8,7 +8,7 @@
 int main()
 {
     // std::string path = "/home/gexingt/tgx/models/Llama-2-7b-hf/pytorch_model-00001-of-00002.bin";
-    std::string path = "model_weight.bin";
+    std::string path = "/home/tgx/projects/toy/weight/test_weights_numpy.bin";
     std::ifstream file(path, std::ios::binary | std::ios::ate);
     if (!file.is_open())
     {
@@ -36,7 +36,7 @@ int main()
     // 解析数值数据部分
     size_t numFloats = fileSize / sizeof(float);
 
-    size_t numOffset = 32000 * 4096 * 4;
+    size_t numOffset = 32000 * 4 * 4096;
     const float *floatData = reinterpret_cast<const float *>(buffer.data() + numOffset);
 
     std::cout << "数值数据部分 (前 10 个 float):" << std::endl;

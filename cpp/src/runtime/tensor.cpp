@@ -2,7 +2,7 @@
 #include "runtime/llmBuffer.h"
 #include <iostream>
 
-using namespace inference_frame::runtime;
+using namespace toy::runtime;
 
 Tensor::UniquePtr Tensor::wrap(void *data, DataType type, Shape const &shape, std::size_t capacity)
 {
@@ -103,7 +103,7 @@ namespace
 
 }
 
-std::ostream &inference_frame::runtime::operator<<(std::ostream &output, Tensor const &tensor)
+std::ostream &toy::runtime::operator<<(std::ostream &output, Tensor const &tensor)
 {
     switch (tensor.getDataType())
     {

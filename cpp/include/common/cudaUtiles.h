@@ -1,6 +1,6 @@
 #include <cuda_runtime.h>
 
-// namespace inference_frame::common
+// namespace toy::common
 //{
 //     static char const *_cudaGetErrorEnum(cudaError_t error)
 //     {
@@ -21,6 +21,6 @@
 // #def ine  TLLM_CUDA_CHECK(stat)                                              \
 //    do                                                                     \
 //    {                                                                      \
-//        inference_frame::common::check((stat), #stat, __FILE__, __LINE__); \
+//        toy::common::check((stat), #stat, __FILE__, __LINE__); \
 //    } while (0)
 //

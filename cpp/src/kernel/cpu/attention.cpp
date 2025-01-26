@@ -1,6 +1,6 @@
 #include "kernel/cpu/attention.h"
 
-namespace inference_frame::kernel::cpu
+namespace toy::kernel::cpu
 {
 
     // prefill
@@ -265,8 +265,8 @@ namespace inference_frame::kernel::cpu
         }
     }
 
-    // using namespace inference_frame::runtime;
-    // using namespace inference_frame::func;
+    // using namespace toy::runtime;
+    // using namespace toy::func;
     //
     // void attentionForwardLaunch(
     //    Tensor::SharedPtr out, const Tensor::SharedPtr query, const Tensor::SharedPtr key, const Tensor::SharedPtr value, Tensor::SharedPtr interAttn,
@@ -286,4 +286,4 @@ namespace inference_frame::kernel::cpu
     //    }
     //}
 
-} // namespace inference_frame::kernel::cpu
+} // namespace toy::kernel::cpu
