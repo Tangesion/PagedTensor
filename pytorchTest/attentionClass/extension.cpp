@@ -13,7 +13,7 @@ using namespace toy::llama2;
 class AttentionTest
 {
 public:
-    AttentionTest(LlamaConfig &config, std::string modelPath);
+    AttentionTest(LlamaConfig &config, runtimeParams &params, std::string modelPath);
 
     torch::Tensor getQProj(LlamaConfig &config);
     torch::Tensor getKProj(LlamaConfig &config);
@@ -22,11 +22,14 @@ public:
 
     torch::Tensor forwardTest(torch::Tensor &output,
                               torch::Tensor &input,
-                              const size_t layerIdx)
+                              const size_t layerIdx,
+                              torch::Tensor &pos,
+                              const size_t pastToken)
     {
         Tensor::UniquePtr outputToy = toy::utils::torchToToy(output);
         Tensor::UniquePtr inputToy = toy::utils::torchToToy(input);
-        attention.forward(outputToy, inputToy, layerIdx, rotaryEmbedding, attentionSpace);
+        Tensor::UniquePtr posToy = toy::utils::torchToToy(pos);
+        attention.forward(outputToy, inputToy, layerIdx, posToy, pastToken, rotaryEmbedding, attentionSpace);
         // std::cout << *outputToy << std::endl;
         return output;
     }
@@ -44,8 +47,8 @@ private:
     AttentionSpace attentionSpace;
 };
 
-AttentionTest::AttentionTest(LlamaConfig &config, std::string modelPath)
-    : start(config.vocabSize * config.hiddenSize), attention(config, 0, nullptr, start), rotaryEmbedding(config), attentionSpace(config)
+AttentionTest::AttentionTest(LlamaConfig &config, runtimeParams &params, std::string modelPath)
+    : start(config.vocabSize * config.hiddenSize), attention(config, 0, nullptr, start), rotaryEmbedding(config), attentionSpace(config, params)
 {
     std::ifstream file(modelPath, std::ios::binary | std::ios::ate);
     if (!file.is_open())
@@ -110,22 +113,25 @@ PYBIND11_MODULE(attentionClass, m)
         .export_values();
 
     pybind11::class_<LlamaConfig>(m, "LlamaConfig")
-        .def(pybind11::init<size_t, size_t, size_t, size_t, size_t, size_t, size_t, size_t, size_t, float, Tensor::DataType>())
+        .def(pybind11::init<size_t, size_t, size_t, size_t, size_t, size_t, size_t, float, Tensor::DataType>())
         .def_readwrite("vocabSize", &LlamaConfig::vocabSize)
         .def_readwrite("hiddenSize", &LlamaConfig::hiddenSize)
         .def_readwrite("intermediateSize", &LlamaConfig::intermediateSize)
         .def_readwrite("numHiddenLayers", &LlamaConfig::numHiddenLayers)
         .def_readwrite("numAttentionHeads", &LlamaConfig::numAttentionHeads)
         .def_readwrite("maxPositionEmbeddings", &LlamaConfig::maxPositionEmbeddings)
-        .def_readwrite("batch", &LlamaConfig::batch)
-        .def_readwrite("prefillLength", &LlamaConfig::prefillLength)
         .def_readwrite("layerNums", &LlamaConfig::layerNums)
         .def_readwrite("theta", &LlamaConfig::theta)
         .def_readwrite("dataType", &LlamaConfig::dataType)
         .def_readwrite("typeSize", &LlamaConfig::typeSize);
 
+    pybind11::class_<runtimeParams>(m, "runtimeParams")
+        .def(pybind11::init<size_t, size_t>())
+        .def_readwrite("batch", &runtimeParams::batch)
+        .def_readwrite("length", &runtimeParams::length);
+
     pybind11::class_<AttentionTest>(m, "AttentionTest")
-        .def(pybind11::init<LlamaConfig &, std::string>())
+        .def(pybind11::init<LlamaConfig &, runtimeParams &, std::string>())
         .def("printMessage", &AttentionTest::printMessage)
         .def("getQProj", &AttentionTest::getQProj)
         .def("getKProj", &AttentionTest::getKProj)

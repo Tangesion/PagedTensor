@@ -19,6 +19,25 @@ namespace toy::llama2
         WorkSpace();
     };
 
+    struct runtimeParams
+    {
+        size_t batch;
+        size_t length;
+        runtimeParams(size_t batch, size_t length) : batch(batch), length(length)
+        {
+            try
+            {
+                CHECK_WITH_INFO(batch == 1, "now we only support batch size 1");
+                CHECK_WITH_INFO(length > 0, "length must be greater than 0");
+            }
+            catch (const std::exception &e)
+            {
+                std::cerr << e.what() << '\n';
+                std::exit(EXIT_FAILURE);
+            }
+        }
+    };
+
     class LlamaConfig
     {
     public:
@@ -29,8 +48,6 @@ namespace toy::llama2
             size_t numHiddenLayers,
             size_t numAttentionHeads,
             size_t maxPositionEmbeddings,
-            size_t batch,
-            size_t prefillLength,
             size_t layerNums,
             float theta,
             Tensor::DataType dataType)
@@ -40,15 +57,12 @@ namespace toy::llama2
               numHiddenLayers(numHiddenLayers),
               numAttentionHeads(numAttentionHeads),
               maxPositionEmbeddings(maxPositionEmbeddings),
-              batch(batch),
-              prefillLength(prefillLength),
               layerNums(layerNums),
               theta(theta),
               dataType(dataType)
         {
             try
             {
-                CHECK_WITH_INFO(batch == 1, "Now we only support batch size 1");
                 CHECK_WITH_INFO(hiddenSize % numAttentionHeads == 0, "hiddenSize must be divisible by numAttentionHeads");
             }
             catch (const std::exception &e)
@@ -65,8 +79,6 @@ namespace toy::llama2
         size_t numHiddenLayers;
         size_t numAttentionHeads;
         size_t maxPositionEmbeddings;
-        size_t batch;
-        size_t prefillLength;
         size_t layerNums;
         float theta;
         Tensor::DataType dataType;
@@ -104,19 +116,22 @@ namespace toy::llama2
         //     static AttentionSpace &getInstance(LlamaConfig &config);
 
     public:
-        AttentionSpace(LlamaConfig &config);
-        void transToDecode(LlamaConfig &config);
+        AttentionSpace(LlamaConfig &config, runtimeParams &params);
+        void transToDecode();
 
     public:
         Tensor::UniquePtr queryStates;
         Tensor::UniquePtr queryStatesTransposed;
-        Tensor::UniquePtr keyStatesTransposed;
-        Tensor::UniquePtr valueStatesTransposed;
         Tensor::UniquePtr attentionScores;
         Tensor::UniquePtr attentionOutput;
         Tensor::UniquePtr attentionOutputTransposed;
         Tensor::UniquePtr attentionOutputProjected;
         Tensor::UniquePtr kvCache;
+        Tensor::UniquePtr kvTransposed;
+
+    private:
+        LlamaConfig config;
+        runtimeParams params;
 
         // private:
 
@@ -131,6 +146,8 @@ namespace toy::llama2
         void forward(Tensor::UniquePtr &hiddenStatesOut,
                      Tensor::UniquePtr &hiddenStatesIn,
                      const size_t layerIdx,
+                     Tensor::UniquePtr &pos,
+                     const size_t pastToken,
                      LlamaRotaryEmbedding &rotaryEmbedding,
                      AttentionSpace &attentionSpace);
 
@@ -138,7 +155,6 @@ namespace toy::llama2
         size_t hiddenSize;
         size_t numAttentionHeads;
         size_t headDims;
-        size_t prefillLength;
         size_t maxPos;
         size_t typeSize;
         Tensor::UniquePtr qProjWeight;

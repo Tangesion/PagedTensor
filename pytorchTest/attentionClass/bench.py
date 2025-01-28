@@ -11,7 +11,7 @@ if not os.path.exists(lib_path):
     raise ImportError(f"Cannot find shared library: {lib_path}")
 sys.path.append(os.path.join(current_dir, '../build/attentionClass'))
 print(f"sys.path: {sys.path}")
-from attentionClass import AttentionTest, LlamaConfig, DataType
+from attentionClass import AttentionTest, LlamaConfig, DataType, runtimeParams
 
 config = LlamaConfig(
     32000,  # vocabSize
@@ -20,11 +20,14 @@ config = LlamaConfig(
     32,     # numHiddenLayers
     32,     # numAttentionHeads
     4096,    # maxPositionEmbeddings
-    1,      # batch
-    4,    # prefillLength
     32,     # layerNums
     10000.0, # theta
     DataType.FLOAT32,  # dataType
+)
+
+params = runtimeParams(
+    1,  # batch size
+    4,  # sequence length
 )
 
 config_torch = LlamaConfigTorch()
@@ -45,7 +48,7 @@ attention_pytorch = LlamaAttentionTorch(config_torch, 0)
 
 model_path_golden = "/home/tgx/projects/Toy/weight/test_weights_pytorch.bin" 
 model_path_test = "/home/tgx/projects/Toy/weight/test_weights_numpy.bin"
-attention_test = AttentionTest(config, model_path_test)
+attention_test = AttentionTest(config, params, model_path_test)
 # test if binded
 attention_test.printMessage()
 
@@ -88,7 +91,8 @@ print("o_proj test result: ", result)
 
 output_golden, _ = attention_pytorch(hidden_states, position_embeddings, causal_mask)
 output_test = torch.zeros_like(output_golden)
-output = attention_test.forwardTest(output_test, hidden_states, 0)
+pos = torch.arange(length)
+output = attention_test.forwardTest(output_test, hidden_states, 0, pos, 0)
 print(output)
 print(output_golden)
 result = torch.allclose(output_golden, output, atol=1e-4)
