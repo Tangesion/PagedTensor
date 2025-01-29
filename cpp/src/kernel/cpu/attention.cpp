@@ -104,17 +104,18 @@ namespace toy::kernel::cpu
                         {
                             sum += queryBN[d] * keyBNH[d];
                         }
+                        sum /= sqrtf(static_cast<float>(D));
                         if (sum > maxValue)
                         {
                             maxValue = sum;
                         }
-                        interAttnBN[h] = sum / std::sqrt(D);
+                        interAttnBN[h] = sum;
                     }
                     // softmax
                     float expSum = 0;
                     for (size_t h = 0; h < H; h++)
                     {
-                        float expValue = std::exp(interAttnBN[h] - maxValue);
+                        float expValue = expf(interAttnBN[h] - maxValue);
                         expSum += expValue;
                         interAttnBN[h] = expValue;
                     }
@@ -154,7 +155,7 @@ namespace toy::kernel::cpu
                     for (size_t h = 0; h < H; h++)
                     {
                         // q @ k
-                        float maxValue = std::numeric_limits<float>::min();
+                        float maxValue = -std::numeric_limits<float>::infinity();
                         float *interAttnBNH = interAttn + b * NH * H * H + nh * H * H + h * H;
                         const float *queryBNH = query + b * NH * H * D + nh * H * D + h * D;
                         for (size_t h2 = 0; h2 <= h; h2++)
@@ -165,13 +166,14 @@ namespace toy::kernel::cpu
                             {
                                 sum += queryBNH[d] * keyBNH[d];
                             }
+                            sum /= sqrtf(static_cast<float>(D));
                             if (sum > maxValue)
                             {
                                 maxValue = sum;
                             }
-                            interAttnBNH[h2] = sum / std::sqrt(D);
+                            interAttnBNH[h2] = sum;
                         }
-                        float minValue = std::numeric_limits<float>::min();
+                        float minValue = -std::numeric_limits<float>::infinity();
                         for (size_t h2 = h + 1; h2 < H; h2++)
                         {
                             interAttnBNH[h2] = minValue;
@@ -180,7 +182,7 @@ namespace toy::kernel::cpu
                         float expSum = 0;
                         for (size_t h2 = 0; h2 <= h; h2++)
                         {
-                            float expValue = std::exp(interAttnBNH[h2] - maxValue);
+                            float expValue = expf(interAttnBNH[h2] - maxValue);
                             expSum += expValue;
                             interAttnBNH[h2] = expValue;
                         }
@@ -218,7 +220,7 @@ namespace toy::kernel::cpu
             {
                 for (size_t nh = 0; nh < NH; nh++)
                 {
-                    float maxValue = std::numeric_limits<float>::min();
+                    float maxValue = -std::numeric_limits<float>::infinity();
                     float *interAttnBN = interAttn + b * NH * H + nh * H;
                     for (size_t h = 0; h < H; h++)
                     {
@@ -230,17 +232,18 @@ namespace toy::kernel::cpu
                         {
                             sum += queryBN[d] * keyBNH[d];
                         }
+                        sum /= sqrtf(static_cast<float>(D));
                         if (sum > maxValue)
                         {
                             maxValue = sum;
                         }
-                        interAttnBN[h] = sum / std::sqrt(D);
+                        interAttnBN[h] = sum;
                     }
                     // softmax
                     float expSum = 0;
                     for (size_t h = 0; h < H; h++)
                     {
-                        float expValue = std::exp(interAttnBN[h] - maxValue);
+                        float expValue = expf(interAttnBN[h] - maxValue);
                         expSum += expValue;
                         interAttnBN[h] = expValue;
                     }

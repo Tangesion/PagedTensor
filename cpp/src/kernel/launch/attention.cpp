@@ -28,7 +28,7 @@ namespace toy::kernel::launch
 
         int64_t B = out->getShape().d[0];
         int64_t NH = out->getShape().d[1];
-        int64_t H = out->getShape().d[2];
+        int64_t H = key->getShape().d[2];
         int64_t D = out->getShape().d[3];
 
         switch (dataTypeOut)

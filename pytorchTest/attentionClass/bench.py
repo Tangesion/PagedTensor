@@ -2,6 +2,7 @@ import sys
 import os
 import torch
 from transformers import LlamaForCausalLM, LlamaConfig as LlamaConfigTorch
+from transformers.cache_utils import DynamicCache
 from model import LlamaAttention as LlamaAttentionTorch, get_cos_sin
 
 #sys.path.append('../build/attentionClass')
@@ -37,13 +38,14 @@ length = 4
 bsz = 1
 hidden_size = 4096
 position_ids = torch.arange(length).unsqueeze(0)
+position_ids_decode = torch.Tensor([length]).unsqueeze(0)
 inv_list = []
 for i in range(0, 64):
     inv_list.append(1.0 / (10000.0 ** (2 * i / 128)))
 inv_manual = torch.tensor(inv_list).to(torch.float32)
 hidden_states = torch.randn(bsz, length, hidden_size, dtype=torch.float32)
 position_embeddings = get_cos_sin(hidden_size, position_ids, inv_manual)
-
+position_embeddings_decode = get_cos_sin(hidden_size, position_ids_decode, inv_manual)
 attention_pytorch = LlamaAttentionTorch(config_torch, 0)
 
 model_path_golden = "/home/tgx/projects/Toy/weight/test_weights_pytorch.bin" 
@@ -89,13 +91,27 @@ out_proj_test = attention_test.getOProj(config)
 result = torch.allclose(out_proj_golden, out_proj_test, atol=1e-6)
 print("o_proj test result: ", result)
 
-output_golden, _ = attention_pytorch(hidden_states, position_embeddings, causal_mask)
+cache = DynamicCache()
+
+output_golden, _ = attention_pytorch(hidden_states, position_embeddings, causal_mask, cache)
 output_test = torch.zeros_like(output_golden)
 pos = torch.arange(length)
 output = attention_test.forwardTest(output_test, hidden_states, 0, pos, 0)
 print(output)
 print(output_golden)
 result = torch.allclose(output_golden, output, atol=1e-4)
-print("output test result: ", result)
+print("output_prefill test result: ", result)
+
+# decode
+hidden_states_decode = torch.randn(bsz, 1, hidden_size, dtype=torch.float32)
+position_ids_decode = torch.tensor([length])
+output_golden, _ = attention_pytorch(hidden_states_decode, position_embeddings_decode, None, cache)
+output_test = torch.zeros(bsz, 1, hidden_size, dtype=torch.float32)
+output = attention_test.forwardTest(output_test, hidden_states_decode, 0, position_ids_decode, length)
+result = torch.allclose(output_golden ,output, atol=1e-4)
+print(output_golden)
+print(output)
+print("output_decode test result: ", result)
+
 
 

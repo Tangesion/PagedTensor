@@ -113,11 +113,14 @@ void LlamaAttention::forward(Tensor::UniquePtr &hiddenStatesOut,
                              AttentionSpace &attentionSpace)
 {
     size_t qLen = hiddenStatesIn->getShape().d[1];
+    std::cout << "qLen: " << qLen << std::endl;
     size_t bsz = hiddenStatesIn->getShape().d[0];
     bool isPrefill = true ? qLen > 1 : false;
-    if (!isPrefill && pastToken == 0)
+    if (!isPrefill)
     {
+        std::cout << "start transing!" << std::endl;
         attentionSpace.transToDecode();
+        std::cout << "transed!" << std::endl;
     }
 
     // pos = func::makeRange(0, qLen, 1, MemoryType::kCPU);
@@ -125,7 +128,7 @@ void LlamaAttention::forward(Tensor::UniquePtr &hiddenStatesOut,
     Tensor::Shape kvShape = Tensor::makeShape({CastInt64(bsz), CastInt64(qLen), CastInt64(hiddenSize)});
     void *kvCacheData = attentionSpace.kvCache->data();
     size_t offsetK = layerIdx * 2 * bsz * maxPos * hiddenSize + pastToken * bsz * hiddenSize;
-    size_t offsetV = offsetK + bsz * maxPos * hiddenSize + pastToken * bsz * hiddenSize;
+    size_t offsetV = layerIdx * 2 * bsz * maxPos * hiddenSize + bsz * maxPos * hiddenSize + pastToken * bsz * hiddenSize;
     Tensor::UniquePtr keyStates = Tensor::wrap(static_cast<char *>(kvCacheData) + offsetK * typeSize, DataType::kFLOAT, kvShape);
     Tensor::UniquePtr valueStates = Tensor::wrap(static_cast<char *>(kvCacheData) + offsetV * typeSize, DataType::kFLOAT, kvShape);
     kernel::launch::matmulWeight(attentionSpace.queryStates, hiddenStatesIn, qProjWeight, nullptr, kernel::cpu::MatmulType::KMatmulMultiThread);
@@ -142,13 +145,19 @@ void LlamaAttention::forward(Tensor::UniquePtr &hiddenStatesOut,
     Tensor::Shape kvTransposedShape = Tensor::makeShape({CastInt64(bsz), CastInt64(numAttentionHeads), CastInt64(kvLength), CastInt64(headDims)});
     Tensor::UniquePtr keyStatesTransposed = Tensor::wrap(attentionSpace.kvTransposed->data(), DataType::kFLOAT, kvTransposedShape);
     Tensor::UniquePtr valueStatesTransposed = Tensor::wrap(static_cast<char *>(attentionSpace.kvTransposed->data()) + offsetVTransposed * typeSize, DataType::kFLOAT, kvTransposedShape);
+    if (!isPrefill)
+    {
+        offsetK = layerIdx * 2 * bsz * maxPos * hiddenSize;
+        offsetV = offsetK + bsz * maxPos * hiddenSize;
+        kvShape = Tensor::makeShape({CastInt64(bsz), CastInt64(kvLength), CastInt64(numAttentionHeads), CastInt64(headDims)});
+        keyStates = Tensor::wrap(static_cast<char *>(kvCacheData) + offsetK * typeSize, DataType::kFLOAT, kvShape);
+        valueStates = Tensor::wrap(static_cast<char *>(kvCacheData) + offsetV * typeSize, DataType::kFLOAT, kvShape);
+    }
     kernel::launch::transpose(keyStatesTransposed, keyStates, false);
     kernel::launch::transpose(valueStatesTransposed, valueStates, false);
     Tensor::Shape attentionScoresShape = Tensor::makeShape({CastInt64(bsz), CastInt64(numAttentionHeads), CastInt64(qLen), CastInt64(kvLength)});
-    Tensor::UniquePtr attentionScores = Tensor::wrap(attentionSpace.attentionScores->data(), DataType::kFLOAT, attentionScoresShape);
-    kernel::launch::attentionForward(attentionSpace.attentionOutput, attentionSpace.queryStatesTransposed, keyStatesTransposed, valueStatesTransposed, attentionScores, isPrefill, kernel::cpu::AttentionType::kAttentionMultiThread);
-    // std::cout << *attentionSpace.attentionOutput << std::endl;
-
+    Tensor::UniquePtr attentionScore = Tensor::wrap(attentionSpace.attentionScores->data(), DataType::kFLOAT, attentionScoresShape);
+    kernel::launch::attentionForward(attentionSpace.attentionOutput, attentionSpace.queryStatesTransposed, keyStatesTransposed, valueStatesTransposed, attentionScore, isPrefill, kernel::cpu::AttentionType::kAttentionOneThread);
     kernel::launch::transpose(attentionSpace.attentionOutputTransposed, attentionSpace.attentionOutput, false);
     kernel::launch::matmulWeight(hiddenStatesOut, attentionSpace.attentionOutputTransposed, oProjWeight, nullptr, kernel::cpu::MatmulType::KMatmulMultiThread);
     func::reShape(hiddenStatesOut, {CastInt64(bsz), CastInt64(qLen), CastInt64(hiddenSize)});

@@ -39,7 +39,7 @@ namespace toy::kernel::launch
         default:
             break;
         }
-        inp.reset();
+        // inp.reset();
     }
 
     void transposeMultiThread(UniquePtr &out, UniquePtr &inp)

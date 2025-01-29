@@ -29,6 +29,7 @@ public:
         Tensor::UniquePtr outputToy = toy::utils::torchToToy(output);
         Tensor::UniquePtr inputToy = toy::utils::torchToToy(input);
         Tensor::UniquePtr posToy = toy::utils::torchToToy(pos);
+        // std::cout << "ready" << std::endl;
         attention.forward(outputToy, inputToy, layerIdx, posToy, pastToken, rotaryEmbedding, attentionSpace);
         // std::cout << *outputToy << std::endl;
         return output;
