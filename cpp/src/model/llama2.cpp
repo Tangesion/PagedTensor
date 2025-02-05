@@ -59,6 +59,9 @@ AttentionSpace::AttentionSpace(LlamaConfig &config, runtimeParams &params) : con
     kvTransposed = func::createTensor(
         {CastInt64(2), CastInt64(params.batch), CastInt64(config.numAttentionHeads), CastInt64(config.maxPositionEmbeddings), CastInt64(config.hiddenSize / config.numAttentionHeads)},
         config.dataType, MemoryType::kCPU);
+
+    std::cout << "Prefill attention space memory: " << std::endl;
+    printMemory();
 }
 
 void AttentionSpace::transToDecode()
@@ -88,6 +91,23 @@ void AttentionSpace::transToDecode()
     attentionOutputProjected = func::createTensor(
         {CastInt64(params.batch), CastInt64(1), CastInt64(config.hiddenSize)},
         DataType::kFLOAT, MemoryType::kCPU);
+    std::cout << "Decode attention space memory: " << std::endl;
+    printMemory();
+}
+
+void AttentionSpace::printMemory()
+{
+    // all
+    float total = 0;
+    total += queryStates->getSize();
+    total += queryStatesTransposed->getSize();
+    total += attentionScores->getSize();
+    total += attentionOutput->getSize();
+    total += attentionOutputTransposed->getSize();
+    total += attentionOutputProjected->getSize();
+    total += kvCache->getSize();
+    total += kvTransposed->getSize();
+    std::cout << "Total memory: " << total * config.typeSize / 1024 / 1024 << "MB" << std::endl;
 }
 
 LlamaAttention::LlamaAttention(LlamaConfig &config, const size_t layerIdx, char *modelWeight, const size_t start)
@@ -113,14 +133,11 @@ void LlamaAttention::forward(Tensor::UniquePtr &hiddenStatesOut,
                              AttentionSpace &attentionSpace)
 {
     size_t qLen = hiddenStatesIn->getShape().d[1];
-    std::cout << "qLen: " << qLen << std::endl;
     size_t bsz = hiddenStatesIn->getShape().d[0];
     bool isPrefill = true ? qLen > 1 : false;
     if (!isPrefill)
     {
-        std::cout << "start transing!" << std::endl;
         attentionSpace.transToDecode();
-        std::cout << "transed!" << std::endl;
     }
 
     // pos = func::makeRange(0, qLen, 1, MemoryType::kCPU);

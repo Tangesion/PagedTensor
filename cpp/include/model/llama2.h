@@ -118,6 +118,7 @@ namespace toy::llama2
     public:
         AttentionSpace(LlamaConfig &config, runtimeParams &params);
         void transToDecode();
+        void printMemory();
 
     public:
         Tensor::UniquePtr queryStates;

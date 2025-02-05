@@ -1,5 +1,6 @@
 import sys
 import os
+import time
 import torch
 from transformers import LlamaForCausalLM, LlamaConfig as LlamaConfigTorch
 from transformers.cache_utils import DynamicCache
@@ -28,13 +29,13 @@ config = LlamaConfig(
 
 params = runtimeParams(
     1,  # batch size
-    4,  # sequence length
+    1024,  # sequence length
 )
 
 config_torch = LlamaConfigTorch()
 config_torch.max_position_embeddings = 4096
 heads_num = 32
-length = 4
+length = 1024
 bsz = 1
 hidden_size = 4096
 position_ids = torch.arange(length).unsqueeze(0)
@@ -92,25 +93,40 @@ result = torch.allclose(out_proj_golden, out_proj_test, atol=1e-6)
 print("o_proj test result: ", result)
 
 cache = DynamicCache()
-
+start_time = time.time()
 output_golden, _ = attention_pytorch(hidden_states, position_embeddings, causal_mask, cache)
+end_time = time.time()
+print(f"pytorch prefill time: {end_time - start_time}")
+
 output_test = torch.zeros_like(output_golden)
 pos = torch.arange(length)
+start_time = time.time()
 output = attention_test.forwardTest(output_test, hidden_states, 0, pos, 0)
-print(output)
-print(output_golden)
+end_time = time.time()
+print(f"toy prefill time: {end_time - start_time}")
+
+#print(output)
+#print(output_golden)
 result = torch.allclose(output_golden, output, atol=1e-4)
 print("output_prefill test result: ", result)
 
 # decode
 hidden_states_decode = torch.randn(bsz, 1, hidden_size, dtype=torch.float32)
 position_ids_decode = torch.tensor([length])
+
+start_time = time.time()
 output_golden, _ = attention_pytorch(hidden_states_decode, position_embeddings_decode, None, cache)
+end_time = time.time()
+print(cache.key_cache[0].shape)
+print(f"pytorch decode time: {end_time - start_time}")
 output_test = torch.zeros(bsz, 1, hidden_size, dtype=torch.float32)
+start_time = time.time()
 output = attention_test.forwardTest(output_test, hidden_states_decode, 0, position_ids_decode, length)
+end_time = time.time()
+print(f"toy decode time: {end_time - start_time}")
 result = torch.allclose(output_golden ,output, atol=1e-4)
-print(output_golden)
-print(output)
+#print(output_golden)
+#print(output)
 print("output_decode test result: ", result)
 
 
