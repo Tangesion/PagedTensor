@@ -69,6 +69,16 @@ namespace toy::runtime
         }
     };
 
+    class HostPagedAllocator : public BaseAllocator<HostPagedAllocator, MemoryType::kCPU, false>
+    {
+        friend class BaseAllocator<HostPagedAllocator, MemoryType::kCPU, false>;
+
+    public:
+        HostPagedAllocator() noexcept = default;
+
+    protected:
+    };
+
     template <MemoryType memoryType>
     class BorrowingAllocator : public BaseAllocator<BorrowingAllocator<memoryType>, memoryType, false>
     {

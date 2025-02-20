@@ -23,6 +23,7 @@ namespace toy::runtime
 
         static auto constexpr KBYTE_TYPE = DataType::kUINT8;
         [[nodiscard]] static TensorPtr cpu(Dims dims, DataType type = KBYTE_TYPE);
+        [[nodiscard]] static TensorPtr cpuPaged(Dims dims, DataType type = KBYTE_TYPE);
         [[nodiscard]] static TensorPtr gpu(Dims dims, DataType type = KBYTE_TYPE);
     };
 }

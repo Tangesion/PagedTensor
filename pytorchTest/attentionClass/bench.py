@@ -29,13 +29,13 @@ config = LlamaConfig(
 
 params = runtimeParams(
     1,  # batch size
-    1024,  # sequence length
+    4000,  # sequence length
 )
 
 config_torch = LlamaConfigTorch()
 config_torch.max_position_embeddings = 4096
 heads_num = 32
-length = 1024
+length = 4000
 bsz = 1
 hidden_size = 4096
 position_ids = torch.arange(length).unsqueeze(0)
