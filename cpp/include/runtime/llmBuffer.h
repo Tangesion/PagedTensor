@@ -3,7 +3,8 @@
 #include <cstdint>
 #include <memory>
 #include <vector>
-
+#include "block.h"
+#include "dataPtr.h"
 #include "buffer.h"
 #include "common/dataType.h"
 #include "tensor.h"
@@ -77,6 +78,30 @@ namespace toy::runtime
         HostPagedAllocator() noexcept = default;
 
     protected:
+        // n is element number
+        void allocateImpl(void **ptr, std::size_t n)
+        {
+            size_t blockSize = BlockManager::getInstance().blockSize;
+            std::cout << "blockSize: " << blockSize << std::endl;
+            auto vec = std::make_unique<std::vector<Block *>>((n + blockSize - 1) / blockSize);
+            for (size_t i = 0; i < vec->size(); i++)
+            {
+                vec->at(i) = BlockManager::getInstance().allocateBlock().release();
+            }
+            size_t offset = n % blockSize;
+            vec->back()->offset = offset;
+            *ptr = vec.release();
+        }
+
+        void deallocateImpl(void *ptr, std::size_t n)
+        {
+            auto vec = static_cast<std::vector<Block *> *>(ptr);
+            for (size_t i = 0; i < vec->size(); i++)
+            {
+                BlockManager::getInstance().freeBlocks.push(std::unique_ptr<Block>(vec->at(i)));
+            }
+            delete vec;
+        }
     };
 
     template <MemoryType memoryType>
@@ -133,15 +158,16 @@ namespace toy::runtime
         // Construct a buffer with a given size
 
         explicit GenericBuffer(
-            std::size_t size, DataType type, TAllocator allocator = {})
-            : GenericBuffer{size, size, type, std::move(allocator)} {};
+            std::size_t size, DataType type, TAllocator allocator = {}, bool paged = false)
+            : GenericBuffer{size, size, type, std::move(allocator), mPaged} {};
 
         GenericBuffer(GenericBuffer &&buf) noexcept
-            : mSize{buf.mSize}, mCapacity{buf.mCapacity}, mType{buf.mType}, mAllocator{std::move(buf.mAllocator)}, mBuffer{buf.mBuffer}
+            : mSize{buf.mSize}, mCapacity{buf.mCapacity}, mType{buf.mType}, mAllocator{std::move(buf.mAllocator)}, mBuffer{buf.mBuffer}, mDataPtr{buf.mDataPtr}, mPaged{buf.mPaged}
         {
             buf.mSize = 0;
             buf.mCapacity = 0;
             buf.mBuffer = nullptr;
+            buf.mDataPtr = DataPtr();
         }
 
         GenericBuffer &operator=(GenericBuffer &&buf) noexcept
@@ -154,8 +180,11 @@ namespace toy::runtime
                 mType = buf.mType;
                 mAllocator = std::move(buf.mAllocator);
                 mBuffer = buf.mBuffer;
+                mPaged = buf.mPaged;
+                mDataPtr = buf.mDataPtr;
                 buf.mSize = 0;
                 buf.mCapacity = 0;
+                buf.mDataPtr = DataPtr();
                 buf.mBuffer = nullptr;
             }
             return *this;
@@ -194,6 +223,9 @@ namespace toy::runtime
                 mAllocator.deallocate(mBuffer, toBytes(mCapacity));
                 mBuffer = mAllocator.allocate(toBytes(newSize));
                 mCapacity = newSize;
+                std::vector<Block *> *rawPtr = static_cast<std::vector<Block *> *>(mBuffer);
+                std::shared_ptr<std::vector<Block *>> sharedPtr(rawPtr);
+                mDataPtr = DataPtr(sharedPtr, 0);
             }
             mSize = newSize;
         }
@@ -204,6 +236,10 @@ namespace toy::runtime
             mBuffer = nullptr;
             mSize = 0;
             mCapacity = 0;
+            if (mPaged)
+            {
+                mDataPtr = DataPtr();
+            }
         }
 
         ~GenericBuffer() override
@@ -212,19 +248,28 @@ namespace toy::runtime
         }
 
     protected:
-        explicit GenericBuffer(std::size_t size, std::size_t capacity, DataType type, TAllocator allocator = {})
-            : mSize{size}, mCapacity{capacity}, mType{type}, mAllocator{std::move(allocator)}, mBuffer{capacity > 0 ? mAllocator.allocate(toBytes(capacity)) : nullptr}
+        explicit GenericBuffer(std::size_t size, std::size_t capacity, DataType type, TAllocator allocator = {}, bool paged = false)
+            : mSize{size}, mCapacity{capacity}, mType{type}, mAllocator{std::move(allocator)}, mBuffer{capacity > 0 ? (!paged ? mAllocator.allocate(toBytes(capacity)) : mAllocator.allocate(capacity)) : nullptr}, mPaged{paged}
         {
+            if (mPaged)
+            {
+                std::vector<Block *> *rawPtr = static_cast<std::vector<Block *> *>(mBuffer);
+                std::shared_ptr<std::vector<Block *>> sharedPtr(rawPtr);
+                mDataPtr = DataPtr(sharedPtr, 0);
+            }
         }
 
     private:
         std::size_t mSize{0}, mCapacity{0};
         DataType mType;
         TAllocator mAllocator;
+        DataPtr mDataPtr;
+        bool mPaged{false};
         void *mBuffer;
     };
 
     using HostBuffer = GenericBuffer<HostAllocator>;
+    using HostPagedBuffer = GenericBuffer<HostPagedAllocator>;
 
     template <typename TAllocator>
     class GenericTensor : public Tensor, public GenericBuffer<TAllocator>
@@ -240,6 +285,11 @@ namespace toy::runtime
 
         explicit GenericTensor(Dims const &dims, DataType type, TAllocator allocator = {})
             : Base{volume(dims), type, std::move(allocator)}, mDims{dims}
+        {
+        }
+
+        explicit GenericTensor(Dims const &dims, DataType type, bool paged, TAllocator allocator = {})
+            : Base{volume(dims), type, std::move(allocator), paged}, mDims{dims}
         {
         }
 
@@ -288,4 +338,5 @@ namespace toy::runtime
     };
 
     using HostTensor = GenericTensor<HostAllocator>;
+    using HostPagedTensor = GenericTensor<HostPagedAllocator>;
 }

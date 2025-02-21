@@ -9,9 +9,10 @@ namespace toy::runtime
         return std::make_unique<HostTensor>(dims, type);
     }
 
-    BufferManager::TensorPtr BufferManager::cpuPaged(Dims dims, DataType type)
+    BufferManager::TensorPtr BufferManager::cpuPaged(Dims dims, DataType type, size_t blockNum, size_t blockSize)
     {
-        return std::make_unique<HostTensor>(dims, type);
+        BlockManager::getInstance().initialize(blockNum, blockSize, type);
+        return std::make_unique<HostPagedTensor>(dims, type, true);
     }
 
     BufferManager::TensorPtr BufferManager::gpu(Dims dims, DataType type)

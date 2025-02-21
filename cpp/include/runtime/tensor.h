@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include "buffer.h"
 #include "common/assert.h"
+#include "block.h"
 
 namespace toy::runtime
 {
@@ -48,6 +49,11 @@ namespace toy::runtime
 
         static std::size_t volume(Dims dim)
         {
+            return std::accumulate(dim.d, dim.d + dim.nbDims, 1, std::multiplies<std::size_t>());
+        }
+        static std::size_t volume(Dims dim, size_t blockNum, size_t blockSize, DataType type)
+        {
+            BlockManager::getInstance().initialize(blockNum, blockSize, type);
             return std::accumulate(dim.d, dim.d + dim.nbDims, 1, std::multiplies<std::size_t>());
         }
 
