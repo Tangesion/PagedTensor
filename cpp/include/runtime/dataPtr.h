@@ -1,4 +1,5 @@
 #pragma once
+#include "common/dataType.h"
 #include "block.h"
 
 namespace toy::runtime
@@ -7,10 +8,10 @@ namespace toy::runtime
     {
     public:
         // offset is element number
-        DataPtr(std::shared_ptr<std::vector<Block *>> blockMap, size_t offsetStart)
+        DataPtr(std::vector<Block *> *blockMap, size_t offsetStart)
             : blockMap(blockMap), offsetStart(offsetStart)
         {
-            std::cout << blockMap->at(0)->size << std::endl;
+            // std::cout << blockMap->at(0)->size << std::endl;
             size_t blockIndex = offsetStart / blockMap->at(0)->size;
             size_t blockOffset = offsetStart % blockMap->at(0)->size;
             data = static_cast<char *>(blockMap->at(blockIndex)->data) + blockOffset * blockMap->at(0)->typeSize;
@@ -19,24 +20,28 @@ namespace toy::runtime
 
         ~DataPtr()
         {
-            blockMap = nullptr;
-            data = nullptr;
+            // std::cout << "DataPtr destroyed: offsetStart=" << offsetStart << ", data=" << data << std::endl;
+            //  blockMap = nullptr;
+            //  data = nullptr;
         }
 
-        DataPtr operator+(size_t offset)
+        DataPtr operator+(size_t offset) const
         {
-            DataPtr ptr;
-            ptr.offsetStart += offsetStart + offset;
-            size_t blockIndex = ptr.offsetStart / blockMap->at(0)->size;
-            size_t blockOffset = ptr.offsetStart % blockMap->at(0)->size;
-            ptr.data = static_cast<char *>(blockMap->at(blockIndex)->data) + blockOffset * blockMap->at(0)->typeSize;
-            ptr.blockMap = blockMap;
-            return ptr;
+            size_t newOffsetStart = this->offsetStart + offset;
+            size_t blockIndex = newOffsetStart / blockMap->at(0)->size;
+            size_t blockOffset = newOffsetStart % blockMap->at(0)->size;
+            void *newData = static_cast<char *>(blockMap->at(blockIndex)->data) + blockOffset * blockMap->at(0)->typeSize;
+            return DataPtr(blockMap, newOffsetStart, newData);
         }
+
+    private:
+        // Private constructor to be used internally
+        DataPtr(std::vector<Block *> *blockMap, size_t offsetStart, void *data)
+            : blockMap(blockMap), offsetStart(offsetStart), data(data) {}
 
     public:
         size_t offsetStart;
         void *data;
-        std::shared_ptr<std::vector<Block *>> blockMap;
+        std::vector<Block *> *blockMap;
     };
 };

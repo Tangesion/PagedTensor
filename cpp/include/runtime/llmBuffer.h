@@ -82,15 +82,14 @@ namespace toy::runtime
         void allocateImpl(void **ptr, std::size_t n)
         {
             size_t blockSize = BlockManager::getInstance().blockSize;
-            std::cout << "blockSize: " << blockSize << std::endl;
-            auto vec = std::make_unique<std::vector<Block *>>((n + blockSize - 1) / blockSize);
+            auto vec = new std::vector<Block *>((n + blockSize - 1) / blockSize);
             for (size_t i = 0; i < vec->size(); i++)
             {
                 vec->at(i) = BlockManager::getInstance().allocateBlock().release();
             }
             size_t offset = n % blockSize;
             vec->back()->offset = offset;
-            *ptr = vec.release();
+            *ptr = vec;
         }
 
         void deallocateImpl(void *ptr, std::size_t n)
@@ -153,13 +152,15 @@ namespace toy::runtime
         // Construct an empty buffer
         explicit GenericBuffer(
             DataType type, TAllocator allocator = {})
-            : GenericBuffer{0, type, std::move(allocator)} {};
+            : GenericBuffer{0, type, std::move(allocator)} {
+              };
 
         // Construct a buffer with a given size
 
         explicit GenericBuffer(
             std::size_t size, DataType type, TAllocator allocator = {}, bool paged = false)
-            : GenericBuffer{size, size, type, std::move(allocator), mPaged} {};
+            : GenericBuffer{size, size, type, std::move(allocator), paged} {
+              };
 
         GenericBuffer(GenericBuffer &&buf) noexcept
             : mSize{buf.mSize}, mCapacity{buf.mCapacity}, mType{buf.mType}, mAllocator{std::move(buf.mAllocator)}, mBuffer{buf.mBuffer}, mDataPtr{buf.mDataPtr}, mPaged{buf.mPaged}
@@ -188,6 +189,10 @@ namespace toy::runtime
                 buf.mBuffer = nullptr;
             }
             return *this;
+        }
+        [[nodiscard]] DataPtr dataPaged() override
+        {
+            return mDataPtr;
         }
 
         [[nodiscard]] void *data() override
@@ -223,9 +228,7 @@ namespace toy::runtime
                 mAllocator.deallocate(mBuffer, toBytes(mCapacity));
                 mBuffer = mAllocator.allocate(toBytes(newSize));
                 mCapacity = newSize;
-                std::vector<Block *> *rawPtr = static_cast<std::vector<Block *> *>(mBuffer);
-                std::shared_ptr<std::vector<Block *>> sharedPtr(rawPtr);
-                mDataPtr = DataPtr(sharedPtr, 0);
+                mDataPtr = DataPtr(getBlockMap(), 0);
             }
             mSize = newSize;
         }
@@ -242,6 +245,11 @@ namespace toy::runtime
             }
         }
 
+        std::vector<Block *> *getBlockMap() override
+        {
+            return static_cast<std::vector<Block *> *>(mBuffer);
+        }
+
         ~GenericBuffer() override
         {
             mAllocator.deallocate(mBuffer, toBytes(mCapacity));
@@ -253,9 +261,7 @@ namespace toy::runtime
         {
             if (mPaged)
             {
-                std::vector<Block *> *rawPtr = static_cast<std::vector<Block *> *>(mBuffer);
-                std::shared_ptr<std::vector<Block *>> sharedPtr(rawPtr);
-                mDataPtr = DataPtr(sharedPtr, 0);
+                mDataPtr = DataPtr(getBlockMap(), 0);
             }
         }
 

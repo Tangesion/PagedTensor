@@ -16,7 +16,7 @@ TEST(TensorTest, pagedTensorTest)
 {
     try
     {
-        std::initializer_list<Tensor::DimType64> const &dims_list = {1, 3, 4};
+        std::initializer_list<Tensor::DimType64> const &dims_list = {1, 3, 13};
         auto dims = Tensor::makeShape(dims_list);
         MemoryType device = MemoryType::kCPU;
         Tensor::UniquePtr tensor = nullptr;
@@ -27,6 +27,7 @@ TEST(TensorTest, pagedTensorTest)
         {
             tensor = BufferManager::cpuPaged(dims, type);
             std::cout << "Paged tensor created!" << std::endl;
+
             break;
         }
         default:
@@ -35,6 +36,21 @@ TEST(TensorTest, pagedTensorTest)
             break;
         }
         }
+        DataPtr dataPtr = tensor->dataPaged();
+        for (int i = 0; i < tensor->getSize(); i++)
+        {
+            DataPtr tempPtr = dataPtr + i;
+            auto *data = static_cast<float *>(tempPtr.data);
+            *data = i;
+        }
+        dataPtr = tensor->dataPaged();
+        for (int i = 0; i < tensor->getSize(); i++)
+        {
+            DataPtr tempPtr = dataPtr + i;
+            auto *data = static_cast<float *>(tempPtr.data);
+            std::cout << *data << " ";
+        }
+        std::cout << std::endl;
     }
     catch (const std::exception &e)
     {

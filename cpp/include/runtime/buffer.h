@@ -1,12 +1,14 @@
 #pragma once
-
 #include <cstdint>
 #include <memory>
+#include <vector>
+#include <iostream>
 #include "common/dataType.h"
 
 namespace toy::runtime
 {
-
+    class Block;
+    class DataPtr;
     enum class MemoryType : std::int32_t
     {
         kGPU = 0,
@@ -50,6 +52,8 @@ namespace toy::runtime
 
         // virtual void generateRandomData() = 0;
 
+        [[nodiscard]] virtual DataPtr dataPaged() = 0;
+
         [[nodiscard]] virtual void *data() = 0;
 
         [[nodiscard]] virtual void const *data() const = 0;
@@ -72,6 +76,8 @@ namespace toy::runtime
         virtual void release() = 0;
 
         virtual void resize(std::size_t size) = 0;
+
+        virtual std::vector<Block *> *getBlockMap() = 0;
 
         virtual ~Buffer() = default;
 

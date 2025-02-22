@@ -27,6 +27,7 @@ Makefile
 
 # 忽略 IDE 生成的文件
 .vscode/
+.VSCodeCounter/
 .idea/
 *.sln
 *.vcxproj

@@ -2,8 +2,8 @@
 #include <cstdint>
 #include <memory>
 #include <queue>
-#include "buffer.h"
 #include "common/dataType.h"
+#include "buffer.h"
 #include "common/assert.h"
 namespace toy::runtime
 {
@@ -50,6 +50,7 @@ namespace toy::runtime
                 }
                 this->blockSize = blockSize;
                 this->blockNum = blockNum;
+                // std::cout << freeBlocks.size() << std::endl;
             }
         }
         static void destroyInstance()
@@ -76,7 +77,7 @@ namespace toy::runtime
             return block;
         }
 
-        void freeBlock(UniquePtr block)
+        void free(UniquePtr block)
         {
             freeBlocks.push(std::move(block));
         }
