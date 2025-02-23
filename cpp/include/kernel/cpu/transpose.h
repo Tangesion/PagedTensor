@@ -9,7 +9,7 @@
 #define THREADS_NUM 56
 #endif
 
-namespace toy::kernel::cpu
+namespace paged_tensor::kernel::cpu
 {
     void transpose(const float *inp, float *out, const size_t B, const size_t NH, const size_t H, const size_t D);
 

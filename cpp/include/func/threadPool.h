@@ -6,7 +6,7 @@
 #include <mutex>
 #include <condition_variable>
 
-namespace toy::func
+namespace paged_tensor::func
 {
     class ThreadPool
     {
@@ -63,4 +63,4 @@ namespace toy::func
         std::condition_variable condition;
         bool stop;
     };
-} // namespace toy::func
+} // namespace paged_tensor::func

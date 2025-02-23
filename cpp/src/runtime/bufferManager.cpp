@@ -1,7 +1,7 @@
 #include "runtime/bufferManager.h"
 #include <memory>
 
-namespace toy::runtime
+namespace paged_tensor::runtime
 {
 
     BufferManager::TensorPtr BufferManager::cpu(Dims dims, DataType type)

@@ -2,10 +2,10 @@
 #include <chrono>
 #include "kernel/launch/transpose.h"
 
-using MemoryType = toy::runtime::MemoryType;
-using DataType = toy::runtime::Tensor::DataType;
-using namespace toy::kernel::launch;
-using namespace toy::func;
+using MemoryType = paged_tensor::runtime::MemoryType;
+using DataType = paged_tensor::runtime::Tensor::DataType;
+using namespace paged_tensor::kernel::launch;
+using namespace paged_tensor::func;
 
 TEST(transposeTest, transposeOneThreadPrefillTime)
 {

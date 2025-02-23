@@ -9,7 +9,7 @@
 #include "model/llama2.h"
 #include "../utils/utlis.h"
 
-using namespace toy::llama2;
+using namespace paged_tensor::llama2;
 class AttentionTest
 {
 public:
@@ -26,12 +26,12 @@ public:
                               torch::Tensor &pos,
                               const size_t pastToken)
     {
-        Tensor::UniquePtr outputToy = toy::utils::torchToToy(output);
-        Tensor::UniquePtr inputToy = toy::utils::torchToToy(input);
-        Tensor::UniquePtr posToy = toy::utils::torchToToy(pos);
+        Tensor::UniquePtr outputpaged_tensor = paged_tensor::utils::torchTopaged_tensor(output);
+        Tensor::UniquePtr inputpaged_tensor = paged_tensor::utils::torchTopaged_tensor(input);
+        Tensor::UniquePtr pospaged_tensor = paged_tensor::utils::torchTopaged_tensor(pos);
         // std::cout << "ready" << std::endl;
-        attention.forward(outputToy, inputToy, layerIdx, posToy, pastToken, rotaryEmbedding, attentionSpace);
-        // std::cout << *outputToy << std::endl;
+        attention.forward(outputpaged_tensor, inputpaged_tensor, layerIdx, pospaged_tensor, pastToken, rotaryEmbedding, attentionSpace);
+        // std::cout << *outputpaged_tensor << std::endl;
         return output;
     }
 
@@ -109,8 +109,8 @@ torch::Tensor AttentionTest::getOProj(LlamaConfig &config)
 
 PYBIND11_MODULE(attentionClass, m)
 {
-    pybind11::enum_<toy::common::DataType>(m, "DataType")
-        .value("FLOAT32", toy::common::DataType::kFLOAT)
+    pybind11::enum_<paged_tensor::common::DataType>(m, "DataType")
+        .value("FLOAT32", paged_tensor::common::DataType::kFLOAT)
         .export_values();
 
     pybind11::class_<LlamaConfig>(m, "LlamaConfig")

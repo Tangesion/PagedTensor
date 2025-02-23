@@ -10,16 +10,16 @@
 #include <memory>
 
 #define BLOCK_SIZE 16
-#define BLOCK_NUM 5
+#define BLOCK_NUM 3
 
-namespace toy::runtime
+namespace paged_tensor::runtime
 {
 
     class BufferManager
     {
     public:
-        using BufferPtr = toy::runtime::Buffer::UniquePtr;
-        using TensorPtr = toy::runtime::Tensor::UniquePtr;
+        using BufferPtr = paged_tensor::runtime::Buffer::UniquePtr;
+        using TensorPtr = paged_tensor::runtime::Tensor::UniquePtr;
 
         explicit BufferManager() = default;
         ~BufferManager() = default;

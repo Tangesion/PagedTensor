@@ -49,8 +49,8 @@ position_embeddings = get_cos_sin(hidden_size, position_ids, inv_manual)
 position_embeddings_decode = get_cos_sin(hidden_size, position_ids_decode, inv_manual)
 attention_pytorch = LlamaAttentionTorch(config_torch, 0)
 
-model_path_golden = "/home/tgx/projects/Toy/weight/test_weights_pytorch.bin" 
-model_path_test = "/home/tgx/projects/Toy/weight/test_weights_numpy.bin"
+model_path_golden = "/home/tgx/projects/paged_tensor/weight/test_weights_pytorch.bin" 
+model_path_test = "/home/tgx/projects/paged_tensor/weight/test_weights_numpy.bin"
 attention_test = AttentionTest(config, params, model_path_test)
 # test if binded
 attention_test.printMessage()
@@ -103,7 +103,7 @@ pos = torch.arange(length)
 start_time = time.time()
 output = attention_test.forwardTest(output_test, hidden_states, 0, pos, 0)
 end_time = time.time()
-print(f"toy prefill time: {end_time - start_time}")
+print(f"paged_tensor prefill time: {end_time - start_time}")
 
 #print(output)
 #print(output_golden)
@@ -123,7 +123,7 @@ output_test = torch.zeros(bsz, 1, hidden_size, dtype=torch.float32)
 start_time = time.time()
 output = attention_test.forwardTest(output_test, hidden_states_decode, 0, position_ids_decode, length)
 end_time = time.time()
-print(f"toy decode time: {end_time - start_time}")
+print(f"paged_tensor decode time: {end_time - start_time}")
 result = torch.allclose(output_golden ,output, atol=1e-4)
 #print(output_golden)
 #print(output)

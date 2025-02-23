@@ -5,32 +5,30 @@
 #include "common/dataType.h"
 #include "buffer.h"
 #include "common/assert.h"
-namespace toy::runtime
+namespace paged_tensor::runtime
 {
 
-    class Block
-    {
-    public:
-        using DataType = toy::common::DataType;
-        Block(size_t size, DataType type, void *data)
-            : size{size}, typeSize{toy::common::getTypeSize(type)}, type{type}, data{data}, offset{0}
-        {
-        }
-        ~Block() = default;
-
-    public:
-        size_t size; // num of elements
-        size_t typeSize;
-        DataType type;
-        size_t offset; // offset num in block
-        void *data;
-    };
+    // class Block
+    //{
+    // public:
+    //     using DataType = paged_tensor::common::DataType;
+    //     Block(size_t size, DataType type, void *data)
+    //         : size{size}, typeSize{paged_tensor::common::getTypeSize(type)}, type{type}, data{data}, offset{0}
+    //     {
+    //     }
+    //     ~Block() = default;
+    //
+    // public:
+    //    size_t size; // num of elements
+    //    size_t typeSize;
+    //    DataType type;
+    //    size_t offset; // offset num in block
+    //    void *data;
+    //};
 
     class BlockManager
     {
     public:
-        using SharedPtr = std::shared_ptr<Block>;
-        using UniquePtr = std::unique_ptr<Block>;
         static BlockManager &getInstance()
         {
             static BlockManager instance;
@@ -42,25 +40,26 @@ namespace toy::runtime
             if (memoryPool == nullptr)
             {
                 // allocate memory pool with size
-                memoryPool = std::make_unique<char[]>(blockNum * blockSize * toy::common::getTypeSize(type));
+                memoryPool = std::make_unique<char[]>(blockNum * blockSize * paged_tensor::common::getTypeSize(type));
+                char *rawPtr = memoryPool.get();
                 for (size_t i = 0; i < blockNum; i++)
                 {
-                    char *rawPtr = memoryPool.get();
-                    freeBlocks.push(std::make_unique<Block>(blockSize, type, static_cast<void *>(rawPtr + i * blockSize * toy::common::getTypeSize(type))));
+                    freeBlocks.push(static_cast<void *>(rawPtr + i * blockSize * paged_tensor::common::getTypeSize(type)));
                 }
                 this->blockSize = blockSize;
                 this->blockNum = blockNum;
-                // std::cout << freeBlocks.size() << std::endl;
+                this->type = type;
+                this->typeSize = paged_tensor::common::getTypeSize(type);
             }
         }
         static void destroyInstance()
         {
             BlockManager &instance = getInstance();
-            instance.freeBlocks = std::queue<UniquePtr>(); // Clear the queue
-            instance.memoryPool.reset();                   // Release the memory pool
+            instance.freeBlocks = std::queue<void *>(); // Clear the queue
+            instance.memoryPool.reset();                // Release the memory pool
         }
 
-        UniquePtr allocateBlock()
+        void *allocateBlock()
         {
             // TODO: implement wait in the future
             try
@@ -72,14 +71,14 @@ namespace toy::runtime
                 std::cerr << e.what() << '\n';
                 std::exit(EXIT_FAILURE);
             }
-            UniquePtr block = std::move(freeBlocks.front());
+            void *block = std::move(freeBlocks.front());
             freeBlocks.pop();
             return block;
         }
 
-        void free(UniquePtr block)
+        void free(void *block)
         {
-            freeBlocks.push(std::move(block));
+            freeBlocks.push(block);
         }
 
     private:
@@ -89,9 +88,11 @@ namespace toy::runtime
         BlockManager &operator=(BlockManager const &) = delete;
 
     public:
-        std::queue<UniquePtr> freeBlocks;
+        std::queue<void *> freeBlocks;
         std::unique_ptr<char[]> memoryPool;
         size_t blockSize;
         size_t blockNum;
+        DataType type;
+        size_t typeSize;
     };
 };

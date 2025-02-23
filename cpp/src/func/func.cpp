@@ -1,8 +1,8 @@
 #include "func/func.h"
 
-namespace toy::func
+namespace paged_tensor::func
 {
-    runtime::Tensor::UniquePtr createTensor(std::initializer_list<runtime::Tensor::DimType64> const &dims_list, runtime::Tensor::DataType const &type, runtime::MemoryType device)
+    runtime::Tensor::UniquePtr createTensor(std::initializer_list<runtime::Tensor::DimType64> const &dims_list, runtime::Tensor::DataType const &type, runtime::MemoryType device, bool paged)
     {
 
         try
@@ -13,8 +13,16 @@ namespace toy::func
             {
             case runtime::MemoryType::kCPU:
             {
-                tensor = runtime::BufferManager::cpu(dims, type);
-                break;
+                if (paged)
+                {
+                    tensor = runtime::BufferManager::cpuPaged(dims, type);
+                    break;
+                }
+                else
+                {
+                    tensor = runtime::BufferManager::cpu(dims, type);
+                    break;
+                }
             }
             default:
             {
@@ -31,9 +39,9 @@ namespace toy::func
         }
     }
 
-    runtime::Tensor::UniquePtr randTensor(std::initializer_list<runtime::Tensor::DimType64> const &dims_list, runtime::Tensor::DataType const &type, runtime::MemoryType device)
+    runtime::Tensor::UniquePtr randTensor(std::initializer_list<runtime::Tensor::DimType64> const &dims_list, runtime::Tensor::DataType const &type, runtime::MemoryType device, bool paged)
     {
-        runtime::Tensor::UniquePtr tensor = createTensor(dims_list, type, device);
+        runtime::Tensor::UniquePtr tensor = createTensor(dims_list, type, device, paged);
         // std::cout << "Tensor created" << std::endl;
         try
         {
@@ -41,21 +49,49 @@ namespace toy::func
             {
             case runtime::Tensor::DataType::kFLOAT:
             {
-                auto *data = static_cast<float *>(tensor->data());
-                for (int i = 0; i < tensor->getSize(); i++)
+                if (paged)
                 {
-                    data[i] = static_cast<float>(rand()) / RAND_MAX;
+                    auto dataPtr = tensor->dataPaged();
+                    for (int i = 0; i < tensor->getSize(); i++)
+                    {
+                        auto tempPtr = dataPtr + i;
+                        auto *data = static_cast<float *>(tempPtr.data());
+                        *data = static_cast<float>(rand() % 100);
+                    }
+                    break;
                 }
-                break;
+                else
+                {
+                    auto *data = static_cast<float *>(tensor->data());
+                    for (int i = 0; i < tensor->getSize(); i++)
+                    {
+                        data[i] = static_cast<float>(rand() % 100);
+                    }
+                    break;
+                }
             }
             case runtime::Tensor::DataType::kINT64:
             {
-                auto *data = static_cast<int64_t *>(tensor->data());
-                for (int i = 0; i < tensor->getSize(); i++)
+                if (paged)
                 {
-                    data[i] = rand() % 100;
+                    auto dataPtr = tensor->dataPaged();
+                    for (int i = 0; i < tensor->getSize(); i++)
+                    {
+                        auto tempPtr = dataPtr + i;
+                        auto *data = static_cast<int64_t *>(tempPtr.data());
+                        *data = static_cast<int64_t>(rand() % 100);
+                    }
+                    break;
                 }
-                break;
+                else
+                {
+                    auto *data = static_cast<int64_t *>(tensor->data());
+                    for (int i = 0; i < tensor->getSize(); i++)
+                    {
+                        data[i] = static_cast<int64_t>(rand() % 100);
+                    }
+                    break;
+                }
             }
             default:
             {
@@ -113,17 +149,17 @@ namespace toy::func
         return tensor;
     }
 
-    // runtime::Tensor::UniquePtr torchToToy(torch::Tensor &tensor)
+    // runtime::Tensor::UniquePtr torchTopaged_tensor(torch::Tensor &tensor)
     //{
     //     void *data = tensor.data_ptr();
     //     auto shape = tensor.sizes();
     //     std::vector<int64_t> shapeVec(shape.begin(), shape.end());
-    //     runtime::Tensor::Shape shapeToy = runtime::Tensor::makeShape(shapeVec);
-    //     runtime::Tensor::UniquePtr toyTensor = runtime::Tensor::wrap(data, runtime::DataType::kFLOAT, shapeToy);
-    //     return toyTensor;
+    //     runtime::Tensor::Shape shapepaged_tensor = runtime::Tensor::makeShape(shapeVec);
+    //     runtime::Tensor::UniquePtr paged_tensorTensor = runtime::Tensor::wrap(data, runtime::DataType::kFLOAT, shapepaged_tensor);
+    //     return paged_tensorTensor;
     // }
     //
-    // torch::Tensor toyToTorch(runtime::Tensor::UniquePtr &tensor)
+    // torch::Tensor paged_tensorToTorch(runtime::Tensor::UniquePtr &tensor)
     //{
     //    auto shape = tensor->getShape();
     //    std::vector<int64_t> shapeVec(shape.d, shape.d + shape.nbDims);

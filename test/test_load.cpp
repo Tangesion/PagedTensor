@@ -8,7 +8,7 @@
 int main()
 {
     // std::string path = "/home/gexingt/tgx/models/Llama-2-7b-hf/pytorch_model-00001-of-00002.bin";
-    std::string path = "/home/tgx/projects/toy/weight/test_weights_numpy.bin";
+    std::string path = "/home/tgx/projects/paged_tensor/weight/test_weights_numpy.bin";
     std::ifstream file(path, std::ios::binary | std::ios::ate);
     if (!file.is_open())
     {

@@ -1,12 +1,12 @@
 #include "kernel/cpu/transpose.h"
 #include "func/func.h"
 
-namespace toy::kernel::launch
+namespace paged_tensor::kernel::launch
 {
-    namespace kernel_cpu = toy::kernel::cpu;
-    using UniquePtr = toy::runtime::Tensor::UniquePtr;
-    using DataType = toy::runtime::Tensor::DataType;
-    using MemoryType = toy::runtime::MemoryType;
+    namespace kernel_cpu = paged_tensor::kernel::cpu;
+    using UniquePtr = paged_tensor::runtime::Tensor::UniquePtr;
+    using DataType = paged_tensor::runtime::Tensor::DataType;
+    using MemoryType = paged_tensor::runtime::MemoryType;
 
     void transposeOneThread(UniquePtr &out, UniquePtr &inp)
     {

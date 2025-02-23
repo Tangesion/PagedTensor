@@ -5,7 +5,7 @@
 #include <iostream>
 #include "common/dataType.h"
 
-namespace toy::runtime
+namespace paged_tensor::runtime
 {
     class Block;
     class DataPtr;
@@ -18,7 +18,7 @@ namespace toy::runtime
         kPINNEDPOOL = 4
     };
 
-    using DataType = toy::common::DataType;
+    using DataType = paged_tensor::common::DataType;
 
     class BufferDataType
     {
@@ -35,7 +35,7 @@ namespace toy::runtime
 
         [[nodiscard]] constexpr std::size_t getSize() const noexcept
         {
-            return toy::common::getTypeSize(m_dataType);
+            return paged_tensor::common::getTypeSize(m_dataType);
         }
 
     private:
@@ -46,13 +46,13 @@ namespace toy::runtime
     {
 
     public:
-        using DataType = toy::common::DataType;
+        using DataType = paged_tensor::common::DataType;
         using SharedPtr = std::shared_ptr<Buffer>;
         using UniquePtr = std::unique_ptr<Buffer>;
 
         // virtual void generateRandomData() = 0;
 
-        [[nodiscard]] virtual DataPtr dataPaged() = 0;
+        [[nodiscard]] virtual DataPtr dataPaged() const = 0;
 
         [[nodiscard]] virtual void *data() = 0;
 
@@ -77,7 +77,9 @@ namespace toy::runtime
 
         virtual void resize(std::size_t size) = 0;
 
-        virtual std::vector<Block *> *getBlockMap() = 0;
+        virtual std::vector<void *> *getBlockMap() = 0;
+
+        [[nodiscard]] virtual bool isPaged() const = 0;
 
         virtual ~Buffer() = default;
 
@@ -90,4 +92,4 @@ namespace toy::runtime
         }
     };
 
-} // namespace toy::runtime
+} // namespace paged_tensor::runtime

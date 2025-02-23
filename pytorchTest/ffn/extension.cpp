@@ -12,7 +12,7 @@ torch::Tensor ffnForwardOneThreadBind(torch::Tensor inp, torch::Tensor gateProj,
     torch::Tensor outInterGate = torch::zeros({B, H, interSize}, torch::kFloat);
     torch::Tensor outInterUp = torch::zeros({B, H, interSize}, torch::kFloat);
 
-    toy::kernel::cpu::ffnForwardOneThread(
+    paged_tensor::kernel::cpu::ffnForwardOneThread(
         out.data_ptr<float>(),
         inp.data_ptr<float>(),
         outInterGate.data_ptr<float>(),
@@ -39,7 +39,7 @@ torch::Tensor ffnForwardMultiThreadBind(torch::Tensor inp, torch::Tensor gatePro
     torch::Tensor outInterGate = torch::zeros({B, H, interSize}, torch::kFloat);
     torch::Tensor outInterUp = torch::zeros({B, H, interSize}, torch::kFloat);
 
-    toy::kernel::cpu::ffnForwardMultiThread(
+    paged_tensor::kernel::cpu::ffnForwardMultiThread(
         out.data_ptr<float>(),
         inp.data_ptr<float>(),
         outInterGate.data_ptr<float>(),

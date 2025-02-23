@@ -1,6 +1,6 @@
 #include <cuda_runtime.h>
 
-// namespace toy::common
+// namespace paged_tensor::common
 //{
 //     static char const *_cudaGetErrorEnum(cudaError_t error)
 //     {
@@ -21,6 +21,6 @@
 // #def ine  TLLM_CUDA_CHECK(stat)                                              \
 //    do                                                                     \
 //    {                                                                      \
-//        toy::common::check((stat), #stat, __FILE__, __LINE__); \
+//        paged_tensor::common::check((stat), #stat, __FILE__, __LINE__); \
 //    } while (0)
 //

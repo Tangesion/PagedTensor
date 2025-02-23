@@ -2,13 +2,13 @@
 #include <iostream>
 #include <iomanip>
 
-using namespace toy::llama2;
+using namespace paged_tensor::llama2;
 typedef Tensor::DimType64 CastInt64;
 
 LlamaRMSNorm::LlamaRMSNorm(const size_t start, const size_t hiddenSize, char *modelWeight, const DataType &dataType)
     : isMultiThread(false)
 {
-    size_t typeSize = toy::common::getTypeSize(dataType);
+    size_t typeSize = paged_tensor::common::getTypeSize(dataType);
 
     Tensor::Shape weightShape = Tensor::makeShape({CastInt64(hiddenSize)});
     weight = Tensor::wrap(modelWeight + start * typeSize, dataType, weightShape, hiddenSize);

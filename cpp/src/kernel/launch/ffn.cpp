@@ -3,12 +3,12 @@
 #include "runtime/tensor.h"
 #include "func/func.h"
 
-namespace toy::kernel::launch
+namespace paged_tensor::kernel::launch
 {
-    namespace kernel_cpu = toy::kernel::cpu;
-    using UniquePtr = toy::runtime::Tensor::UniquePtr;
-    using DataType = toy::runtime::Tensor::DataType;
-    using MemoryType = toy::runtime::MemoryType;
+    namespace kernel_cpu = paged_tensor::kernel::cpu;
+    using UniquePtr = paged_tensor::runtime::Tensor::UniquePtr;
+    using DataType = paged_tensor::runtime::Tensor::DataType;
+    using MemoryType = paged_tensor::runtime::MemoryType;
 
     void ffnForwardOneThread(UniquePtr &out, UniquePtr &inp, UniquePtr &gateProj, UniquePtr &upProj, UniquePtr &downProj)
     {
@@ -44,8 +44,8 @@ namespace toy::kernel::launch
             auto *gateProjData = static_cast<float *>(gateProj->data());
             auto *upProjData = static_cast<float *>(upProj->data());
             auto *downProjData = static_cast<float *>(downProj->data());
-            auto outInterGateTensor = toy::func::createTensor({B, H, interSize}, DataType::kFLOAT, MemoryType::kCPU);
-            auto outInterUpTensor = toy::func::createTensor({B, H, interSize}, DataType::kFLOAT, MemoryType::kCPU);
+            auto outInterGateTensor = paged_tensor::func::createTensor({B, H, interSize}, DataType::kFLOAT, MemoryType::kCPU);
+            auto outInterUpTensor = paged_tensor::func::createTensor({B, H, interSize}, DataType::kFLOAT, MemoryType::kCPU);
             auto *outInterGate = static_cast<float *>(outInterGateTensor->data());
             auto *outInterUp = static_cast<float *>(outInterUpTensor->data());
             // std::cout << "ffnForwardOneThread" << std::endl;
@@ -93,8 +93,8 @@ namespace toy::kernel::launch
             auto *gateProjData = static_cast<float *>(gateProj->data());
             auto *upProjData = static_cast<float *>(upProj->data());
             auto *downProjData = static_cast<float *>(downProj->data());
-            auto outInterGateTensor = toy::func::createTensor({B, H, interSize}, DataType::kFLOAT, MemoryType::kCPU);
-            auto outInterUpTensor = toy::func::createTensor({B, H, interSize}, DataType::kFLOAT, MemoryType::kCPU);
+            auto outInterGateTensor = paged_tensor::func::createTensor({B, H, interSize}, DataType::kFLOAT, MemoryType::kCPU);
+            auto outInterUpTensor = paged_tensor::func::createTensor({B, H, interSize}, DataType::kFLOAT, MemoryType::kCPU);
             auto *outInterGate = static_cast<float *>(outInterGateTensor->data());
             auto *outInterUp = static_cast<float *>(outInterUpTensor->data());
             kernel_cpu::ffnForwardMultiThread(outData, inpData, outInterGate, outInterUp, gateProjData, upProjData, downProjData, B, H, C, interSize);

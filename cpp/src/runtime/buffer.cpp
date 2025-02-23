@@ -4,7 +4,7 @@
 #include <stdexcept>
 // #include "func/threadPool.h"
 
-using namespace toy::runtime;
+using namespace paged_tensor::runtime;
 
 MemoryType Buffer::memoryType(void const *data)
 {

@@ -1,7 +1,7 @@
 #include "kernel/cpu/ffn.h"
 
 // down_proj(self.act_fn(self.gate_proj(x)) * self.up_proj(x))
-namespace toy::kernel::cpu
+namespace paged_tensor::kernel::cpu
 {
     void ffnForwardOneThread(
         float *out,

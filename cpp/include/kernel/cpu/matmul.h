@@ -7,7 +7,7 @@
 #define THREADS_NUM 56
 #endif
 
-namespace toy::kernel::cpu
+namespace paged_tensor::kernel::cpu
 {
 
     enum class MatmulType
@@ -47,4 +47,4 @@ namespace toy::kernel::cpu
 
     // matmul<float>(static_cast<float *>(out->data()), static_cast<float *>(inp->data()), static_cast<float *>(weight->data()), nullptr, 1, 2, 3, 4);
 
-} // namespace toy::kernel::cpu
+} // namespace paged_tensor::kernel::cpu

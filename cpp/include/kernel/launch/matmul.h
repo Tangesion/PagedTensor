@@ -2,10 +2,10 @@
 #include "runtime/tensor.h"
 #include "kernel/cpu/matmul.h"
 
-namespace toy::kernel::launch
+namespace paged_tensor::kernel::launch
 {
-    using UniquePtr = toy::runtime::Tensor::UniquePtr;
+    using UniquePtr = paged_tensor::runtime::Tensor::UniquePtr;
 
     void matmulWeight(UniquePtr &out, UniquePtr &inp, UniquePtr &weight, const UniquePtr &bias, const cpu::MatmulType matmulType);
 
-} // namespace toy::kernel::launch
+} // namespace paged_tensor::kernel::launch

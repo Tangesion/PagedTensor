@@ -2,7 +2,7 @@
 #include "runtime/llmBuffer.h"
 #include <iostream>
 
-using namespace toy::runtime;
+using namespace paged_tensor::runtime;
 
 Tensor::UniquePtr Tensor::wrap(void *data, DataType type, Shape const &shape, std::size_t capacity)
 {
@@ -98,20 +98,62 @@ namespace
         // out << std::endl;
         return arr;
     }
+    template <typename T>
+    DataPtr printRecursive(DataPtr arr, const int32_t rank, const int64_t *lengths, const int32_t staticRank, std::ostream &out)
+    {
+        std::string p_sep = "";
+        out << "[";
+        if (rank > 1)
+        {
+            for (int64_t i = 0; i < lengths[0]; i++)
+            {
+                out << p_sep;
+                p_sep = "";
+                arr = printRecursive<T>(arr, rank - 1, lengths + 1, staticRank, out);
+                for (int32_t j = 1; j < rank; j++)
+                {
+                    p_sep += "\n";
+                }
+                for (int32_t j = 0; j <= staticRank - rank; j++)
+                {
+                    p_sep += " ";
+                }
+            }
+        }
+        else
+        {
+            for (int64_t i = 0; i < lengths[0]; i++)
+            {
+                out << p_sep << *static_cast<T *>(arr.data());
+                arr++;
+                p_sep = ", ";
+            }
+        }
+        out << "]";
+        // out << std::endl;
+        return arr;
+    }
 
     template <typename T>
     void printTensor(Tensor const &tensor, std::ostream &out)
     {
         tensor.printShape();
         out << "values: " << std::endl;
-
-        T const *data = static_cast<T const *>(tensor.data());
-        printRecursive(data, tensor.getShape().nbDims, tensor.getShape().d, tensor.getShape().nbDims, out);
+        if (!tensor.isPaged())
+        {
+            T const *data = static_cast<T const *>(tensor.data());
+            printRecursive(data, tensor.getShape().nbDims, tensor.getShape().d, tensor.getShape().nbDims, out);
+        }
+        else
+        {
+            DataPtr arr = tensor.dataPaged();
+            printRecursive<T>(arr, tensor.getShape().nbDims, tensor.getShape().d, tensor.getShape().nbDims, out);
+        }
     }
 
 }
 
-std::ostream &toy::runtime::operator<<(std::ostream &output, Tensor const &tensor)
+std::ostream &paged_tensor::runtime::operator<<(std::ostream &output, Tensor const &tensor)
 {
     switch (tensor.getDataType())
     {

@@ -2,19 +2,19 @@
 #include <torch/extension.h>
 #include "runtime/tensor.h"
 
-namespace toy::utils
+namespace paged_tensor::utils
 {
-    inline runtime::Tensor::UniquePtr torchToToy(torch::Tensor &tensor)
+    inline runtime::Tensor::UniquePtr torchTopaged_tensor(torch::Tensor &tensor)
     {
         void *data = tensor.data_ptr();
         auto shape = tensor.sizes();
         std::vector<int64_t> shapeVec(shape.begin(), shape.end());
-        runtime::Tensor::Shape shapeToy = runtime::Tensor::makeShape(shapeVec);
-        runtime::Tensor::UniquePtr toyTensor = runtime::Tensor::wrap(data, runtime::Tensor::DataType::kFLOAT, shapeToy);
-        return toyTensor;
+        runtime::Tensor::Shape shapepaged_tensor = runtime::Tensor::makeShape(shapeVec);
+        runtime::Tensor::UniquePtr paged_tensorTensor = runtime::Tensor::wrap(data, runtime::Tensor::DataType::kFLOAT, shapepaged_tensor);
+        return paged_tensorTensor;
     }
 
-    inline torch::Tensor toyToTorch(runtime::Tensor::UniquePtr &tensor)
+    inline torch::Tensor paged_tensorToTorch(runtime::Tensor::UniquePtr &tensor)
     {
         auto shape = tensor->getShape();
         std::vector<int64_t> shapeVec(shape.d, shape.d + shape.nbDims);

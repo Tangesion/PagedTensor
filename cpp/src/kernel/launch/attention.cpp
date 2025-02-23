@@ -1,10 +1,10 @@
 #include "kernel/launch/attention.h"
 
-namespace toy::kernel::launch
+namespace paged_tensor::kernel::launch
 {
-    namespace kernel_cpu = toy::kernel::cpu;
-    using UniquePtr = toy::runtime::Tensor::UniquePtr;
-    using DataType = toy::runtime::Tensor::DataType;
+    namespace kernel_cpu = paged_tensor::kernel::cpu;
+    using UniquePtr = paged_tensor::runtime::Tensor::UniquePtr;
+    using DataType = paged_tensor::runtime::Tensor::DataType;
 
     void attentionForward(UniquePtr &out, UniquePtr &query, UniquePtr &key, UniquePtr &value, UniquePtr &interAttn, const bool isPrefill, const cpu::AttentionType attentionType)
     {
@@ -56,11 +56,11 @@ namespace toy::kernel::launch
             break;
         }
 
-        // auto *outData = toy::func::getData<DataType::kFLOAT>(out);
-        // auto *queryData = toy::func::getData<DataType::kFLOAT>(query);
-        // auto *keyData = toy::func::getData<DataType::kFLOAT>(key);
-        // auto *valueData = toy::func::getData<DataType::kFLOAT>(value);
-        // auto *interAttnData = toy::func::getData<DataType::kFLOAT>(interAttn);
+        // auto *outData = paged_tensor::func::getData<DataType::kFLOAT>(out);
+        // auto *queryData = paged_tensor::func::getData<DataType::kFLOAT>(query);
+        // auto *keyData = paged_tensor::func::getData<DataType::kFLOAT>(key);
+        // auto *valueData = paged_tensor::func::getData<DataType::kFLOAT>(value);
+        // auto *interAttnData = paged_tensor::func::getData<DataType::kFLOAT>(interAttn);
         //
     }
-} // namespace toy::kernel::launch
+} // namespace paged_tensor::kernel::launch

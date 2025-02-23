@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <cstdint>
 
-namespace toy::common
+namespace paged_tensor::common
 {
 
     enum class DataType : int32_t
@@ -51,4 +51,4 @@ namespace toy::common
         return 0;
     }
 
-} // namespace toy::common
+} // namespace paged_tensor::common

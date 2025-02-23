@@ -3,11 +3,11 @@
 #include <func/func.h>
 #include "kernel/launch/attention.h"
 
-using MemoryType = toy::runtime::MemoryType;
-using AttentionType = toy::kernel::cpu::AttentionType;
-using DataType = toy::runtime::Tensor::DataType;
-using namespace toy::kernel::launch;
-using namespace toy::func;
+using MemoryType = paged_tensor::runtime::MemoryType;
+using AttentionType = paged_tensor::kernel::cpu::AttentionType;
+using DataType = paged_tensor::runtime::Tensor::DataType;
+using namespace paged_tensor::kernel::launch;
+using namespace paged_tensor::func;
 
 TEST(AttentionTest, multiThreadTestTime)
 {

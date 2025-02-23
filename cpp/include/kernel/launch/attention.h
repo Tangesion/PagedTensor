@@ -2,10 +2,10 @@
 #include "kernel/cpu/attention.h"
 #include "runtime/tensor.h"
 
-namespace toy::kernel::launch
+namespace paged_tensor::kernel::launch
 {
-    using UniquePtr = toy::runtime::Tensor::UniquePtr;
+    using UniquePtr = paged_tensor::runtime::Tensor::UniquePtr;
 
     void attentionForward(UniquePtr &out, UniquePtr &query, UniquePtr &key, UniquePtr &value, UniquePtr &interAttn, const bool isPrefill, const cpu::AttentionType attentionType);
 
-} // namespace toy::kernel::launch
+} // namespace paged_tensor::kernel::launch

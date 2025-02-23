@@ -2,9 +2,9 @@
 #include "kernel/cpu/rope.h"
 #include "runtime/tensor.h"
 
-namespace toy::kernel::launch
+namespace paged_tensor::kernel::launch
 {
-    using UniquePtr = toy::runtime::Tensor::UniquePtr;
+    using UniquePtr = paged_tensor::runtime::Tensor::UniquePtr;
 
     void precomputeFreqsCosSin(UniquePtr &freqsCosSin, const size_t dim, const size_t maxPos, const float theta = 10000.0, const bool isMultiThread = true);
 

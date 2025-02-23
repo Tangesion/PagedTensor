@@ -1,6 +1,6 @@
 #include "kernel/cpu/attention.h"
 
-namespace toy::kernel::cpu
+namespace paged_tensor::kernel::cpu
 {
 
     // prefill
@@ -269,8 +269,8 @@ namespace toy::kernel::cpu
         }
     }
 
-    // using namespace toy::runtime;
-    // using namespace toy::func;
+    // using namespace paged_tensor::runtime;
+    // using namespace paged_tensor::func;
     //
     // void attentionForwardLaunch(
     //    Tensor::SharedPtr out, const Tensor::SharedPtr query, const Tensor::SharedPtr key, const Tensor::SharedPtr value, Tensor::SharedPtr interAttn,
@@ -290,4 +290,4 @@ namespace toy::kernel::cpu
     //    }
     //}
 
-} // namespace toy::kernel::cpu
+} // namespace paged_tensor::kernel::cpu

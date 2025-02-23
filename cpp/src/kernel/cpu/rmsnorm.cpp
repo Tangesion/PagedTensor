@@ -1,6 +1,6 @@
 #include "kernel/cpu/rmsnorm.h"
 
-namespace toy::kernel::cpu
+namespace paged_tensor::kernel::cpu
 {
 
     void rmsNormOneThread(float *out, const float *inp, const float *weight, const size_t B, const size_t H, const size_t C)

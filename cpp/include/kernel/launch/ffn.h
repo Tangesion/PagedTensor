@@ -4,9 +4,9 @@
 #include "runtime/tensor.h"
 #include "func/func.h"
 
-namespace toy::kernel::launch
+namespace paged_tensor::kernel::launch
 {
-    using UniquePtr = toy::runtime::Tensor::UniquePtr;
+    using UniquePtr = paged_tensor::runtime::Tensor::UniquePtr;
 
     void ffnForwardOneThread(UniquePtr &out, UniquePtr &inp, UniquePtr &gateProj, UniquePtr &upProj, UniquePtr &downProj);
 

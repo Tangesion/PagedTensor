@@ -8,9 +8,9 @@
 #include "kernel/launch/rmsnorm.h"
 #include "kernel/launch/transpose.h"
 
-using namespace toy::runtime;
+using namespace paged_tensor::runtime;
 
-namespace toy::llama2
+namespace paged_tensor::llama2
 {
 
     class WorkSpace
@@ -70,7 +70,7 @@ namespace toy::llama2
                 std::cerr << e.what() << '\n';
                 std::exit(EXIT_FAILURE);
             }
-            typeSize = toy::common::getTypeSize(dataType);
+            typeSize = paged_tensor::common::getTypeSize(dataType);
         }
         ~LlamaConfig() = default;
         size_t vocabSize;

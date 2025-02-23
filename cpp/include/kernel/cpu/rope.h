@@ -5,7 +5,7 @@
 
 #define THREADS_NUM 56
 
-namespace toy::kernel::cpu
+namespace paged_tensor::kernel::cpu
 {
     void precomputeFreqsCosSinOneThread(float *freqsCosSin, const size_t dim, const size_t maxPos, const float theta = 10000.0);
 

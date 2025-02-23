@@ -10,7 +10,7 @@
 #include "tensor.h"
 #include "common/assert.h"
 
-namespace toy::runtime
+namespace paged_tensor::runtime
 {
     template <typename TDerived, MemoryType memoryType, bool count = false>
     class BaseAllocator
@@ -82,22 +82,21 @@ namespace toy::runtime
         void allocateImpl(void **ptr, std::size_t n)
         {
             size_t blockSize = BlockManager::getInstance().blockSize;
-            auto vec = new std::vector<Block *>((n + blockSize - 1) / blockSize);
+            auto vec = new std::vector<void *>((n + blockSize - 1) / blockSize);
             for (size_t i = 0; i < vec->size(); i++)
             {
-                vec->at(i) = BlockManager::getInstance().allocateBlock().release();
+                vec->at(i) = BlockManager::getInstance().allocateBlock();
             }
             size_t offset = n % blockSize;
-            vec->back()->offset = offset;
             *ptr = vec;
         }
 
         void deallocateImpl(void *ptr, std::size_t n)
         {
-            auto vec = static_cast<std::vector<Block *> *>(ptr);
+            auto vec = static_cast<std::vector<void *> *>(ptr);
             for (size_t i = 0; i < vec->size(); i++)
             {
-                BlockManager::getInstance().freeBlocks.push(std::unique_ptr<Block>(vec->at(i)));
+                BlockManager::getInstance().freeBlocks.push(vec->at(i));
             }
             delete vec;
         }
@@ -190,7 +189,7 @@ namespace toy::runtime
             }
             return *this;
         }
-        [[nodiscard]] DataPtr dataPaged() override
+        [[nodiscard]] DataPtr dataPaged() const override
         {
             return mDataPtr;
         }
@@ -245,9 +244,14 @@ namespace toy::runtime
             }
         }
 
-        std::vector<Block *> *getBlockMap() override
+        [[nodiscard]] bool isPaged() const override
         {
-            return static_cast<std::vector<Block *> *>(mBuffer);
+            return mPaged;
+        }
+
+        [[nodiscard]] std::vector<void *> *getBlockMap() override
+        {
+            return static_cast<std::vector<void *> *>(mBuffer);
         }
 
         ~GenericBuffer() override

@@ -9,7 +9,7 @@
 #include "buffer.h"
 #include "common/assert.h"
 
-namespace toy::runtime
+namespace paged_tensor::runtime
 {
 
     class Dims
@@ -30,7 +30,7 @@ namespace toy::runtime
         using SharedPtr = std::shared_ptr<Tensor>;
         using UniqueConstPtr = std::unique_ptr<Tensor const>;
         using SharedConstPtr = std::shared_ptr<Tensor const>;
-        using DataType = toy::common::DataType;
+        using DataType = paged_tensor::common::DataType;
         using DimType64 = std::remove_reference_t<decltype(Shape::d[0])>;
 
         static UniquePtr wrap(void *data, DataType type, Shape const &shape, std::size_t capacity);
@@ -62,4 +62,4 @@ namespace toy::runtime
     };
 
     std::ostream &operator<<(std::ostream &output, Tensor const &tensor);
-} // namespaece toy::runtime
+} // namespaece paged_tensor::runtime
