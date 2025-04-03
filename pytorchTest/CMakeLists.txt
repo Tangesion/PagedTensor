@@ -16,6 +16,12 @@ message(STATUS "CPP_PATH: ${CPP_PATH}")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 
-list(APPEND CMAKE_PREFIX_PATH "/home/tgx/Downloads/anaconda/yes/envs/cuda/lib/python3.10/site-packages/pybind11/share/cmake/pybind11")
+if(DEFINED ENV{PYBIND11_PATH})
+    list(APPEND CMAKE_PREFIX_PATH $ENV{PYBIND11_PATH})
+else()
+    message(FATAL_ERROR "Environment variable PYBIND11_PATH is not set. Please set it to the path of pybind11.")
+endif()
+
+#list(APPEND CMAKE_PREFIX_PATH "/home/tgx/Downloads/anaconda/yes/envs/cuda/lib/python3.10/site-packages/pybind11/share/cmake/pybind11")
 
 add_subdirectory(attentionClass)

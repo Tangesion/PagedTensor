@@ -29,13 +29,13 @@ config = LlamaConfig(
 
 params = runtimeParams(
     1,  # batch size
-    4000,  # sequence length
+    1000,  # sequence length
 )
 
 config_torch = LlamaConfigTorch()
 config_torch.max_position_embeddings = 4096
 heads_num = 32
-length = 4000
+length = 1000
 bsz = 1
 hidden_size = 4096
 position_ids = torch.arange(length).unsqueeze(0)
@@ -49,8 +49,8 @@ position_embeddings = get_cos_sin(hidden_size, position_ids, inv_manual)
 position_embeddings_decode = get_cos_sin(hidden_size, position_ids_decode, inv_manual)
 attention_pytorch = LlamaAttentionTorch(config_torch, 0)
 
-model_path_golden = "/home/tgx/projects/paged_tensor/weight/test_weights_pytorch.bin" 
-model_path_test = "/home/tgx/projects/paged_tensor/weight/test_weights_numpy.bin"
+model_path_golden = "/home/tangexing/tgx/projects/PagedTensor/weight/test_weights.bin" 
+model_path_test = "/home/tangexing/tgx/projects/PagedTensor/weight/test_weights_numpy.bin"
 attention_test = AttentionTest(config, params, model_path_test)
 # test if binded
 attention_test.printMessage()
