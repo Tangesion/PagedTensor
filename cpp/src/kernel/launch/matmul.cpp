@@ -28,31 +28,53 @@ namespace paged_tensor::kernel::launch
         int64_t C = inp->getShape().d[2];
         int64_t OC = weight->getShape().d[0];
 
-        switch (dataTypeOut)
+        if (out->isPaged())
         {
-        case DataType::kFLOAT:
-        {
-            auto *outData = static_cast<float *>(out->data());
-            auto *inpData = static_cast<float *>(inp->data());
-            auto *weightData = static_cast<float *>(weight->data());
-            auto *biasData = bias == nullptr ? nullptr : static_cast<float *>(bias->data());
-            switch (matmulType)
+            switch (dataTypeOut)
             {
-            case kernel_cpu::MatmulType::kMatmulOneThread:
-                kernel_cpu::matmulWeight(outData, inpData, weightData, biasData, B, H, C, OC);
-                break;
-            case kernel_cpu::MatmulType::KMatmulMultiThread:
-                kernel_cpu::matmulWeightMultiThread(outData, inpData, weightData, biasData, B, H, C, OC);
-                break;
-            case kernel_cpu::MatmulType::kMatmulThreadPool:
-                kernel_cpu::matmulWeightThreadPool(outData, inpData, weightData, biasData, B, H, C, OC);
+            case DataType::kFLOAT:
+            {
+                DataPtr outData = out->dataPaged();
+                DataPtr inpData = inp->dataPaged();
+                auto *weightData = static_cast<float *>(weight->data());
+                auto *biasData = bias == nullptr ? nullptr : static_cast<float *>(bias->data());
+                switch (matmulType)
+                {
+                case kernel_cpu::MatmulType::kMatmulOneThread:
+                    kernel_cpu::matmulWeightPaged(outData, inpData, weightData, biasData, B, H, C, OC);
+                    break;
+                }
+            }
+            }
+        }
+        else
+        {
+            switch (dataTypeOut)
+            {
+            case DataType::kFLOAT:
+            {
+                auto *outData = static_cast<float *>(out->data());
+                auto *inpData = static_cast<float *>(inp->data());
+                auto *weightData = static_cast<float *>(weight->data());
+                auto *biasData = bias == nullptr ? nullptr : static_cast<float *>(bias->data());
+                switch (matmulType)
+                {
+                case kernel_cpu::MatmulType::kMatmulOneThread:
+                    kernel_cpu::matmulWeight(outData, inpData, weightData, biasData, B, H, C, OC);
+                    break;
+                case kernel_cpu::MatmulType::KMatmulMultiThread:
+                    kernel_cpu::matmulWeightMultiThread(outData, inpData, weightData, biasData, B, H, C, OC);
+                    break;
+                case kernel_cpu::MatmulType::kMatmulThreadPool:
+                    kernel_cpu::matmulWeightThreadPool(outData, inpData, weightData, biasData, B, H, C, OC);
+                    break;
+                }
                 break;
             }
-            break;
-        }
 
-        default:
-            break;
+            default:
+                break;
+            }
         }
     }
 

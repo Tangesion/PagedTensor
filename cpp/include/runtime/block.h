@@ -25,7 +25,6 @@ namespace paged_tensor::runtime
     //    size_t offset; // offset num in block
     //    void *data;
     //};
-
     class BlockManager
     {
     public:

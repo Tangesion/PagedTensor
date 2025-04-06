@@ -32,6 +32,34 @@ namespace paged_tensor::kernel::cpu
             }
         }
     }
+    void matmulWeightPaged(DataPtr out, DataPtr inp, const float *weight, const float *bias, const size_t B, const size_t H, const size_t C, const size_t OC)
+    {
+        for (size_t b = 0; b < B; b++)
+        {
+            for (size_t t = 0; t < H; t++)
+            {
+                DataPtr outBT = out + b * H * OC + t * OC;
+                DataPtr inpBT = inp + b * H * C + t * C;
+                for (size_t oc = 0; oc < OC; oc++)
+                {
+                    const float *weightRow = weight + oc * C;
+                    float sum = 0;
+                    for (size_t c = 0; c < C; c++)
+                    {
+                        sum += *(inpBT[c].data<float>()) * weightRow[c];
+                    }
+                    if (bias != nullptr)
+                    {
+                        *(outBT[oc].data<float>()) = sum + bias[oc];
+                    }
+                    else
+                    {
+                        *(outBT[oc].data<float>()) = sum;
+                    }
+                }
+            }
+        }
+    }
 
     void matmulWeightPerThreadFunc(
         float *out,

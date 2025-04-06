@@ -99,7 +99,7 @@ namespace
         return arr;
     }
     template <typename T>
-    DataPtr printRecursive(DataPtr arr, const int32_t rank, const int64_t *lengths, const int32_t staticRank, std::ostream &out)
+    paged_tensor::common::DataPtr printRecursive(paged_tensor::common::DataPtr arr, const int32_t rank, const int64_t *lengths, const int32_t staticRank, std::ostream &out)
     {
         std::string p_sep = "";
         out << "[";
@@ -124,7 +124,7 @@ namespace
         {
             for (int64_t i = 0; i < lengths[0]; i++)
             {
-                out << p_sep << *static_cast<T *>(arr.data());
+                out << p_sep << *(arr.data<T>());
                 arr++;
                 p_sep = ", ";
             }

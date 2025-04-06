@@ -3,22 +3,29 @@
 #include <cstdlib>
 #include <memory>
 #include "func/threadPool.h"
+#include "common/dataPtr.h"
 #ifndef THREADS_NUM
 #define THREADS_NUM 56
 #endif
 
+using DataPtr = paged_tensor::common::DataPtr;
+
 namespace paged_tensor::kernel::cpu
 {
+    // using namespace paged_tensor::common;
 
     enum class MatmulType
     {
         kMatmulOneThread,
         KMatmulMultiThread,
         kMatmulThreadPool,
+        kMatmulOneThreadPaged,
     };
 
     // inp (B, T, C) weight (OC, C) bias (OC) out (B, T, OC)
     void matmulWeight(float *out, const float *inp, const float *weight, const float *bias, const size_t B, const size_t H, const size_t C, const size_t OC);
+
+    void matmulWeightPaged(DataPtr out, DataPtr inp, const float *weight, const float *bias, const size_t B, const size_t H, const size_t C, const size_t OC);
 
     void matmulWeightPerThreadFunc(
         float *out,

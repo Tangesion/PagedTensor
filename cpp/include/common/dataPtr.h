@@ -1,15 +1,17 @@
 #pragma once
-#include "common/dataType.h"
-#include "block.h"
+#include <vector>
+#include <cstdint>
+#include <stdexcept>
 
-namespace paged_tensor::runtime
+namespace paged_tensor::common
 {
+
     class DataPtr
     {
     public:
         // offset is element number
-        DataPtr(std::vector<void *> *blockMap, size_t offsetStart)
-            : blockMap(blockMap), offsetStart(offsetStart)
+        DataPtr(std::vector<void *> *blockMap, size_t offsetStart, size_t blockSize, size_t typeSize)
+            : blockMap(blockMap), offsetStart(offsetStart), blockSize(blockSize), typeSize(typeSize)
         {
         }
         DataPtr() : offsetStart(0), blockMap(nullptr) {}
@@ -21,13 +23,13 @@ namespace paged_tensor::runtime
         DataPtr operator+(size_t offset) const
         {
             size_t newOffsetStart = this->offsetStart + offset;
-            return DataPtr(blockMap, newOffsetStart);
+            return DataPtr(blockMap, newOffsetStart, this->blockSize, this->typeSize);
         }
 
         DataPtr operator[](size_t offset) const
         {
             size_t newOffsetStart = this->offsetStart + offset;
-            return DataPtr(blockMap, newOffsetStart);
+            return DataPtr(blockMap, newOffsetStart, this->blockSize, this->typeSize);
         }
 
         DataPtr &operator++()
@@ -44,17 +46,18 @@ namespace paged_tensor::runtime
         }
 
     public:
-        void *data()
+        template <typename T>
+        T *data()
         {
-            size_t blockSize = BlockManager::getInstance().blockSize;
-            size_t typeSize = BlockManager::getInstance().typeSize;
             size_t blockIndex = offsetStart / blockSize;
             size_t blockOffset = offsetStart % blockSize;
-            return static_cast<void *>(static_cast<char *>(blockMap->at(blockIndex)) + blockOffset * typeSize);
+            return static_cast<T *>(static_cast<void *>(static_cast<char *>(blockMap->at(blockIndex)) + blockOffset * typeSize));
         }
 
     private:
         size_t offsetStart;
+        size_t blockSize;
+        size_t typeSize;
         std::vector<void *> *blockMap;
     };
 };

@@ -15,6 +15,7 @@ TEST(TensorTest, wrapTest)
 
 TEST(TensorTest, pagedTensorTest)
 {
+    // block size 16  block num 3
     Tensor::UniquePtr tensor1 = paged_tensor::func::randTensor({1, 3, 4}, DataType::kFLOAT, MemoryType::kCPU, true);
     std::cout << *tensor1 << std::endl;
     Tensor::UniquePtr tensor2 = paged_tensor::func::randTensor({1, 3, 4}, DataType::kFLOAT, MemoryType::kCPU, true);
@@ -22,10 +23,20 @@ TEST(TensorTest, pagedTensorTest)
     Tensor::UniquePtr tensor3 = paged_tensor::func::randTensor({1, 3, 4}, DataType::kFLOAT, MemoryType::kCPU, true);
     std::cout << *tensor3 << std::endl;
 
-    // tensor1.reset();
+    tensor1.reset();
     tensor3.reset();
     Tensor::UniquePtr tensor4 = paged_tensor::func::randTensor({1, 3, 8}, DataType::kFLOAT, MemoryType::kCPU, true);
     std::cout << *tensor4 << std::endl;
+}
+
+TEST(TensorTest, pagedToContinuousTest)
+{
+    Tensor::UniquePtr tensor1 = paged_tensor::func::randTensor({1, 3, 4}, DataType::kFLOAT, MemoryType::kCPU, true);
+    std::cout << *tensor1 << std::endl;
+    Tensor::UniquePtr tensor2 = paged_tensor::func::pagedToContinuous(tensor1);
+    std::cout << *tensor2 << std::endl;
+    Tensor::UniquePtr tensor3 = paged_tensor::func::continuousToPaged(tensor2);
+    std::cout << *tensor3 << std::endl;
 }
 
 TEST(TensorTest, pagedTensorTimeTest)
@@ -58,14 +69,14 @@ TEST(TensorTest, pagedTensorTimeTest)
             // DataPtr tempPtr = dataPtr + i;
             // auto *data = static_cast<float *>(tempPtr.data());
             //*data = i;
-            auto *data = static_cast<float *>(dataPtr[i].data());
+            auto *data = (dataPtr[i].data<float>());
             *data = i;
         }
         dataPtr = tensor->dataPaged();
         for (int i = 0; i < tensor->getSize(); i++)
         {
             // DataPtr tempPtr = dataPtr + i;
-            auto *data = static_cast<float *>(dataPtr[i].data());
+            auto *data = static_cast<float *>(dataPtr[i].data<float>());
             std::cout << *data << " ";
         }
         std::cout << std::endl;
@@ -75,7 +86,7 @@ TEST(TensorTest, pagedTensorTimeTest)
         for (int i = 0; i < tensor->getSize(); i++)
         {
             // DataPtr tempPtr = dataPtr + i;
-            auto *data = static_cast<float *>(dataPtr[i].data());
+            auto *data = static_cast<float *>(dataPtr[i].data<float>());
         }
         auto end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> duration = end - start;
@@ -89,7 +100,7 @@ TEST(TensorTest, pagedTensorTimeTest)
         start = std::chrono::high_resolution_clock::now();
         for (int i = 0; i < tensor->getSize(); i++)
         {
-            auto *data = static_cast<float *>(dataPtr[i].data());
+            auto *data = static_cast<float *>(dataPtr[i].data<float>());
         }
         end = std::chrono::high_resolution_clock::now();
         duration = end - start;

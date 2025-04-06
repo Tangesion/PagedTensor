@@ -50,7 +50,8 @@ namespace paged_tensor::llama2
             size_t maxPositionEmbeddings,
             size_t layerNums,
             float theta,
-            Tensor::DataType dataType)
+            Tensor::DataType dataType,
+            size_t invFreqSize = 64)
             : vocabSize(vocabSize),
               hiddenSize(hiddenSize),
               intermediateSize(intermediateSize),
@@ -58,6 +59,7 @@ namespace paged_tensor::llama2
               numAttentionHeads(numAttentionHeads),
               maxPositionEmbeddings(maxPositionEmbeddings),
               layerNums(layerNums),
+              invFreqSize(invFreqSize),
               theta(theta),
               dataType(dataType)
         {
@@ -80,6 +82,7 @@ namespace paged_tensor::llama2
         size_t numAttentionHeads;
         size_t maxPositionEmbeddings;
         size_t layerNums;
+        size_t invFreqSize;
         float theta;
         Tensor::DataType dataType;
         size_t typeSize;
@@ -170,4 +173,29 @@ namespace paged_tensor::llama2
         Tensor::UniquePtr &getOProjWeight() { return oProjWeight; }
     };
 
+    class LlamaPagedAttention
+    {
+    public:
+        LlamaPagedAttention(LlamaConfig &config, const size_t layerIdx, char *modelWeight, const size_t start);
+    };
+
+    class LlamaMLP
+    {
+    public:
+        LlamaMLP(LlamaConfig &config, char *modelWeight, const size_t start);
+        void forward(Tensor::UniquePtr &hiddenStatesOut, Tensor::UniquePtr &hiddenStatesIn);
+
+    private:
+        size_t hiddenSize;
+        size_t intermediateSize;
+        size_t typeSize;
+        Tensor::UniquePtr gateProjWeight;
+        Tensor::UniquePtr upProjWeight;
+        Tensor::UniquePtr downProjWeight;
+
+    public:
+        Tensor::UniquePtr &getGateProjWeight() { return gateProjWeight; }
+        Tensor::UniquePtr &getUpProjWeight() { return upProjWeight; }
+        Tensor::UniquePtr &getDownProjWeight() { return downProjWeight; }
+    };
 }

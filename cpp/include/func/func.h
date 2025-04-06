@@ -12,11 +12,17 @@ namespace paged_tensor::func
 
     runtime::Tensor::UniquePtr createTensor(std::initializer_list<runtime::Tensor::DimType64> const &dims_list, runtime::Tensor::DataType const &type, runtime::MemoryType device, bool paged = false);
 
+    runtime::Tensor::UniquePtr createTensor(runtime::Tensor::Shape const &dims, runtime::Tensor::DataType const &type, runtime::MemoryType device, bool paged = false);
+
     runtime::Tensor::UniquePtr randTensor(std::initializer_list<runtime::Tensor::DimType64> const &dims_list, runtime::Tensor::DataType const &type, runtime::MemoryType device, bool paged = false);
 
     void reShape(runtime::Tensor::UniquePtr &tensor, std::initializer_list<runtime::Tensor::DimType64> const &dims_list);
 
     runtime::Tensor::UniquePtr makeRange(const int64_t start, const int64_t end, const int64_t span, runtime::MemoryType device);
+
+    runtime::Tensor::UniquePtr pagedToContinuous(runtime::Tensor::UniquePtr &pagedTensor);
+
+    runtime::Tensor::UniquePtr continuousToPaged(runtime::Tensor::UniquePtr &continuousTensor);
 
     // runtime::Tensor::UniquePtr torchTopaged_tensor(torch::Tensor &tensor);
 

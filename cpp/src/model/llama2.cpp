@@ -179,3 +179,23 @@ void LlamaAttention::forward(Tensor::UniquePtr &hiddenStatesOut,
     kernel::launch::matmulWeight(hiddenStatesOut, attentionSpace.attentionOutputTransposed, oProjWeight, nullptr, kernel::cpu::MatmulType::KMatmulMultiThread);
     func::reShape(hiddenStatesOut, {CastInt64(bsz), CastInt64(qLen), CastInt64(hiddenSize)});
 }
+
+LlamaMLP::LlamaMLP(LlamaConfig &config, char *modelWeight, const size_t start)
+    : hiddenSize(config.hiddenSize), intermediateSize(config.intermediateSize), typeSize(config.typeSize)
+{
+    // attentionSpace = AttentionSpace::getInstance(config);
+    if (modelWeight != nullptr)
+    {
+        Tensor::Shape gateWeightShape = Tensor::makeShape({CastInt64(config.intermediateSize), CastInt64(config.hiddenSize)});
+        Tensor::Shape upWeightShape = Tensor::makeShape({CastInt64(config.intermediateSize), CastInt64(config.hiddenSize)});
+        Tensor::Shape downWeightShape = Tensor::makeShape({CastInt64(config.hiddenSize), CastInt64(config.intermediateSize)});
+        gateProjWeight = Tensor::wrap(modelWeight + start * config.typeSize, config.dataType, gateWeightShape, config.intermediateSize * config.hiddenSize);
+        upProjWeight = Tensor::wrap(modelWeight + (start + config.intermediateSize * config.hiddenSize) * config.typeSize, config.dataType, upWeightShape, config.intermediateSize * config.hiddenSize);
+        downProjWeight = Tensor::wrap(modelWeight + (start + 2 * config.intermediateSize * config.hiddenSize) * config.typeSize, config.dataType, downWeightShape, config.intermediateSize * config.hiddenSize);
+    }
+}
+
+void LlamaMLP::forward(Tensor::UniquePtr &hiddenStatesOut, Tensor::UniquePtr &hiddenStatesIn)
+{
+    kernel::launch::ffnForward(hiddenStatesOut, hiddenStatesIn, gateProjWeight, upProjWeight, downProjWeight, true);
+}

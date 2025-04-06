@@ -4,14 +4,15 @@
 #include <memory>
 #include <vector>
 #include "block.h"
-#include "dataPtr.h"
+#include "common/dataPtr.h"
 #include "buffer.h"
 #include "common/dataType.h"
 #include "tensor.h"
 #include "common/assert.h"
-
+using DataPtr = paged_tensor::common::DataPtr;
 namespace paged_tensor::runtime
 {
+
     template <typename TDerived, MemoryType memoryType, bool count = false>
     class BaseAllocator
     {
@@ -227,7 +228,7 @@ namespace paged_tensor::runtime
                 mAllocator.deallocate(mBuffer, toBytes(mCapacity));
                 mBuffer = mAllocator.allocate(toBytes(newSize));
                 mCapacity = newSize;
-                mDataPtr = DataPtr(getBlockMap(), 0);
+                mDataPtr = DataPtr(getBlockMap(), 0, BlockManager::getInstance().blockSize, BlockManager::getInstance().typeSize);
             }
             mSize = newSize;
         }
@@ -265,7 +266,7 @@ namespace paged_tensor::runtime
         {
             if (mPaged)
             {
-                mDataPtr = DataPtr(getBlockMap(), 0);
+                mDataPtr = DataPtr(getBlockMap(), 0, BlockManager::getInstance().blockSize, BlockManager::getInstance().typeSize);
             }
         }
 

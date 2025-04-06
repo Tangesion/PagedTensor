@@ -26,11 +26,11 @@ public:
                               torch::Tensor &pos,
                               const size_t pastToken)
     {
-        Tensor::UniquePtr outputpaged_tensor = paged_tensor::utils::torchTopaged_tensor(output);
-        Tensor::UniquePtr inputpaged_tensor = paged_tensor::utils::torchTopaged_tensor(input);
-        Tensor::UniquePtr pospaged_tensor = paged_tensor::utils::torchTopaged_tensor(pos);
+        Tensor::UniquePtr outputPagedTensor = paged_tensor::utils::torchToPagedTensor(output);
+        Tensor::UniquePtr inputPagedTensor = paged_tensor::utils::torchToPagedTensor(input);
+        Tensor::UniquePtr posPagedTensor = paged_tensor::utils::torchToPagedTensor(pos);
         // std::cout << "ready" << std::endl;
-        attention.forward(outputpaged_tensor, inputpaged_tensor, layerIdx, pospaged_tensor, pastToken, rotaryEmbedding, attentionSpace);
+        attention.forward(outputPagedTensor, inputPagedTensor, layerIdx, posPagedTensor, pastToken, rotaryEmbedding, attentionSpace);
         // std::cout << *outputpaged_tensor << std::endl;
         return output;
     }

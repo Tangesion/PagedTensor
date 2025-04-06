@@ -3,12 +3,13 @@
 #include <memory>
 #include <vector>
 #include <iostream>
+#include "common/dataPtr.h"
 #include "common/dataType.h"
-
+using DataPtr = paged_tensor::common::DataPtr;
 namespace paged_tensor::runtime
 {
     class Block;
-    class DataPtr;
+    // class DataPtr;
     enum class MemoryType : std::int32_t
     {
         kGPU = 0,
