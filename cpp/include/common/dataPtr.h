@@ -51,8 +51,23 @@ namespace paged_tensor::common
         {
             size_t blockIndex = offsetStart / blockSize;
             size_t blockOffset = offsetStart % blockSize;
-            return static_cast<T *>(static_cast<void *>(static_cast<char *>(blockMap->at(blockIndex)) + blockOffset * typeSize));
+            return static_cast<T *>(static_cast<void *>(static_cast<char *>(blockMap->operator[](blockIndex)) + blockOffset * typeSize));
         }
+        // T *data()
+        //{
+        //     static void *cachedBlock = nullptr;
+        //     static size_t cachedBlockIndex = -1;
+        //
+        //    size_t blockIndex = offsetStart / blockSize;
+        //    if (blockIndex != cachedBlockIndex)
+        //    {
+        //        cachedBlock = blockMap->at(blockIndex);
+        //        cachedBlockIndex = blockIndex;
+        //    }
+        //
+        //    size_t blockOffset = offsetStart % blockSize;
+        //    return static_cast<T *>(static_cast<void *>(static_cast<char *>(cachedBlock) + blockOffset * typeSize));
+        //}
 
     private:
         size_t offsetStart;

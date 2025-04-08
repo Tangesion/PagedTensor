@@ -21,7 +21,8 @@ namespace paged_tensor::utils
             auto shape = tensor.sizes();
             std::vector<int64_t> shapeVec(shape.begin(), shape.end());
             runtime::Tensor::Shape shapePagedTensor = runtime::Tensor::makeShape(shapeVec);
-            static runtime::Tensor::UniquePtr continuousTensor = runtime::Tensor::wrap(data, runtime::Tensor::DataType::kFLOAT, shapePagedTensor);
+            runtime::Tensor::UniquePtr continuousTensor = runtime::Tensor::wrap(data, runtime::Tensor::DataType::kFLOAT, shapePagedTensor);
+            // auto *rawContinuousTensor = continuousTensor.release();
             return func::continuousToPaged(continuousTensor);
         }
     }
@@ -37,10 +38,11 @@ namespace paged_tensor::utils
         }
         else
         {
-            static runtime::Tensor::UniquePtr continuousTensor = func::pagedToContinuous(tensor);
+            runtime::Tensor::UniquePtr continuousTensor = func::pagedToContinuous(tensor);
             auto shape = continuousTensor->getShape();
             std::vector<int64_t> shapeVec(shape.d, shape.d + shape.nbDims);
-            torch::Tensor torchTensor = torch::from_blob(continuousTensor->data(), shapeVec, torch::kFloat);
+            auto *rawContinuousTensor = continuousTensor.release();
+            torch::Tensor torchTensor = torch::from_blob(rawContinuousTensor->data(), shapeVec, torch::kFloat);
             return torchTensor;
         }
     }

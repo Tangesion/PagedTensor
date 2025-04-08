@@ -10,6 +10,7 @@ if not os.path.exists(lib_path):
 sys.path.append(os.path.join(current_dir, '../build/matmulPaged'))
 
 from matmulPaged import matmul as matmul_paged
+from matmulPaged import matmul_multi
 
 bsz = 1
 length = 4
@@ -20,9 +21,14 @@ weight = torch.randn(hidden_size, hidden_size, dtype=torch.float32)
 
 output_pytorch = torch.matmul(input, weight.T)
 output_paged = matmul_paged(input, weight)
+output_paged_multi = matmul_multi(input, weight)
 
 print(output_pytorch)
 print(output_paged)
+print(output_paged_multi)
 
 result = torch.allclose(output_paged, output_pytorch, atol=1e-6)
+print("result ", result)
+
+result = torch.allclose(output_paged_multi, output_pytorch, atol=1e-6)
 print("result ", result)

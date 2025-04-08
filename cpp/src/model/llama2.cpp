@@ -148,9 +148,9 @@ void LlamaAttention::forward(Tensor::UniquePtr &hiddenStatesOut,
     size_t offsetV = layerIdx * 2 * bsz * maxPos * hiddenSize + bsz * maxPos * hiddenSize + pastToken * bsz * hiddenSize;
     Tensor::UniquePtr keyStates = Tensor::wrap(static_cast<char *>(kvCacheData) + offsetK * typeSize, DataType::kFLOAT, kvShape);
     Tensor::UniquePtr valueStates = Tensor::wrap(static_cast<char *>(kvCacheData) + offsetV * typeSize, DataType::kFLOAT, kvShape);
-    kernel::launch::matmulWeight(attentionSpace.queryStates, hiddenStatesIn, qProjWeight, nullptr, kernel::cpu::MatmulType::KMatmulMultiThread);
-    kernel::launch::matmulWeight(keyStates, hiddenStatesIn, kProjWeight, nullptr, kernel::cpu::MatmulType::KMatmulMultiThread);
-    kernel::launch::matmulWeight(valueStates, hiddenStatesIn, vProjWeight, nullptr, kernel::cpu::MatmulType::KMatmulMultiThread);
+    kernel::launch::matmulWeight(attentionSpace.queryStates, hiddenStatesIn, qProjWeight, nullptr, kernel::cpu::MatmulType::kMatmulMultiThread);
+    kernel::launch::matmulWeight(keyStates, hiddenStatesIn, kProjWeight, nullptr, kernel::cpu::MatmulType::kMatmulMultiThread);
+    kernel::launch::matmulWeight(valueStates, hiddenStatesIn, vProjWeight, nullptr, kernel::cpu::MatmulType::kMatmulMultiThread);
     func::reShape(attentionSpace.queryStates, {CastInt64(bsz), CastInt64(qLen), CastInt64(numAttentionHeads), CastInt64(headDims)});
     func::reShape(keyStates, {CastInt64(bsz), CastInt64(qLen), CastInt64(numAttentionHeads), CastInt64(headDims)});
     func::reShape(valueStates, {CastInt64(bsz), CastInt64(qLen), CastInt64(numAttentionHeads), CastInt64(headDims)});
@@ -176,7 +176,7 @@ void LlamaAttention::forward(Tensor::UniquePtr &hiddenStatesOut,
     Tensor::UniquePtr attentionScore = Tensor::wrap(attentionSpace.attentionScores->data(), DataType::kFLOAT, attentionScoresShape);
     kernel::launch::attentionForward(attentionSpace.attentionOutput, attentionSpace.queryStatesTransposed, keyStatesTransposed, valueStatesTransposed, attentionScore, isPrefill, kernel::cpu::AttentionType::kAttentionOneThread);
     kernel::launch::transpose(attentionSpace.attentionOutputTransposed, attentionSpace.attentionOutput, false);
-    kernel::launch::matmulWeight(hiddenStatesOut, attentionSpace.attentionOutputTransposed, oProjWeight, nullptr, kernel::cpu::MatmulType::KMatmulMultiThread);
+    kernel::launch::matmulWeight(hiddenStatesOut, attentionSpace.attentionOutputTransposed, oProjWeight, nullptr, kernel::cpu::MatmulType::kMatmulMultiThread);
     func::reShape(hiddenStatesOut, {CastInt64(bsz), CastInt64(qLen), CastInt64(hiddenSize)});
 }
 

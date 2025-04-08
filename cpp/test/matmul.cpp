@@ -54,8 +54,8 @@ TEST(MatmulTest, DISABLED_multiThreadTestTime)
     Tensor::UniquePtr weight = paged_tensor::func::randTensor({4096, 4096}, DataType::kFLOAT, MemoryType::kCPU);
     // Tensor::UniquePtr bias = nullptr;
     Tensor::UniquePtr out = paged_tensor::func::createTensor({1, 1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
-    // paged_tensor::kernel::cpu::matmulWeightLaunch(out, inp, weight, nullptr, paged_tensor::kernel::cpu::MatmulType::KMatmulMultiThread);
-    paged_tensor::kernel::launch::matmulWeight(out, inp, weight, nullptr, paged_tensor::kernel::cpu::MatmulType::KMatmulMultiThread);
+    // paged_tensor::kernel::cpu::matmulWeightLaunch(out, inp, weight, nullptr, paged_tensor::kernel::cpu::MatmulType::kMatmulMultiThread);
+    paged_tensor::kernel::launch::matmulWeight(out, inp, weight, nullptr, paged_tensor::kernel::cpu::MatmulType::kMatmulMultiThread);
 }
 
 TEST(MatmulTest, pagedTestTime)
@@ -83,6 +83,30 @@ TEST(MatmulTest, pagedTestTime)
     end = std::chrono::high_resolution_clock::now();
     duration = end - start;
     std::cout << "paged matmul one thread time: " << duration.count() << " seconds" << std::endl;
+
+    matmulType = paged_tensor::kernel::cpu::MatmulType::kMatmulMultiThread;
+    inp = paged_tensor::func::randTensor({1, 1024, 4096}, DataType::kFLOAT, MemoryType::kCPU, false);
+    weight = paged_tensor::func::randTensor({4096, 4096}, DataType::kFLOAT, MemoryType::kCPU, false);
+    // Tensor::UniquePtr bias = nullptr;
+    out = paged_tensor::func::createTensor({1, 1024, 4096}, DataType::kFLOAT, MemoryType::kCPU, false);
+    // paged_tensor::kernel::cpu::matmulWeightLaunch(out, inp, weight, nullptr, matmulType);
+    start = std::chrono::high_resolution_clock::now();
+    paged_tensor::kernel::launch::matmulWeight(out, inp, weight, nullptr, matmulType);
+    end = std::chrono::high_resolution_clock::now();
+    duration = end - start;
+    std::cout << "matmul multi thread time: " << duration.count() << " seconds" << std::endl;
+
+    matmulType = paged_tensor::kernel::cpu::MatmulType::kMatmulMultiThread;
+    inp = paged_tensor::func::randTensor({1, 1024, 4096}, DataType::kFLOAT, MemoryType::kCPU, true);
+    weight = paged_tensor::func::randTensor({4096, 4096}, DataType::kFLOAT, MemoryType::kCPU, false);
+    // Tensor::UniquePtr bias = nullptr;
+    out = paged_tensor::func::createTensor({1, 1024, 4096}, DataType::kFLOAT, MemoryType::kCPU, true);
+    // paged_tensor::kernel::cpu::matmulWeightLaunch(out, inp, weight, nullptr, matmulType);
+    start = std::chrono::high_resolution_clock::now();
+    paged_tensor::kernel::launch::matmulWeight(out, inp, weight, nullptr, matmulType);
+    end = std::chrono::high_resolution_clock::now();
+    duration = end - start;
+    std::cout << "paged matmul multi thread time: " << duration.count() << " seconds" << std::endl;
 }
 
 // TEST(MatmulTest, equal)
@@ -93,7 +117,7 @@ TEST(MatmulTest, pagedTestTime)
 //     Tensor::UniquePtr out1 = paged_tensor::func::createTensor({1, 1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
 //     Tensor::UniquePtr out2 = paged_tensor::func::createTensor({1, 1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
 //     paged_tensor::kernel::cpu::matmulWeightLaunch(out1, inp, weight, nullptr, paged_tensor::kernel::cpu::MatmulType::kMatmulOneThread);
-//     paged_tensor::kernel::cpu::matmulWeightLaunch(out2, inp, weight, nullptr, paged_tensor::kernel::cpu::MatmulType::KMatmulMultiThread);
+//     paged_tensor::kernel::cpu::matmulWeightLaunch(out2, inp, weight, nullptr, paged_tensor::kernel::cpu::MatmulType::kMatmulMultiThread);
 //     auto *data1 = paged_tensor::func::getData<Tensor::DataType::kFLOAT>(out1);
 //     auto *data2 = paged_tensor::func::getData<Tensor::DataType::kFLOAT>(out2);
 //     for (int i = 0; i < out1->getSize(); i++)

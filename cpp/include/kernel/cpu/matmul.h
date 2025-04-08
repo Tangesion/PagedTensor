@@ -17,15 +17,16 @@ namespace paged_tensor::kernel::cpu
     enum class MatmulType
     {
         kMatmulOneThread,
-        KMatmulMultiThread,
+        kMatmulMultiThread,
         kMatmulThreadPool,
-        kMatmulOneThreadPaged,
     };
 
     // inp (B, T, C) weight (OC, C) bias (OC) out (B, T, OC)
     void matmulWeight(float *out, const float *inp, const float *weight, const float *bias, const size_t B, const size_t H, const size_t C, const size_t OC);
 
     void matmulWeightPaged(DataPtr out, DataPtr inp, const float *weight, const float *bias, const size_t B, const size_t H, const size_t C, const size_t OC);
+
+    void matmulWeightPagedMultiThread(DataPtr out, DataPtr inp, const float *weight, const float *bias, const size_t B, const size_t H, const size_t C, const size_t OC);
 
     void matmulWeightPerThreadFunc(
         float *out,

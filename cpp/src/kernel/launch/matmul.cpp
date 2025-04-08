@@ -43,6 +43,9 @@ namespace paged_tensor::kernel::launch
                 case kernel_cpu::MatmulType::kMatmulOneThread:
                     kernel_cpu::matmulWeightPaged(outData, inpData, weightData, biasData, B, H, C, OC);
                     break;
+                case kernel_cpu::MatmulType::kMatmulMultiThread:
+                    kernel_cpu::matmulWeightPagedMultiThread(outData, inpData, weightData, biasData, B, H, C, OC);
+                    break;
                 }
             }
             }
@@ -62,7 +65,7 @@ namespace paged_tensor::kernel::launch
                 case kernel_cpu::MatmulType::kMatmulOneThread:
                     kernel_cpu::matmulWeight(outData, inpData, weightData, biasData, B, H, C, OC);
                     break;
-                case kernel_cpu::MatmulType::KMatmulMultiThread:
+                case kernel_cpu::MatmulType::kMatmulMultiThread:
                     kernel_cpu::matmulWeightMultiThread(outData, inpData, weightData, biasData, B, H, C, OC);
                     break;
                 case kernel_cpu::MatmulType::kMatmulThreadPool:
