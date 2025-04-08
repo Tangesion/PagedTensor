@@ -82,38 +82,57 @@ namespace paged_tensor::kernel::cpu
                     // hos                  tos
                     // 分三个块
 
-                    size_t headOffsetLen = inpBT.getBlockOffset() + 1;
-                    size_t dataLength = C;
+                    size_t headOffset = inpBT.getBlockOffset();
                     size_t blockSize = inpBT.getBlockSize();
-                    size_t tailOffsetLen = (dataLength - headOffsetLen) % blockSize;
-                    size_t headTailOffset = blockSize - headOffsetLen;
-                    size_t blockNum = 2 + (dataLength - headTailOffset - tailOffsetLen) / blockSize;
+                    size_t headTailOffsetLength = blockSize - headOffset;
+                    size_t dataLength = C;
+
+                    size_t tailOffsetLength = (dataLength - headTailOffsetLength) % blockSize;
+
+                    size_t headBlock = 1;
+
+                    size_t tailOffsetLengh = dataLength - headTailOffsetLength;
+
+                    size_t tailBlock = tailOffsetLengh != 0 ? 1 : 0;
+
+                    size_t blockNum = headBlock + tailBlock + (dataLength - headTailOffsetLength - tailOffsetLengh);
+
                     DataPtr inpBTX = inpBT[0];
+                    // std::cout << "headOffset " << headOffset << std::endl;
+                    // std::cout << "blockSize " << blockSize << std::endl;
+                    // std::cout << "headTailOffset " << headTailOffset << std::endl;
+                    // std::cout << "dataLength" << dataLength << std::endl;
+                    // std::cout << "tailOffset" << tailOffset << std::endl;
+                    // std::cout << "blockNum" << blockNum << std::endl;
                     int c = 0;
                     for (size_t bx = 0; bx < blockNum; bx++)
                     {
+                        // std::cout << bx << std::endl;
                         if (bx == 0)
                         {
-                            for (size_t cc = 0; cc < headOffsetLen; cc++, c++)
+                            for (size_t cc = 0; cc < headTailOffsetLength; cc++, c++)
                             {
                                 sum += inpBTX.data<float>()[cc] * weightRow[c];
                             }
-                            inpBTX = inpBTX + (tailOffsetLen + 1);
+                            inpBTX = inpBTX + (headTailOffsetLength);
                         }
                         else if (bx == blockNum - 1)
                         {
-                            for (size_t cc = 0; cc < blockSize; cc++, c++)
+                            for (size_t cc = 0; cc < tailOffsetLengh; cc++, c++)
                             {
                                 sum += inpBTX.data<float>()[cc] * weightRow[c];
                             }
-                            inpBTX = inpBTX + blockSize;
                         }
                         else
                         {
-                            for (size_t cc = 0; cc < tailOffsetLen; cc++, c++)
+
+                            for (size_t cc = 0; cc < blockSize; cc++, c++)
                             {
+                                // std::cout << cc << " ";
                                 sum += inpBTX.data<float>()[cc] * weightRow[c];
                             }
+                            // std::cout << std::endl;
+                            inpBTX = inpBTX + blockSize;
                         }
                     }
 

@@ -5,7 +5,7 @@ using namespace paged_tensor::runtime;
 
 int main()
 {
-    paged_tensor::kernel::cpu::MatmulType matmulType = paged_tensor::kernel::cpu::MatmulType::kMatmulOneThread;
+    paged_tensor::kernel::cpu::MatmulType matmulType = paged_tensor::kernel::cpu::MatmulType::kMatmulBlock;
     Tensor::UniquePtr inp = paged_tensor::func::randTensor({1, 1024, 4096}, DataType::kFLOAT, MemoryType::kCPU, true);
     Tensor::UniquePtr weight = paged_tensor::func::randTensor({4096, 4096}, DataType::kFLOAT, MemoryType::kCPU, false);
     // Tensor::UniquePtr bias = nullptr;
@@ -15,5 +15,5 @@ int main()
     paged_tensor::kernel::launch::matmulWeight(out, inp, weight, nullptr, matmulType);
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end - start;
-    std::cout << "paged matmul one thread time: " << duration.count() << " seconds" << std::endl;
+    std::cout << "paged matmul block one thread time: " << duration.count() << " seconds" << std::endl;
 }
