@@ -45,31 +45,31 @@ namespace paged_tensor::kernel::cpu
                 {
                     const float *weightRow = weight + oc * C;
                     float sum = 0;
-                    // for (size_t c = 0; c < C; c++)
-                    //{
-                    //     sum += *(inpBT[c].data<float>()) * weightRow[c];
-                    // }
-                    // if (bias != nullptr)
-                    //{
-                    //     *(outBT[oc].data<float>()) = sum + bias[oc];
-                    // }
-                    // else
-                    //{
-                    //     *(outBT[oc].data<float>()) = sum;
-                    // }
-
                     for (size_t c = 0; c < C; c++)
                     {
-                        sum += inpBT.data<float>()[c] * weightRow[c];
+                        sum += *(inpBT[c].data<float>()) * weightRow[c];
                     }
                     if (bias != nullptr)
                     {
-                        outBT.data<float>()[oc] = sum + bias[oc];
+                        *(outBT[oc].data<float>()) = sum + bias[oc];
                     }
                     else
                     {
-                        outBT.data<float>()[oc] = sum;
+                        *(outBT[oc].data<float>()) = sum;
                     }
+
+                    // for (size_t c = 0; c < C; c++)
+                    //{
+                    //     sum += inpBT.data<float>()[c] * weightRow[c];
+                    // }
+                    // if (bias != nullptr)
+                    //{
+                    //     outBT.data<float>()[oc] = sum + bias[oc];
+                    // }
+                    // else
+                    //{
+                    //     outBT.data<float>()[oc] = sum;
+                    // }
                 }
             }
         }
