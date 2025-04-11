@@ -6,14 +6,14 @@ from transformers import LlamaForCausalLM, LlamaConfig as LlamaConfigTorch
 from transformers.cache_utils import DynamicCache
 from model import LlamaAttention as LlamaAttentionTorch, get_cos_sin
 
-#sys.path.append('../build/attentionClass')
+#sys.path.append('../build/attention_class')
 current_dir = os.path.dirname(os.path.abspath(__file__))
-lib_path = os.path.join(os.path.dirname(__file__), '../build/attentionClass/attentionClass.cpython-310-x86_64-linux-gnu.so')
+lib_path = os.path.join(os.path.dirname(__file__), '../build/attention_class/attention_class.cpython-310-x86_64-linux-gnu.so')
 if not os.path.exists(lib_path):
     raise ImportError(f"Cannot find shared library: {lib_path}")
-sys.path.append(os.path.join(current_dir, '../build/attentionClass'))
+sys.path.append(os.path.join(current_dir, '../build/attention_class'))
 print(f"sys.path: {sys.path}")
-from attentionClass import AttentionTest, LlamaConfig, DataType, runtimeParams
+from attention_class import AttentionTest, LlamaConfig, DataType, runtimeParams
 
 config = LlamaConfig(
     32000,  # vocabSize

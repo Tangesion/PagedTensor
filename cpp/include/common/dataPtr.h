@@ -56,6 +56,11 @@ namespace paged_tensor::common
             return blockSize;
         }
 
+        size_t getBlockIdx()
+        {
+            return offsetStart / blockSize;
+        }
+
     public:
         template <typename T>
         T *data()

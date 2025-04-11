@@ -25,10 +25,10 @@ include_directories(${TORCH_INCLUDE_DIRS})
 include_directories(${Python3_INCLUDE_DIRS})
 
 
-pybind11_add_module(mlpClass ${SRC})
+pybind11_add_module(attention_class ${SRC})
 
-target_link_directories(mlpClass PUBLIC ${LIB_PATH})
+target_link_directories(attention_class PUBLIC ${LIB_PATH})
 
-target_link_libraries(mlpClass PUBLIC runtime kernel_launch func ${TORCH_LIBRARIES} ${Python3_LIBRARIES} ${TORCH_PYTHON_LIBRARY})
+target_link_libraries(attention_class PUBLIC runtime kernel_launch func ${TORCH_LIBRARIES} ${Python3_LIBRARIES} ${TORCH_PYTHON_LIBRARY})
 
-set_target_properties(mlpClass PROPERTIES POSITION_INDEPENDENT_CODE ON)
+set_target_properties(attention_class PROPERTIES POSITION_INDEPENDENT_CODE ON)

@@ -5,10 +5,13 @@
 #include <limits>
 #include <memory>
 #include <cmath>
+#include "common/dataPtr.h"
 
 #ifndef THREADS_NUM
 #define THREADS_NUM 56
 #endif
+
+using DataPtr = paged_tensor::common::DataPtr;
 
 namespace paged_tensor::kernel::cpu
 {
@@ -33,6 +36,11 @@ namespace paged_tensor::kernel::cpu
 
     void attentionForwardOneThread(
         float *out, const float *query, const float *key, const float *value, float *interAttn,
+        bool isPrefill,
+        const size_t B, const size_t NH, const size_t H, const size_t D);
+
+    void attentionForwardPaged(
+        DataPtr out, const DataPtr query, const DataPtr key, const DataPtr value, DataPtr interAttn,
         bool isPrefill,
         const size_t B, const size_t NH, const size_t H, const size_t D);
 

@@ -101,7 +101,7 @@ MLPTest::MLPTest(LlamaConfig &config, std::string modelPath, size_t layerIdx)
     mlp = LlamaMLP(config, modelWeight.data(), start);
 }
 
-PYBIND11_MODULE(mlpClass, m)
+PYBIND11_MODULE(mlp_class, m)
 {
     pybind11::enum_<paged_tensor::common::DataType>(m, "DataType")
         .value("FLOAT32", paged_tensor::common::DataType::kFLOAT)

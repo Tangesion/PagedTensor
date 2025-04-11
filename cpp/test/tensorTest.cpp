@@ -29,6 +29,12 @@ TEST(TensorTest, pagedTensorTest)
     std::cout << *tensor4 << std::endl;
 }
 
+TEST(TensorTest, pagedTensorExtendTest)
+{
+    // block size 16  block num 3
+    Tensor::UniquePtr tensor1 = paged_tensor::func::randTensor({1, 3, 4}, DataType::kFLOAT, MemoryType::kCPU, true);
+}
+
 TEST(TensorTest, pagedToContinuousTest)
 {
     Tensor::UniquePtr tensor1 = paged_tensor::func::randTensor({1, 3, 4}, DataType::kFLOAT, MemoryType::kCPU, true);

@@ -24,6 +24,7 @@ endif()
 
 #list(APPEND CMAKE_PREFIX_PATH "/home/tgx/Downloads/anaconda/yes/envs/cuda/lib/python3.10/site-packages/pybind11/share/cmake/pybind11")
 
-add_subdirectory(attentionClass)
-add_subdirectory(mlpClass)
-add_subdirectory(matmulPaged)
+add_subdirectory(attention_class)
+add_subdirectory(mlp_class)
+add_subdirectory(matmul_paged)
+add_subdirectory(attention_paged)

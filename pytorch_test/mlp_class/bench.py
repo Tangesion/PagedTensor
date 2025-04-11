@@ -6,13 +6,13 @@ from transformers import LlamaConfig as LlamaConfigTorch
 from transformers.models.llama.modeling_llama import LlamaMLP as LlamaMLPTorch
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-lib_path = os.path.join(os.path.dirname(__file__), '../build/mlpClass/mlpClass.cpython-310-x86_64-linux-gnu.so')
+lib_path = os.path.join(os.path.dirname(__file__), '../build/mlp_class/mlp_class.cpython-310-x86_64-linux-gnu.so')
 if not os.path.exists(lib_path):
     raise ImportError(f"Cannot find shared library: {lib_path}")
-sys.path.append(os.path.join(current_dir, '../build/mlpClass'))
+sys.path.append(os.path.join(current_dir, '../build/mlp_class'))
 print(f"sys.path: {sys.path}")
 
-from mlpClass import MLPTest, LlamaConfig, DataType
+from mlp_class import MLPTest, LlamaConfig, DataType
 
 config = LlamaConfig(
     32000,  # vocabSize

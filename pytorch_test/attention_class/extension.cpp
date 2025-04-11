@@ -107,7 +107,7 @@ torch::Tensor AttentionTest::getOProj(LlamaConfig &config)
     return oProj;
 }
 
-PYBIND11_MODULE(attentionClass, m)
+PYBIND11_MODULE(attention_class, m)
 {
     pybind11::enum_<paged_tensor::common::DataType>(m, "DataType")
         .value("FLOAT32", paged_tensor::common::DataType::kFLOAT)

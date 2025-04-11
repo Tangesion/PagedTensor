@@ -56,20 +56,46 @@ namespace paged_tensor::runtime
             BlockManager &instance = getInstance();
             instance.freeBlocks = std::queue<void *>(); // Clear the queue
             instance.memoryPool.reset();                // Release the memory pool
+            instance.additionalPools.clear();
+            instance.additionalPools.shrink_to_fit();
+        }
+
+        void extend()
+        {
+            std::cout << "pre extend block num " << blockNum << std::endl;
+            std::cout << "extend!" << std::endl;
+            size_t newBlockNum = blockNum;
+            std::unique_ptr<char[]> newMemoryPool = std::make_unique<char[]>(newBlockNum * blockSize * typeSize);
+            char *rawPtr = newMemoryPool.get();
+
+            for (size_t i = 0; i < newBlockNum; i++)
+            {
+                freeBlocks.push(static_cast<void *>(rawPtr + i * blockSize * typeSize));
+            }
+
+            additionalPools.push_back(std::move(newMemoryPool));
+
+            blockNum += newBlockNum;
+            std::cout << "after extend block num " << blockNum << std::endl;
         }
 
         void *allocateBlock()
         {
-            // TODO: implement wait in the future
-            try
+            // TODO: implement expansion in the future
+            // try
+            //{
+            //    CHECK_WITH_INFO(!freeBlocks.empty(), "No free block available");
+            //}
+            // catch (const std::exception &e)
+            //{
+            //    std::cerr << e.what() << '\n';
+            //    std::exit(EXIT_FAILURE);
+            //}
+            if (freeBlocks.empty())
             {
-                CHECK_WITH_INFO(!freeBlocks.empty(), "No free block available");
+                extend();
             }
-            catch (const std::exception &e)
-            {
-                std::cerr << e.what() << '\n';
-                std::exit(EXIT_FAILURE);
-            }
+
             void *block = std::move(freeBlocks.front());
             freeBlocks.pop();
             return block;
@@ -89,6 +115,7 @@ namespace paged_tensor::runtime
     public:
         std::queue<void *> freeBlocks;
         std::unique_ptr<char[]> memoryPool;
+        std::vector<std::unique_ptr<char[]>> additionalPools;
         size_t blockSize;
         size_t blockNum;
         DataType type;

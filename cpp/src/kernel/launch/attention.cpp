@@ -31,32 +31,55 @@ namespace paged_tensor::kernel::launch
         int64_t H = key->getShape().d[2];
         int64_t D = out->getShape().d[3];
 
-        switch (dataTypeOut)
+        if (out->isPaged())
         {
-        case DataType::kFLOAT:
-        {
-            auto *outData = static_cast<float *>(out->data());
-            auto *queryData = static_cast<float *>(query->data());
-            auto *keyData = static_cast<float *>(key->data());
-            auto *valueData = static_cast<float *>(value->data());
-            auto *interAttnData = static_cast<float *>(interAttn->data());
-            switch (attentionType)
+            switch (dataTypeOut)
             {
-            case kernel_cpu::AttentionType::kAttentionOneThread:
-                kernel_cpu::attentionForwardOneThread(outData, queryData, keyData, valueData, interAttnData, isPrefill, B, NH, H, D);
-                break;
-            case kernel_cpu::AttentionType::kAttentionMultiThread:
-                kernel_cpu::attentionForwardMultiThread(outData, queryData, keyData, valueData, interAttnData, isPrefill, B, NH, H, D);
+            case DataType::kFLOAT:
+            {
+                DataPtr outData = out->dataPaged();
+                DataPtr queryData = query->dataPaged();
+                DataPtr keyData = key->dataPaged();
+                DataPtr valueData = value->dataPaged();
+                DataPtr interAttnData = interAttn->dataPaged();
+                switch (attentionType)
+                {
+                case kernel_cpu::AttentionType::kAttentionOneThread:
+                    kernel_cpu::attentionForwardPaged(outData, queryData, keyData, valueData, interAttnData, isPrefill, B, NH, H, D);
+                    break;
+                }
+            }
+            }
+        }
+        else
+        {
+            switch (dataTypeOut)
+            {
+            case DataType::kFLOAT:
+            {
+                auto *outData = static_cast<float *>(out->data());
+                auto *queryData = static_cast<float *>(query->data());
+                auto *keyData = static_cast<float *>(key->data());
+                auto *valueData = static_cast<float *>(value->data());
+                auto *interAttnData = static_cast<float *>(interAttn->data());
+                switch (attentionType)
+                {
+                case kernel_cpu::AttentionType::kAttentionOneThread:
+                    kernel_cpu::attentionForwardOneThread(outData, queryData, keyData, valueData, interAttnData, isPrefill, B, NH, H, D);
+                    break;
+                case kernel_cpu::AttentionType::kAttentionMultiThread:
+                    kernel_cpu::attentionForwardMultiThread(outData, queryData, keyData, valueData, interAttnData, isPrefill, B, NH, H, D);
+                    break;
+                }
                 break;
             }
-            break;
+
+            default:
+                break;
+            }
         }
 
-        default:
-            break;
-        }
-
-        // auto *outData = paged_tensor::func::getData<DataType::kFLOAT>(out);
+                // auto *outData = paged_tensor::func::getData<DataType::kFLOAT>(out);
         // auto *queryData = paged_tensor::func::getData<DataType::kFLOAT>(query);
         // auto *keyData = paged_tensor::func::getData<DataType::kFLOAT>(key);
         // auto *valueData = paged_tensor::func::getData<DataType::kFLOAT>(value);
