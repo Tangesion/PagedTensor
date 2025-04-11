@@ -42,4 +42,3 @@ Makefile
 *.pyc
 __pycache__/
 *.bin
-core.*
