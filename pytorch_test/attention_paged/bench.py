@@ -15,7 +15,7 @@ from attention_paged import forward_decode, forward_prefill
 
 batch_size = 1
 n_head = 32
-seq_len = 128
+seq_len = 1024
 head_embd = 128
 
 q = torch.randn(batch_size, n_head, seq_len, head_embd, dtype=torch.float32)

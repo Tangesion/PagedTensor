@@ -62,8 +62,8 @@ namespace paged_tensor::runtime
 
         void extend()
         {
-            std::cout << "pre extend block num " << blockNum << std::endl;
-            std::cout << "extend!" << std::endl;
+            // std::cout << "pre extend block num " << blockNum << std::endl;
+            // std::cout << "extend!" << std::endl;
             size_t newBlockNum = blockNum;
             std::unique_ptr<char[]> newMemoryPool = std::make_unique<char[]>(newBlockNum * blockSize * typeSize);
             char *rawPtr = newMemoryPool.get();
@@ -76,7 +76,7 @@ namespace paged_tensor::runtime
             additionalPools.push_back(std::move(newMemoryPool));
 
             blockNum += newBlockNum;
-            std::cout << "after extend block num " << blockNum << std::endl;
+            // std::cout << "after extend block num " << blockNum << std::endl;
         }
 
         void *allocateBlock()
