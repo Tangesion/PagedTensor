@@ -1,4 +1,3 @@
-
 cmake_minimum_required(VERSION 3.10)
 project(MatmulPerfTest)
 set(CMAKE_PREFIX_PATH "/home/gexingt/tgx/lib")
