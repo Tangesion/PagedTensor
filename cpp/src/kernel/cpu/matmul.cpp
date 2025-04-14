@@ -76,9 +76,19 @@ namespace paged_tensor::kernel::cpu
                 {
                     const float *weightRow = weight + oc * C;
                     float sum = 0;
-                    for (size_t c = 0; c < C; c++)
+                    DataPtr inpBTBlock = inpBT[0];
+                    size_t offset = inpBTBlock.getBlockOffset();
+                    size_t blockSize = inpBTBlock.getBlockSize();
+                    size_t currentBlockLength = blockSize - offset;
+                    for (size_t c = 0; c < C; c++, offset++)
                     {
-                        sum += inpBT.data<float>(c) * weightRow[c];
+                        if (offset >= blockSize)
+                        {
+                            inpBTBlock = inpBTBlock + currentBlockLength;
+                            offset = 0;
+                            currentBlockLength = blockSize - offset;
+                        }
+                        sum += inpBTBlock.data<float>()[offset] * weightRow[c];
                     }
                     if (bias != nullptr)
                     {
@@ -173,6 +183,147 @@ namespace paged_tensor::kernel::cpu
                                 inpBTX = inpBTX + blockSize;
                             }
                         }
+                    }
+
+                    if (bias != nullptr)
+                    {
+                        *(outBT[oc].data<float>()) = sum + bias[oc];
+                    }
+                    else
+                    {
+                        *(outBT[oc].data<float>()) = sum;
+                    }
+                }
+            }
+        }
+    }
+
+    void matmulWeightBothPagedBlock(DataPtr out, DataPtr inp, DataPtr weight, const float *bias, const size_t B, const size_t H, const size_t C, const size_t OC)
+    {
+#pragma omp parallel for collapse(3) schedule(dynamic) num_threads(THREADS_NUM)
+        for (size_t b = 0; b < B; b++)
+        {
+            for (size_t t = 0; t < H; t++)
+            {
+                for (size_t oc = 0; oc < OC; oc++)
+                {
+                    DataPtr outBT = out + b * H * OC + t * OC;
+                    DataPtr inpBT = inp + b * H * C + t * C;
+                    DataPtr weightRow = weight + oc * C;
+                    float sum = 0;
+
+                    // 1 2 3 4 |  5 6 7 8 |  9 10 11 12
+                    //     |                    |
+                    // hos                  tos
+                    // 分三个块
+
+                    size_t headOffsetInp = inpBT.getBlockOffset();
+                    size_t blockSizeInp = inpBT.getBlockSize();
+                    size_t headBlockLengthInp = blockSizeInp - headOffsetInp;
+                    DataPtr inpBTX = inpBT[0];
+                    DataPtr inpBTXEnd = inpBT[C];
+                    size_t blockNumInp = inpBTXEnd.getBlockIdx() - inpBTX.getBlockIdx() + 1;
+                    size_t tailOffsetInp = inpBTXEnd.getBlockOffset();
+
+                    size_t headOffsetWeight = weightRow.getBlockOffset();
+                    size_t blockSizeWeight = weightRow.getBlockSize();
+                    size_t headBlockLengthWeight = blockSizeInp - headOffsetWeight;
+                    DataPtr weightRowX = weightRow[0];
+                    DataPtr weightRowEnd = weightRow[C];
+                    size_t blockNumWeight = weightRowEnd.getBlockIdx() - weightRowX.getBlockIdx() + 1;
+                    size_t tailOffsetWeight = weightRowEnd.getBlockOffset();
+
+                    float inpCache[C];
+                    float weightCache[C];
+
+                    int c = 0;
+                    if (blockNumInp == 1)
+                    {
+                        for (size_t cc = 0; cc < C; cc++)
+                        {
+                            inpCache[cc] = inpBTX.data<float>()[cc];
+                        }
+                    }
+                    else
+                    {
+                        for (size_t bx = 0; bx < blockNumInp; bx++)
+                        {
+                            // std::cout << inpBTX.getBlockIdx() << std::endl;
+                            //  std::cout << bx << std::endl;
+                            if (bx == 0)
+                            {
+                                for (size_t cc = 0; cc < headBlockLengthInp; cc++, c++)
+                                {
+                                    inpCache[c] = inpBTX.data<float>()[cc];
+                                }
+                                inpBTX = inpBTX + (headBlockLengthInp);
+                            }
+                            else if (bx == blockNumInp - 1)
+                            {
+                                for (size_t cc = 0; cc < tailOffsetInp; cc++, c++)
+                                {
+                                    inpCache[c] = inpBTX.data<float>()[cc];
+                                }
+                            }
+                            else
+                            {
+
+                                for (size_t cc = 0; cc < blockSizeInp; cc++, c++)
+                                {
+                                    // std::cout << cc << " ";
+                                    inpCache[c] = inpBTX.data<float>()[cc];
+                                }
+                                // std::cout << std::endl;
+                                inpBTX = inpBTX + blockSizeInp;
+                            }
+                        }
+                    }
+
+                    c = 0;
+                    if (blockNumWeight == 1)
+                    {
+                        for (size_t cc = 0; cc < C; cc++)
+                        {
+                            weightCache[cc] = weightRowX.data<float>()[cc];
+                        }
+                    }
+                    else
+                    {
+                        for (size_t bx = 0; bx < blockNumWeight; bx++)
+                        {
+                            // std::cout << inpBTX.getBlockIdx() << std::endl;
+                            //  std::cout << bx << std::endl;
+                            if (bx == 0)
+                            {
+                                for (size_t cc = 0; cc < headBlockLengthWeight; cc++, c++)
+                                {
+                                    weightCache[c] = weightRowX.data<float>()[cc];
+                                }
+                                weightRowX = weightRowX + (headBlockLengthWeight);
+                            }
+                            else if (bx == blockNumWeight - 1)
+                            {
+                                for (size_t cc = 0; cc < tailOffsetWeight; cc++, c++)
+                                {
+                                    weightCache[c] = weightRowX.data<float>()[cc];
+                                }
+                            }
+                            else
+                            {
+                                for (size_t cc = 0; cc < blockSizeWeight; cc++, c++)
+                                {
+                                    // std::cout << cc << " ";
+                                    weightCache[c] = weightRowX.data<float>()[cc];
+                                }
+                                // std::cout << std::endl;
+                                weightRowX = weightRowX + blockSizeWeight;
+                            }
+                        }
+                    }
+
+                    for (size_t c = 0; c < C; c++)
+                    {
+                        sum += weightCache[c] * inpCache[c];
                     }
 
                     if (bias != nullptr)
