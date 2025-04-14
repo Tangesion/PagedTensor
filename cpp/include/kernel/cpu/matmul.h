@@ -20,6 +20,7 @@ namespace paged_tensor::kernel::cpu
         kMatmulMultiThread,
         kMatmulThreadPool,
         kMatmulBlock,
+        kMatmulInternBlock,
         KMatmulBlockMultiThread
     };
 
@@ -29,6 +30,8 @@ namespace paged_tensor::kernel::cpu
     void matmulWeightPaged(DataPtr out, DataPtr inp, const float *weight, const float *bias, const size_t B, const size_t H, const size_t C, const size_t OC);
 
     void matmulWeightPagedBlock(DataPtr out, DataPtr inp, const float *weight, const float *bias, const size_t B, const size_t H, const size_t C, const size_t OC);
+
+    void matmulWeightPagedInternBlock(DataPtr out, DataPtr inp, const float *weight, const float *bias, const size_t B, const size_t H, const size_t C, const size_t OC);
 
     void matmulWeightPagedBlockMultiThread(DataPtr out, DataPtr inp, const float *weight, const float *bias, const size_t B, const size_t H, const size_t C, const size_t OC);
 

@@ -1,9 +1,9 @@
-
 cmake_minimum_required(VERSION 3.10)
 project(MatmulPerfTest)
 set(CMAKE_PREFIX_PATH "/home/gexingt/tgx/lib")
 set(TEST_SOURCES
     matmul.cpp    
+    attention.cpp
 )
 
 # 设置 C++ 标准
@@ -30,7 +30,11 @@ foreach(TEST_SOURCE ${TEST_SOURCES})
     # 包含头文件目录（局部作用范围）
     target_include_directories(${TEST_NAME} PRIVATE ${HEAD_PATH})
 
-    set_target_properties(${TEST_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+    set(TEST_OUTPUT_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TEST_NAME})
+
+    file(MAKE_DIRECTORY ${TEST_OUTPUT_DIR})
+
+    set_target_properties(${TEST_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TEST_OUTPUT_DIR})
 
     target_link_libraries(${TEST_NAME} PRIVATE func kernel_launch)
 
