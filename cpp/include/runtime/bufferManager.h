@@ -9,8 +9,8 @@
 #include <cstring>
 #include <memory>
 
-#define BLOCK_SIZE 128
-#define BLOCK_NUM 128
+#define BLOCK_SIZE 4096
+#define BLOCK_NUM 4096 * 4 * 32
 
 namespace paged_tensor::runtime
 {

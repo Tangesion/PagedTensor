@@ -4,6 +4,7 @@ set(CMAKE_PREFIX_PATH "/home/gexingt/tgx/lib")
 set(TEST_SOURCES
     matmul.cpp    
     attention.cpp
+    tensor.cpp
 )
 
 # 设置 C++ 标准
