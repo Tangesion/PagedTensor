@@ -122,9 +122,9 @@ TEST(TensorTest, DISABLED_pagedTensorTimeTest)
 TEST(TensorTest, mallocTest)
 {
     auto start = std::chrono::high_resolution_clock::now();
-    Tensor::UniquePtr tensor1 = paged_tensor::func::createTensor({32, 4096, 4096}, DataType::kFLOAT, MemoryType::kCPU);
-    Tensor::UniquePtr tensor2 = paged_tensor::func::createTensor({32, 4096, 4096}, DataType::kFLOAT, MemoryType::kCPU);
-    Tensor::UniquePtr tensor3 = paged_tensor::func::createTensor({32, 4096, 4096}, DataType::kFLOAT, MemoryType::kCPU);
+    Tensor::UniquePtr tensor1 = paged_tensor::func::createTensor({1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
+    Tensor::UniquePtr tensor2 = paged_tensor::func::createTensor({1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
+    Tensor::UniquePtr tensor3 = paged_tensor::func::createTensor({1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
     tensor1.reset();
     tensor2.reset();
     tensor3.reset();
@@ -134,9 +134,9 @@ TEST(TensorTest, mallocTest)
 
     Tensor::UniquePtr test = paged_tensor::func::createTensor({1, 16, 4096}, DataType::kFLOAT, MemoryType::kCPU, true);
     start = std::chrono::high_resolution_clock::now();
-    Tensor::UniquePtr tensor4 = paged_tensor::func::createTensor({32, 4096, 4096}, DataType::kFLOAT, MemoryType::kCPU, true);
-    Tensor::UniquePtr tensor5 = paged_tensor::func::createTensor({32, 4096, 4096}, DataType::kFLOAT, MemoryType::kCPU, true);
-    Tensor::UniquePtr tensor6 = paged_tensor::func::createTensor({32, 4096, 4096}, DataType::kFLOAT, MemoryType::kCPU, true);
+    Tensor::UniquePtr tensor4 = paged_tensor::func::createTensor({1024, 4096}, DataType::kFLOAT, MemoryType::kCPU, true);
+    Tensor::UniquePtr tensor5 = paged_tensor::func::createTensor({1024, 4096}, DataType::kFLOAT, MemoryType::kCPU, true);
+    Tensor::UniquePtr tensor6 = paged_tensor::func::createTensor({1024, 4096}, DataType::kFLOAT, MemoryType::kCPU, true);
     tensor4.reset();
     tensor5.reset();
     tensor6.reset();

@@ -31,17 +31,19 @@ namespace paged_tensor::kernel::launch
         int64_t H = key->getShape().d[2];
         int64_t D = out->getShape().d[3];
 
-        if (out->isPaged())
+        if (key->isPaged())
         {
             switch (dataTypeOut)
             {
             case DataType::kFLOAT:
             {
-                DataPtr outData = out->dataPaged();
-                DataPtr queryData = query->dataPaged();
+                NH = key->getShape().d[2];
+                H = key->getShape().d[1];
+                auto *outData = static_cast<float *>(out->data());
+                auto *queryData = static_cast<float *>(query->data());
                 DataPtr keyData = key->dataPaged();
                 DataPtr valueData = value->dataPaged();
-                DataPtr interAttnData = interAttn->dataPaged();
+                auto *interAttnData = static_cast<float *>(interAttn->data());
                 switch (attentionType)
                 {
                 case kernel_cpu::AttentionType::kAttentionOneThread:
@@ -79,7 +81,7 @@ namespace paged_tensor::kernel::launch
             }
         }
 
-                // auto *outData = paged_tensor::func::getData<DataType::kFLOAT>(out);
+        // auto *outData = paged_tensor::func::getData<DataType::kFLOAT>(out);
         // auto *queryData = paged_tensor::func::getData<DataType::kFLOAT>(query);
         // auto *keyData = paged_tensor::func::getData<DataType::kFLOAT>(key);
         // auto *valueData = paged_tensor::func::getData<DataType::kFLOAT>(value);

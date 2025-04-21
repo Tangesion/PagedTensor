@@ -40,10 +40,11 @@ namespace paged_tensor::runtime
             {
                 // allocate memory pool with size
                 memoryPool = std::make_unique<char[]>(blockNum * blockSize * paged_tensor::common::getTypeSize(type));
+                freeBlocks.reserve(blockNum);
                 char *rawPtr = memoryPool.get();
                 for (size_t i = 0; i < blockNum; i++)
                 {
-                    freeBlocks.push(static_cast<void *>(rawPtr + i * blockSize * paged_tensor::common::getTypeSize(type)));
+                    freeBlocks.push_back(static_cast<void *>(rawPtr + i * blockSize * paged_tensor::common::getTypeSize(type)));
                 }
                 this->blockSize = blockSize;
                 this->blockNum = blockNum;
@@ -54,8 +55,9 @@ namespace paged_tensor::runtime
         static void destroyInstance()
         {
             BlockManager &instance = getInstance();
-            instance.freeBlocks = std::queue<void *>(); // Clear the queue
-            instance.memoryPool.reset();                // Release the memory pool
+            instance.freeBlocks.clear();
+            instance.freeBlocks.shrink_to_fit();
+            instance.memoryPool.reset(); // Release the memory pool
             instance.additionalPools.clear();
             instance.additionalPools.shrink_to_fit();
         }
@@ -70,7 +72,7 @@ namespace paged_tensor::runtime
 
             for (size_t i = 0; i < newBlockNum; i++)
             {
-                freeBlocks.push(static_cast<void *>(rawPtr + i * blockSize * typeSize));
+                freeBlocks.push_back(static_cast<void *>(rawPtr + i * blockSize * typeSize));
             }
 
             additionalPools.push_back(std::move(newMemoryPool));
@@ -96,14 +98,14 @@ namespace paged_tensor::runtime
                 extend();
             }
 
-            void *block = std::move(freeBlocks.front());
-            freeBlocks.pop();
+            void *block = freeBlocks.back();
+            freeBlocks.pop_back();
             return block;
         }
 
         void free(void *block)
         {
-            freeBlocks.push(block);
+            freeBlocks.push_back(block);
         }
 
     private:
@@ -113,7 +115,7 @@ namespace paged_tensor::runtime
         BlockManager &operator=(BlockManager const &) = delete;
 
     public:
-        std::queue<void *> freeBlocks;
+        std::vector<void *> freeBlocks;
         std::unique_ptr<char[]> memoryPool;
         std::vector<std::unique_ptr<char[]>> additionalPools;
         size_t blockSize;

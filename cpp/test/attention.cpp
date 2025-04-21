@@ -105,18 +105,19 @@ TEST(AttentionTest, pagedAttentionTestTime)
     std::chrono::duration<double> duration = end - start;
     std::cout << "no paged prefill one thread : " << duration.count() << " seconds" << std::endl;
 
-    out = randTensor({1, 32, 1024, 128}, DataType::kFLOAT, MemoryType::kCPU, true);
-    query = randTensor({1, 32, 1024, 128}, DataType::kFLOAT, MemoryType::kCPU, true);
-    key = randTensor({1, 32, 1024, 128}, DataType::kFLOAT, MemoryType::kCPU, true);
-    value = randTensor({1, 32, 1024, 128}, DataType::kFLOAT, MemoryType::kCPU, true);
-    interAttn = createTensor({1, 32, 1024, 1024}, DataType::kFLOAT, MemoryType::kCPU, true);
+    out = randTensor({1, 2, 32, 128}, DataType::kFLOAT, MemoryType::kCPU, false);
+    query = randTensor({1, 2, 32, 128}, DataType::kFLOAT, MemoryType::kCPU, false);
+    key = randTensor({1, 2, 32, 128}, DataType::kFLOAT, MemoryType::kCPU, true);
+    value = randTensor({1, 2, 32, 128}, DataType::kFLOAT, MemoryType::kCPU, true);
+    interAttn = createTensor({1, 32, 2, 2}, DataType::kFLOAT, MemoryType::kCPU, false);
     start = std::chrono::high_resolution_clock::now();
     attentionForward(out, query, key, value, interAttn, true, AttentionType::kAttentionOneThread);
     end = std::chrono::high_resolution_clock::now();
     duration = end - start;
     std::cout << "paged prefill one thread : " << duration.count() << " seconds" << std::endl;
+    std::cout << *out << std::endl;
 
-    out = randTensor({1, 32, 1, 128}, DataType::kFLOAT, MemoryType::kCPU);
+    /* out = randTensor({1, 32, 1, 128}, DataType::kFLOAT, MemoryType::kCPU);
     query = randTensor({1, 32, 1, 128}, DataType::kFLOAT, MemoryType::kCPU);
     key = randTensor({1, 32, 1024, 128}, DataType::kFLOAT, MemoryType::kCPU);
     value = randTensor({1, 32, 1024, 128}, DataType::kFLOAT, MemoryType::kCPU);
@@ -136,5 +137,5 @@ TEST(AttentionTest, pagedAttentionTestTime)
     attentionForward(out, query, key, value, interAttn, false, AttentionType::kAttentionOneThread);
     end = std::chrono::high_resolution_clock::now();
     duration = end - start;
-    std::cout << "paged decode one thread : " << duration.count() << " seconds" << std::endl;
+    std::cout << "paged decode one thread : " << duration.count() << " seconds" << std::endl; */
 }

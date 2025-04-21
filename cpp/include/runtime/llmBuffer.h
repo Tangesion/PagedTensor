@@ -97,7 +97,7 @@ namespace paged_tensor::runtime
             auto vec = static_cast<std::vector<void *> *>(ptr);
             for (size_t i = 0; i < vec->size(); i++)
             {
-                BlockManager::getInstance().freeBlocks.push(vec->at(i));
+                BlockManager::getInstance().freeBlocks.push_back(vec->at(i));
             }
             delete vec;
         }

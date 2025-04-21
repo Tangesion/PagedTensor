@@ -36,6 +36,7 @@ public:
     {
         if (freeChunks.empty())
         {
+            std::cout << "no free chunk!" << std::endl;
             return nullptr; // 内存池已满
         }
 
@@ -56,9 +57,11 @@ public:
 
 int main()
 {
-    constexpr size_t NUM_ALLOCS = 100000;                 // 分配次数
-    constexpr size_t CHUNK_SIZE = 64;                     // 每次分配大小
-    constexpr size_t POOL_SIZE = NUM_ALLOCS * CHUNK_SIZE; // 内存池大小
+    constexpr size_t NUM_ALLOCS = 100;  // 分配次数
+    constexpr size_t CHUNK_SIZE = 4096; // 每次分配大小
+    constexpr size_t NORM_SIZE = 4096 * 4;
+    constexpr size_t POOL_SIZE = NORM_SIZE * NUM_ALLOCS; // 内存池大小
+    constexpr size_t BLOCK_NUM = NORM_SIZE * NUM_ALLOCS / CHUNK_SIZE;
 
     // 模拟场景1: 多次连续分配和释放 (不利于系统分配器)
     {
@@ -66,7 +69,7 @@ int main()
 
         for (size_t i = 0; i < NUM_ALLOCS; ++i)
         {
-            void *ptr = malloc(CHUNK_SIZE);
+            void *ptr = malloc(NORM_SIZE);
             free(ptr);
         }
 
@@ -82,7 +85,7 @@ int main()
 
         auto start = std::chrono::high_resolution_clock::now();
 
-        for (size_t i = 0; i < NUM_ALLOCS; ++i)
+        for (size_t i = 0; i < BLOCK_NUM; ++i)
         {
             void *ptr = pool.allocate();
             pool.deallocate(ptr);
@@ -96,15 +99,14 @@ int main()
 
     // 模拟场景3: 批量分配然后批量释放 (更真实的场景)
     {
-        auto start = std::chrono::high_resolution_clock::now();
 
         std::vector<void *> ptrs;
         ptrs.reserve(NUM_ALLOCS);
-
+        auto start = std::chrono::high_resolution_clock::now();
         // 批量分配
         for (size_t i = 0; i < NUM_ALLOCS; ++i)
         {
-            ptrs.push_back(malloc(CHUNK_SIZE));
+            ptrs.push_back(malloc(NORM_SIZE));
         }
 
         // 批量释放
@@ -126,10 +128,10 @@ int main()
         auto start = std::chrono::high_resolution_clock::now();
 
         std::vector<void *> ptrs;
-        ptrs.reserve(NUM_ALLOCS);
+        ptrs.reserve(BLOCK_NUM);
 
         // 批量分配
-        for (size_t i = 0; i < NUM_ALLOCS; ++i)
+        for (size_t i = 0; i < BLOCK_NUM; ++i)
         {
             ptrs.push_back(pool.allocate());
         }
