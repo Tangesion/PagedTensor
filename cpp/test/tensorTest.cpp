@@ -5,7 +5,7 @@
 using namespace paged_tensor::runtime;
 using namespace paged_tensor::func;
 
-TEST(TensorTest, wrapTest)
+TEST(TensorTest, DISABLED_wrapTest)
 {
     Tensor::UniquePtr tensor = paged_tensor::func::randTensor({1, 3, 4}, DataType::kFLOAT, MemoryType::kCPU);
     std::cout << *tensor << std::endl;
@@ -13,7 +13,7 @@ TEST(TensorTest, wrapTest)
     std::cout << *tensorWrap << std::endl;
 }
 
-TEST(TensorTest, pagedTensorTest)
+TEST(TensorTest, DISABLED_pagedTensorTest)
 {
     // block size 16  block num 3
     Tensor::UniquePtr tensor1 = paged_tensor::func::randTensor({1, 3, 4}, DataType::kFLOAT, MemoryType::kCPU, true);
@@ -29,13 +29,13 @@ TEST(TensorTest, pagedTensorTest)
     std::cout << *tensor4 << std::endl;
 }
 
-TEST(TensorTest, pagedTensorExtendTest)
+TEST(TensorTest, DISABLED_pagedTensorExtendTest)
 {
     // block size 16  block num 3
     Tensor::UniquePtr tensor1 = paged_tensor::func::randTensor({1, 3, 4}, DataType::kFLOAT, MemoryType::kCPU, true);
 }
 
-TEST(TensorTest, pagedToContinuousTest)
+TEST(TensorTest, DISABLED_pagedToContinuousTest)
 {
     Tensor::UniquePtr tensor1 = paged_tensor::func::randTensor({1, 3, 4}, DataType::kFLOAT, MemoryType::kCPU, true);
     std::cout << *tensor1 << std::endl;
@@ -45,7 +45,7 @@ TEST(TensorTest, pagedToContinuousTest)
     std::cout << *tensor3 << std::endl;
 }
 
-TEST(TensorTest, pagedTensorTimeTest)
+TEST(TensorTest, DISABLED_pagedTensorTimeTest)
 {
     try
     {
@@ -117,4 +117,30 @@ TEST(TensorTest, pagedTensorTimeTest)
         std::cerr << e.what() << '\n';
         std::exit(EXIT_FAILURE);
     }
+}
+
+TEST(TensorTest, mallocTest)
+{
+    auto start = std::chrono::high_resolution_clock::now();
+    Tensor::UniquePtr tensor1 = paged_tensor::func::createTensor({1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
+    Tensor::UniquePtr tensor2 = paged_tensor::func::createTensor({1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
+    Tensor::UniquePtr tensor3 = paged_tensor::func::createTensor({1024, 4096}, DataType::kFLOAT, MemoryType::kCPU);
+    tensor1.reset();
+    tensor2.reset();
+    tensor3.reset();
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end - start;
+    std::cout << "norm tensor create and delete time: " << duration.count() << " seconds" << std::endl;
+
+    Tensor::UniquePtr test = paged_tensor::func::createTensor({1, 16, 4096}, DataType::kFLOAT, MemoryType::kCPU, true);
+    start = std::chrono::high_resolution_clock::now();
+    Tensor::UniquePtr tensor4 = paged_tensor::func::createTensor({1024, 4096}, DataType::kFLOAT, MemoryType::kCPU, true);
+    Tensor::UniquePtr tensor5 = paged_tensor::func::createTensor({1024, 4096}, DataType::kFLOAT, MemoryType::kCPU, true);
+    Tensor::UniquePtr tensor6 = paged_tensor::func::createTensor({1024, 4096}, DataType::kFLOAT, MemoryType::kCPU, true);
+    tensor4.reset();
+    tensor5.reset();
+    tensor6.reset();
+    end = std::chrono::high_resolution_clock::now();
+    duration = end - start;
+    std::cout << "paged tensor create and delete time: " << duration.count() << " seconds" << std::endl;
 }

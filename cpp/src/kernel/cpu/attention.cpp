@@ -268,8 +268,282 @@ namespace paged_tensor::kernel::cpu
             }
         }
     }
-
+    // q (B, H, NH, D)
     void attentionForwardPaged(
+        float *out, const float *query, const DataPtr key, const DataPtr value, float *internAttn,
+        bool isPrefill,
+        const size_t B, const size_t NH, const size_t H, const size_t D)
+    {
+        if (__builtin_expect(isPrefill, 0))
+        {
+            for (size_t b = 0; b < B; b++)
+            {
+                for (size_t nh = 0; nh < NH; nh++)
+                {
+                    for (size_t h = 0; h < H; h++)
+                    {
+                        float maxValue = -std::numeric_limits<float>::infinity();
+                        float *internAttnBNH = internAttn + b * NH * H * H + nh * H * H + h * H;
+                        const float *queryBNH = query + b * NH * H * D + h * NH * D + nh * D;
+                        for (size_t h2 = 0; h2 <= h; h2++)
+                        {
+                            float sum = 0.0;
+                            // a block size is (4096(dimmension))
+                            DataPtr keyBH = key + b * H * NH * D + h2 * NH * D;
+                            const float *keyBNH = keyBH.data<float>() + nh * D;
+                            for (size_t d = 0; d < D; d++)
+                            {
+                                sum += queryBNH[d] * keyBNH[d];
+                            }
+                            sum /= sqrtf(static_cast<float>(D));
+                            if (sum > maxValue)
+                            {
+                                maxValue = sum;
+                            }
+                            internAttnBNH[h2] = sum;
+                        }
+                        float minValue = -std::numeric_limits<float>::infinity();
+                        for (size_t h2 = h + 1; h2 < H; h2++)
+                        {
+                            internAttnBNH[h2] = minValue;
+                        }
+                        // softmax
+                        float expSum = 0;
+                        for (size_t h2 = 0; h2 <= h; h2++)
+                        {
+                            float expValue = expf(internAttnBNH[h2] - maxValue);
+                            expSum += expValue;
+                            internAttnBNH[h2] = expValue;
+                            // std::cout << internAttnBNH[h2] << " ";
+                        }
+                        // std::cout << std::endl;
+                        float invExpSum = expSum == 0 ? 0 : 1 / expSum;
+                        for (size_t h2 = 0; h2 < H; h2++)
+                        {
+                            if (h2 <= h)
+                            {
+                                internAttnBNH[h2] *= invExpSum;
+                            }
+                            else
+                            {
+                                internAttnBNH[h2] = 0;
+                            }
+                        }
+                        // score @ value
+                        float *outBNH = out + b * H * NH * D + h * NH * D + nh * D;
+
+                        for (size_t h2 = 0; h2 < H; h2++)
+                        {
+                            DataPtr valueBH = value + b * H * NH * D + h2 * NH * D;
+                            float *valueBNH = valueBH.data<float>() + nh * D;
+
+                            for (size_t d = 0; d < D; d++)
+                            {
+
+                                outBNH[d] += internAttnBNH[h2] * valueBNH[d];
+                                // std::cout << outBNH[d] << " ";
+                            }
+                            // std::cout << internAttnBNH[h2] << " ";
+                        }
+                        // std::cout << std::endl;
+                    }
+                }
+            }
+        }
+        else
+        {
+            // decode
+            for (size_t b = 0; b < B; b++)
+            {
+                for (size_t nh = 0; nh < NH; nh++)
+                {
+                    float maxValue = -std::numeric_limits<float>::infinity();
+                    float *internAttnBN = internAttn + b * NH * H + nh * H;
+                    const float *queryBN = query + b * NH * D + nh * D;
+                    for (size_t h = 0; h < H; h++)
+                    {
+                        float sum = 0.0;
+                        DataPtr keyBH = key + b * H * NH * D + h * NH * D;
+                        const float *keytBNH = keyBH.data<float>() + nh * D;
+                        for (size_t d = 0; d < D; d++)
+                        {
+                            sum += queryBN[d] * keytBNH[d];
+                        }
+                        sum /= sqrtf(static_cast<float>(D));
+                        if (sum > maxValue)
+                        {
+                            maxValue = sum;
+                        }
+                        internAttnBN[h] = sum;
+                    }
+                    // softmax
+                    float expSum = 0;
+                    for (size_t h = 0; h < H; h++)
+                    {
+                        float expValue = expf(internAttnBN[h] - maxValue);
+                        expSum += expValue;
+                        internAttnBN[h] = expValue;
+                    }
+                    float invExpSum = expSum == 0 ? 0 : 1 / expSum;
+                    for (size_t h = 0; h < H; h++)
+                    {
+                        internAttnBN[h] *= invExpSum;
+                    }
+                    // score @ value
+                    float *outBN = out + b * NH * D + nh * D;
+                    for (size_t h = 0; h < H; h++)
+                    {
+                        DataPtr valueBH = value + b * H * NH * D + h * NH * D;
+                        const float *valueBNH = valueBH.data<float>() + nh * D;
+                        for (size_t d = 0; d < D; d++)
+                        {
+                            outBN[d] += internAttnBN[h] * valueBNH[d];
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    void attentionForwardPagedMultiThread(
+        float *out, const float *query, const DataPtr key, const DataPtr value, float *internAttn,
+        bool isPrefill,
+        const size_t B, const size_t NH, const size_t H, const size_t D)
+    {
+        if (__builtin_expect(isPrefill, 0))
+        {
+#pragma omp parallel for collapse(3) num_threads(THREADS_NUM)
+            for (size_t b = 0; b < B; b++)
+            {
+                for (size_t nh = 0; nh < NH; nh++)
+                {
+                    for (size_t h = 0; h < H; h++)
+                    {
+                        float maxValue = -std::numeric_limits<float>::infinity();
+                        float *internAttnBNH = internAttn + b * NH * H * H + nh * H * H + h * H;
+                        const float *queryBNH = query + b * NH * H * D + h * NH * D + nh * D;
+                        for (size_t h2 = 0; h2 <= h; h2++)
+                        {
+                            float sum = 0.0;
+                            // a block size is (4096(dimmension))
+                            DataPtr keyBH = key + b * H * NH * D + h2 * NH * D;
+                            const float *keyBNH = keyBH.data<float>() + nh * D;
+                            for (size_t d = 0; d < D; d++)
+                            {
+                                sum += queryBNH[d] * keyBNH[d];
+                            }
+                            sum /= sqrtf(static_cast<float>(D));
+                            if (sum > maxValue)
+                            {
+                                maxValue = sum;
+                            }
+                            internAttnBNH[h2] = sum;
+                        }
+                        float minValue = -std::numeric_limits<float>::infinity();
+                        for (size_t h2 = h + 1; h2 < H; h2++)
+                        {
+                            internAttnBNH[h2] = minValue;
+                        }
+                        // softmax
+                        float expSum = 0;
+                        for (size_t h2 = 0; h2 <= h; h2++)
+                        {
+                            float expValue = expf(internAttnBNH[h2] - maxValue);
+                            expSum += expValue;
+                            internAttnBNH[h2] = expValue;
+                            // std::cout << internAttnBNH[h2] << " ";
+                        }
+                        // std::cout << std::endl;
+                        float invExpSum = expSum == 0 ? 0 : 1 / expSum;
+                        for (size_t h2 = 0; h2 < H; h2++)
+                        {
+                            if (h2 <= h)
+                            {
+                                internAttnBNH[h2] *= invExpSum;
+                            }
+                            else
+                            {
+                                internAttnBNH[h2] = 0;
+                            }
+                        }
+                        // score @ value
+                        float *outBNH = out + b * H * NH * D + h * NH * D + nh * D;
+
+                        for (size_t h2 = 0; h2 < H; h2++)
+                        {
+                            DataPtr valueBH = value + b * H * NH * D + h2 * NH * D;
+                            float *valueBNH = valueBH.data<float>() + nh * D;
+
+                            for (size_t d = 0; d < D; d++)
+                            {
+
+                                outBNH[d] += internAttnBNH[h2] * valueBNH[d];
+                                // std::cout << outBNH[d] << " ";
+                            }
+                            // std::cout << internAttnBNH[h2] << " ";
+                        }
+                        // std::cout << std::endl;
+                    }
+                }
+            }
+        }
+        else
+        {
+            // decode
+#pragma omp parallel for collapse(2) num_threads(THREADS_NUM)
+            for (size_t b = 0; b < B; b++)
+            {
+                for (size_t nh = 0; nh < NH; nh++)
+                {
+                    float maxValue = -std::numeric_limits<float>::infinity();
+                    float *internAttnBN = internAttn + b * NH * H + nh * H;
+                    const float *queryBN = query + b * NH * D + nh * D;
+                    for (size_t h = 0; h < H; h++)
+                    {
+                        float sum = 0.0;
+                        DataPtr keyBH = key + b * H * NH * D + h * NH * D;
+                        const float *keytBNH = keyBH.data<float>() + nh * D;
+                        for (size_t d = 0; d < D; d++)
+                        {
+                            sum += queryBN[d] * keytBNH[d];
+                        }
+                        sum /= sqrtf(static_cast<float>(D));
+                        if (sum > maxValue)
+                        {
+                            maxValue = sum;
+                        }
+                        internAttnBN[h] = sum;
+                    }
+                    // softmax
+                    float expSum = 0;
+                    for (size_t h = 0; h < H; h++)
+                    {
+                        float expValue = expf(internAttnBN[h] - maxValue);
+                        expSum += expValue;
+                        internAttnBN[h] = expValue;
+                    }
+                    float invExpSum = expSum == 0 ? 0 : 1 / expSum;
+                    for (size_t h = 0; h < H; h++)
+                    {
+                        internAttnBN[h] *= invExpSum;
+                    }
+                    // score @ value
+                    float *outBN = out + b * NH * D + nh * D;
+                    for (size_t h = 0; h < H; h++)
+                    {
+                        DataPtr valueBH = value + b * H * NH * D + h * NH * D;
+                        const float *valueBNH = valueBH.data<float>() + nh * D;
+                        for (size_t d = 0; d < D; d++)
+                        {
+                            outBN[d] += internAttnBN[h] * valueBNH[d];
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /* void attentionForwardPaged(
         DataPtr out, const DataPtr query, const DataPtr key, const DataPtr value, DataPtr interAttn,
         bool isPrefill,
         const size_t B, const size_t NH, const size_t H, const size_t D)
@@ -396,7 +670,7 @@ namespace paged_tensor::kernel::cpu
                 }
             }
         }
-    }
+    } */
 
     // using namespace paged_tensor::runtime;
     // using namespace paged_tensor::func;

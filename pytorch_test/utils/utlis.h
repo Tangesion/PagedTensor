@@ -33,7 +33,9 @@ namespace paged_tensor::utils
         {
             auto shape = tensor->getShape();
             std::vector<int64_t> shapeVec(shape.d, shape.d + shape.nbDims);
-            torch::Tensor torchTensor = torch::from_blob(tensor->data(), shapeVec, torch::kFloat);
+            auto *rawTensor = tensor.release();
+            torch::Tensor torchTensor = torch::from_blob(rawTensor->data(), shapeVec, torch::kFloat).clone();
+            delete rawTensor;
             return torchTensor;
         }
         else
@@ -42,7 +44,8 @@ namespace paged_tensor::utils
             auto shape = continuousTensor->getShape();
             std::vector<int64_t> shapeVec(shape.d, shape.d + shape.nbDims);
             auto *rawContinuousTensor = continuousTensor.release();
-            torch::Tensor torchTensor = torch::from_blob(rawContinuousTensor->data(), shapeVec, torch::kFloat);
+            torch::Tensor torchTensor = torch::from_blob(rawContinuousTensor->data(), shapeVec, torch::kFloat).clone();
+            delete rawContinuousTensor;
             return torchTensor;
         }
     }

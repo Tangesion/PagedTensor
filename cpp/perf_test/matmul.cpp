@@ -15,5 +15,5 @@ int main()
     paged_tensor::kernel::launch::matmulWeight(out, inp, weight, nullptr, matmulType);
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end - start;
-    std::cout << "paged matmul block one thread time: " << duration.count() << " seconds" << std::endl;
+    std::cout << "paged matmul intern block one thread time: " << duration.count() << " seconds" << std::endl;
 }

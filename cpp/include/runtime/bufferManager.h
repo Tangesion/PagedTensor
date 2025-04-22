@@ -10,7 +10,7 @@
 #include <memory>
 
 #define BLOCK_SIZE 4096
-#define BLOCK_NUM 128
+#define BLOCK_NUM 1024
 
 namespace paged_tensor::runtime
 {

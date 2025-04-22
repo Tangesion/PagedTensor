@@ -47,8 +47,15 @@ def decode_attn(q_vec, k, v):
 prefill_result = prefill_attn(q, k, v)
 decode_result = decode_attn(q_vec, k, v)
 
-paged_prefill_result = forward_prefill(q, k, v)
-paged_decode_result = forward_decode(q_vec, k, v)
+q_trans = q.transpose(1, 2).contiguous()
+k_trans = k.transpose(1, 2).contiguous()
+v_trans = v.transpose(1, 2).contiguous()
+q_vec_trans = q_vec.transpose(1, 2).contiguous()
 
-print('prefill attn values sanity check:', torch.allclose(paged_prefill_result, prefill_result, rtol=0, atol=1e-03))
-print('decode attn values sanity check:', torch.allclose(paged_decode_result, decode_result, rtol=0, atol=1e-03))
+paged_prefill_result = forward_prefill(q_trans, k_trans, v_trans)
+print(paged_prefill_result)
+print(prefill_result.transpose(1, 2))
+paged_decode_result = forward_decode(q_vec_trans, k_trans, v_trans)
+
+print('prefill attn values sanity check:', torch.allclose(paged_prefill_result, prefill_result.transpose(1, 2), rtol=0, atol=1e-03))
+print('decode attn values sanity check:', torch.allclose(paged_decode_result, decode_result.transpose(1, 2), rtol=0, atol=1e-03))

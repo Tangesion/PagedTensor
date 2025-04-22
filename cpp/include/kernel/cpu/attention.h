@@ -40,7 +40,12 @@ namespace paged_tensor::kernel::cpu
         const size_t B, const size_t NH, const size_t H, const size_t D);
 
     void attentionForwardPaged(
-        DataPtr out, const DataPtr query, const DataPtr key, const DataPtr value, DataPtr interAttn,
+        float *out, const float *query, const DataPtr key, const DataPtr value, float *interAttn,
+        bool isPrefill,
+        const size_t B, const size_t NH, const size_t H, const size_t D);
+
+    void attentionForwardPagedMultiThread(
+        float *out, const float *query, const DataPtr key, const DataPtr value, float *internAttn,
         bool isPrefill,
         const size_t B, const size_t NH, const size_t H, const size_t D);
 
