@@ -143,6 +143,22 @@ namespace paged_tensor::llama2
         // AttentionSpace &operator=(AttentionSpace const &) = delete;
     };
 
+    class PagedAttentionSpace
+    {
+    public:
+        PagedAttentionSpace(LlamaConfig &config);
+        void transToDecode();
+        void printMemory();
+
+    public:
+        Tensor::UniquePtr queryStates;
+        Tensor::UniquePtr attentionScores;
+        Tensor::UniquePtr attentionOutput;
+        Tensor::UniquePtr attentionOutputProjected;
+        Tensor::UniquePtr kCache;
+        Tensor::UniquePtr vCache;
+    }
+
     class LlamaAttention
     {
     public:
