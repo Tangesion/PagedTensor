@@ -286,6 +286,7 @@ namespace paged_tensor::kernel::cpu
                         float maxValue = -std::numeric_limits<float>::infinity();
                         DataPtr interAttnBNH = interAttn + b * NH * H * H + nh * H * H + h * H;
                         const DataPtr queryBNH = query + b * NH * H * D + nh * H * D + h * D;
+
                         for (size_t h2 = 0; h2 <= h; h2++)
                         {
                             float sum = 0;

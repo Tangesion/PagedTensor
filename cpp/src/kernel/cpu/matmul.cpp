@@ -76,9 +76,42 @@ namespace paged_tensor::kernel::cpu
                 {
                     const float *weightRow = weight + oc * C;
                     float sum = 0;
-                    for (size_t c = 0; c < C; c++)
+                    DataPtr inpBTBlock = inpBT[0];
+                    size_t offset = inpBTBlock.getBlockOffset();
+                    size_t blockSize = inpBTBlock.getBlockSize();
+                    size_t currentBlockLength = blockSize - offset;
+                    for (size_t c = 0; c < C; c++, offset++)
                     {
-                        sum += inpBT.data<float>(c) * weightRow[c];
+                        /*
+                        编译器考虑到inpBTBlock可能会在for循环中发生变化
+                        所以不能直接通过 movss   (%rdx,%rcx,4),%xmm0   从 inpBTX.data<float>()[cc] 加载浮点值，
+                        因为这里的rdx是基地址，是个定值，而inpBTBlock发生了变化
+                        所以原来是
+                        movss   (%rdx,%rcx,4),%xmm0  // 从 inpBTX.data<float>()[cc] 加载浮点值
+                        mulss   (%r15,%rcx,4),%xmm0  // 乘以 weightRow[c]
+                        addss   %xmm0,%xmm1          // 将结果累加到 sum
+                        仅需三条指令
+
+                        而现在需要
+                        lea     0x0(,%rdi,4),%rsi   // 计算 offset * 4 的字节偏移量，存储到 %rsi
+                        add     (%r11,%rax,8),%rsi  // 加上块的基地址，得到最终地址，存储到 %rsi
+                        movss   (%rsi,%rdx,1),%xmm0 // 从最终地址加载浮点值到 %xmm0
+                        mulss   -0x4(%rcx),%xmm0    // 将浮点值乘以 weightRow[c]
+                        addss   %xmm0,%xmm1         // 将乘积累加到 sum
+                        五条指令
+
+                        rdi : offset的值
+                        r11 : 块的基地址
+                        rax : 块索引
+                        rsi : 内存地址
+                        */
+                        if (offset >= blockSize)
+                        {
+                            inpBTBlock = inpBTBlock + currentBlockLength;
+                            offset = 0;
+                            currentBlockLength = blockSize - offset;
+                        }
+                        sum += inpBTBlock.data<float>()[offset] * weightRow[c];
                     }
                     if (bias != nullptr)
                     {
