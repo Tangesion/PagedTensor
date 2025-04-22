@@ -49,6 +49,9 @@ namespace paged_tensor::kernel::launch
                 case kernel_cpu::AttentionType::kAttentionOneThread:
                     kernel_cpu::attentionForwardPaged(outData, queryData, keyData, valueData, interAttnData, isPrefill, B, NH, H, D);
                     break;
+                case kernel_cpu::AttentionType::kAttentionMultiThread:
+                    kernel_cpu::attentionForwardPagedMultiThread(outData, queryData, keyData, valueData, interAttnData, isPrefill, B, NH, H, D);
+                    break;
                 }
             }
             }

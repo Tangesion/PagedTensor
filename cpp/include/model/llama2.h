@@ -177,6 +177,23 @@ namespace paged_tensor::llama2
     {
     public:
         LlamaPagedAttention(LlamaConfig &config, const size_t layerIdx, char *modelWeight, const size_t start);
+
+    private:
+        size_t hiddenSize;
+        size_t numAttentionHeads;
+        size_t headDims;
+        size_t maxPos;
+        size_t typeSize;
+        Tensor::UniquePtr qProjWeight;
+        Tensor::UniquePtr kProjWeight;
+        Tensor::UniquePtr vProjWeight;
+        Tensor::UniquePtr oProjWeight;
+
+    public:
+        Tensor::UniquePtr &getQProjWeight() { return qProjWeight; }
+        Tensor::UniquePtr &getKProjWeight() { return kProjWeight; }
+        Tensor::UniquePtr &getVProjWeight() { return vProjWeight; }
+        Tensor::UniquePtr &getOProjWeight() { return oProjWeight; }
     };
 
     class LlamaMLP

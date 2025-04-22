@@ -29,7 +29,7 @@ torch::Tensor attentionPrefillBind(torch::Tensor q, torch::Tensor k, torch::Tens
     runtime::Tensor::UniquePtr pagedInterAttn = utils::torchToPagedTensor(interAttn, false);
     runtime::Tensor::UniquePtr pagedO = utils::torchToPagedTensor(out, false);
 
-    kernel::launch::attentionForward(pagedO, pagedQ, pagedK, pagedV, pagedInterAttn, true, kernel::cpu::AttentionType::kAttentionOneThread);
+    kernel::launch::attentionForward(pagedO, pagedQ, pagedK, pagedV, pagedInterAttn, true, kernel::cpu::AttentionType::kAttentionMultiThread);
     // std::cout << *pagedO;
     out = utils::pagedTensorToTorch(pagedO);
     return out;
@@ -52,7 +52,7 @@ torch::Tensor attentionDecodeBind(torch::Tensor q, torch::Tensor k, torch::Tenso
     runtime::Tensor::UniquePtr pagedInterAttn = utils::torchToPagedTensor(interAttn, false);
     runtime::Tensor::UniquePtr pagedO = utils::torchToPagedTensor(out, false);
 
-    kernel::launch::attentionForward(pagedO, pagedQ, pagedK, pagedV, pagedInterAttn, false, kernel::cpu::AttentionType::kAttentionOneThread);
+    kernel::launch::attentionForward(pagedO, pagedQ, pagedK, pagedV, pagedInterAttn, false, kernel::cpu::AttentionType::kAttentionMultiThread);
     out = utils::pagedTensorToTorch(pagedO);
     return out;
 }
