@@ -143,22 +143,6 @@ namespace paged_tensor::llama2
         // AttentionSpace &operator=(AttentionSpace const &) = delete;
     };
 
-    class PagedAttentionSpace
-    {
-    public:
-        PagedAttentionSpace(LlamaConfig &config);
-        void transToDecode();
-        void printMemory();
-
-    public:
-        Tensor::UniquePtr queryStates;
-        Tensor::UniquePtr attentionScores;
-        Tensor::UniquePtr attentionOutput;
-        Tensor::UniquePtr attentionOutputProjected;
-        Tensor::UniquePtr kCache;
-        Tensor::UniquePtr vCache;
-    }
-
     class LlamaAttention
     {
     public:
@@ -187,6 +171,26 @@ namespace paged_tensor::llama2
         Tensor::UniquePtr &getKProjWeight() { return kProjWeight; }
         Tensor::UniquePtr &getVProjWeight() { return vProjWeight; }
         Tensor::UniquePtr &getOProjWeight() { return oProjWeight; }
+    };
+
+    class PagedAttentionSpace
+    {
+    public:
+        PagedAttentionSpace(LlamaConfig &config, runtimeParams &params);
+        void transToDecode();
+        void printMemory();
+
+    public:
+        Tensor::UniquePtr queryStates;
+        Tensor::UniquePtr attentionScores;
+        Tensor::UniquePtr attentionOutput;
+        Tensor::UniquePtr attentionOutputProjected;
+        Tensor::UniquePtr kCache;
+        Tensor::UniquePtr vCache;
+
+    private:
+        LlamaConfig config;
+        runtimeParams params;
     };
 
     class LlamaPagedAttention

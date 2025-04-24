@@ -82,7 +82,7 @@ namespace paged_tensor::runtime
         // n is element number
         void allocateImpl(void **ptr, std::size_t n)
         {
-            size_t blockSize = BlockManager::getInstance().blockSize;
+            size_t blockSize = BlockManager::getInstance().getBlockSize();
             auto vec = new std::vector<void *>((n + blockSize - 1) / blockSize);
             for (size_t i = 0; i < vec->size(); i++)
             {
@@ -97,7 +97,7 @@ namespace paged_tensor::runtime
             auto vec = static_cast<std::vector<void *> *>(ptr);
             for (size_t i = 0; i < vec->size(); i++)
             {
-                BlockManager::getInstance().freeBlocks.push_back(vec->at(i));
+                BlockManager::getInstance().free(vec->at(i));
             }
             delete vec;
         }
@@ -139,6 +139,39 @@ namespace paged_tensor::runtime
     private:
         void *mPtr;
         std::size_t mCapacity;
+    };
+
+    // TODO: Now just kv cache wrapper
+    template <MemoryType memoryType>
+    class BorrowingPagedKVAllocator : public BaseAllocator<BorrowingPagedKVAllocator<memoryType>, memoryType, false>
+    {
+        friend class BaseAllocator<BorrowingPagedKVAllocator<memoryType>, memoryType, false>;
+
+    public:
+        using Base = BaseAllocator<BorrowingPagedKVAllocator<memoryType>, memoryType, false>;
+
+        BorrowingPagedKVAllocator(size_t layerIdx, size_t length, bool isKey, bool isWrapNewBlock)
+            : mLayerIdx(layerIdx), mLength(length), mIsKey(isKey), mIsWrapNewBlock(isWrapNewBlock)
+        {
+            CHECK_WITH_INFO(mLength == 1 && !mIsWrapNewBlock, "when wrapNewBlock is True, length must to be 1");
+        }
+
+    protected:
+        void allocateImpl(void **ptr, std::size_t n) // NOLINT(readability-convert-member-functions-to-static)
+        {
+            *ptr = KVCacheManager::getInstance().helpWrapper(mLayerIdx, mLength, mIsKey, mIsWrapNewBlock);
+        }
+
+        void deallocateImpl( // NOLINT(readability-convert-member-functions-to-static)
+            [[maybe_unused]] void *ptr, [[maybe_unused]] std::size_t n)
+        {
+        }
+
+    private:
+        size_t mLayerIdx;
+        size_t mLength;
+        bool mIsKey;
+        bool mIsWrapNewBlock;
     };
 
     using CpuBorrowingAllocator = BorrowingAllocator<MemoryType::kCPU>;
@@ -228,7 +261,7 @@ namespace paged_tensor::runtime
                 mAllocator.deallocate(mBuffer, toBytes(mCapacity));
                 mBuffer = mAllocator.allocate(toBytes(newSize));
                 mCapacity = newSize;
-                mDataPtr = DataPtr(getBlockMap(), 0, BlockManager::getInstance().blockSize, BlockManager::getInstance().typeSize);
+                mDataPtr = DataPtr(getBlockMap(), 0, BlockManager::getInstance().getBlockSize(), BlockManager::getInstance().getTypeSize());
             }
             mSize = newSize;
         }
@@ -266,7 +299,7 @@ namespace paged_tensor::runtime
         {
             if (mPaged)
             {
-                mDataPtr = DataPtr(getBlockMap(), 0, BlockManager::getInstance().blockSize, BlockManager::getInstance().typeSize);
+                mDataPtr = DataPtr(getBlockMap(), 0, BlockManager::getInstance().getBlockSize(), BlockManager::getInstance().getTypeSize());
             }
         }
 

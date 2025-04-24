@@ -180,6 +180,20 @@ void LlamaAttention::forward(Tensor::UniquePtr &hiddenStatesOut,
     func::reShape(hiddenStatesOut, {CastInt64(bsz), CastInt64(qLen), CastInt64(hiddenSize)});
 }
 
+PagedAttentionSpace::PagedAttentionSpace(LlamaConfig &config, runtimeParams &params) : config(config), params(params)
+{
+    // TODO: add multi batchs
+    queryStates = func::createTensor(
+        {CastInt64(params.batch), CastInt64(params.length), CastInt64(config.hiddenSize)},
+        config.dataType, MemoryType::kCPU);
+    attentionScores = func::createTensor(
+        {CastInt64(params.batch), CastInt64(config.numAttentionHeads), CastInt64(params.length), CastInt64(params.length)},
+        config.dataType, MemoryType::kCPU);
+    attentionOutput = func::createTensor(
+        {CastInt64(params.batch), CastInt64(params.length), CastInt64(config.numAttentionHeads), CastInt64(config.hiddenSize / config.numAttentionHeads)},
+        config.dataType, MemoryType::kCPU);
+}
+
 LlamaMLP::LlamaMLP(LlamaConfig &config, char *modelWeight, const size_t start)
     : hiddenSize(config.hiddenSize), intermediateSize(config.intermediateSize), typeSize(config.typeSize)
 {

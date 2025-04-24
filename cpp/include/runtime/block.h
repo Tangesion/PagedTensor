@@ -8,23 +8,6 @@
 namespace paged_tensor::runtime
 {
 
-    // class Block
-    //{
-    // public:
-    //     using DataType = paged_tensor::common::DataType;
-    //     Block(size_t size, DataType type, void *data)
-    //         : size{size}, typeSize{paged_tensor::common::getTypeSize(type)}, type{type}, data{data}, offset{0}
-    //     {
-    //     }
-    //     ~Block() = default;
-    //
-    // public:
-    //    size_t size; // num of elements
-    //    size_t typeSize;
-    //    DataType type;
-    //    size_t offset; // offset num in block
-    //    void *data;
-    //};
     class BlockManager
     {
     public:
@@ -83,16 +66,7 @@ namespace paged_tensor::runtime
 
         void *allocateBlock()
         {
-            // TODO: implement expansion in the future
-            // try
-            //{
-            //    CHECK_WITH_INFO(!freeBlocks.empty(), "No free block available");
-            //}
-            // catch (const std::exception &e)
-            //{
-            //    std::cerr << e.what() << '\n';
-            //    std::exit(EXIT_FAILURE);
-            //}
+
             if (freeBlocks.empty())
             {
                 extend();
@@ -108,13 +82,31 @@ namespace paged_tensor::runtime
             freeBlocks.push_back(block);
         }
 
+        size_t getBlockSize()
+        {
+            return blockSize;
+        }
+
+        size_t getTypeSize()
+        {
+            return typeSize;
+        }
+
+        DataType getType()
+        {
+            return type;
+        }
+
     private:
         BlockManager() = default;
-        ~BlockManager() = default;
+        ~BlockManager()
+        {
+            destroyInstance();
+        }
         BlockManager(BlockManager const &) = delete;
         BlockManager &operator=(BlockManager const &) = delete;
 
-    public:
+    private:
         std::vector<void *> freeBlocks;
         std::unique_ptr<char[]> memoryPool;
         std::vector<std::unique_ptr<char[]>> additionalPools;
@@ -122,5 +114,101 @@ namespace paged_tensor::runtime
         size_t blockNum;
         DataType type;
         size_t typeSize;
+    };
+
+    struct KVListNode
+    {
+        KVListNode *next;
+        void *kBlock;
+        void *vBlock;
+        KVListNode(void *kBlock, void *vBlock) : kBlock(kBlock), vBlock(vBlock), next(nullptr) {}
+        KVListNode() : kBlock(nullptr), vBlock(nullptr), next(nullptr) {}
+    };
+
+    struct HeadTail
+    {
+        KVListNode *head;
+        KVListNode *tail;
+        HeadTail() : head(nullptr), tail(nullptr) {}
+    };
+
+    class KVCacheManager
+    {
+    public:
+        static KVCacheManager &getInstance()
+        {
+            static KVCacheManager instance;
+            return instance;
+        }
+
+        void initialize(size_t layerNums)
+        {
+            this->layerNums = layerNums;
+            kvLayerLists.resize(layerNums);
+            for (size_t i = 0; i < layerNums; i++)
+            {
+                kvLayerLists[i] = new HeadTail();
+                kvLayerLists[i]->head = new KVListNode();
+            }
+        }
+
+    public:
+        // TODO: more flexible
+        void allocate(size_t layerIdx, size_t length)
+        {
+            KVListNode *curr = kvLayerLists[layerIdx]->tail ? kvLayerLists[layerIdx]->tail : kvLayerLists[layerIdx]->head;
+            for (size_t i = 0; i < length; i++)
+            {
+                void *kBlock = BlockManager::getInstance().allocateBlock();
+                void *vBlock = BlockManager::getInstance().allocateBlock();
+                curr->next = new KVListNode(kBlock, vBlock);
+                curr = curr->next;
+            }
+            kvLayerLists[layerIdx]->tail = curr;
+        }
+
+        void destroy()
+        {
+            for (size_t i = 0; i < layerNums; i++)
+            {
+                KVListNode *curr = kvLayerLists[i]->head->next;
+                while (curr)
+                {
+                    BlockManager::getInstance().free(curr->kBlock);
+                    BlockManager::getInstance().free(curr->vBlock);
+                    curr = curr->next;
+                }
+            }
+        }
+
+        std::vector<void *> *helpWrapper(size_t layerid, size_t length, bool isKey, bool isWrapNewBlock)
+        {
+
+            auto vec = new std::vector<void *>(length);
+            if (!isWrapNewBlock)
+            {
+                KVListNode *curr = kvLayerLists[layerid]->head->next;
+                for (size_t i = 0; i < length; i++)
+                {
+                    vec->at(i) = isKey ? curr->kBlock : curr->vBlock;
+                }
+            }
+            else
+            {
+
+                vec->at(0) = isKey ? kvLayerLists[layerid]->tail->kBlock : kvLayerLists[layerid]->tail->vBlock;
+            }
+            return vec;
+        }
+
+    private:
+        KVCacheManager() = default;
+        ~KVCacheManager() = default;
+        KVCacheManager &operator=(KVCacheManager const &) = delete;
+        KVCacheManager(KVCacheManager const &) = delete;
+
+    private:
+        std::vector<HeadTail *> kvLayerLists;
+        size_t layerNums;
     };
 };
