@@ -11,7 +11,7 @@ Tensor::UniquePtr Tensor::wrap(void *data, DataType type, Shape const &shape, st
     {
         throw std::invalid_argument("capacity is less than the size of the tensor");
     }
-    auto memoryType = Buffer::memoryType(data);
+    auto memoryType = Buffer::memoryType();
 
     Tensor::UniquePtr tensor;
 
@@ -22,6 +22,28 @@ Tensor::UniquePtr Tensor::wrap(void *data, DataType type, Shape const &shape, st
         tensor.reset( // NOLINT(modernize-make-unique)
             new GenericTensor<CpuBorrowingAllocator>(
                 shape, capacity, type, CpuBorrowingAllocator(data, capacityInBytes)));
+        break;
+
+    default:
+        break;
+    }
+    return tensor;
+}
+
+Tensor::UniquePtr Tensor::kvCacheWrap(DataType type, Shape const &shape, std::size_t length, std::size_t layerIdx, bool isKey, bool isWrapNewBlock)
+{
+    size_t capacity = volume(shape);
+    auto memoryType = Buffer::memoryType();
+
+    Tensor::UniquePtr tensor;
+
+    auto const capacityInBytes = capacity * BufferDataType(type).getSize();
+    switch (memoryType)
+    {
+    case MemoryType::kCPU:
+        tensor.reset( // NOLINT(modernize-make-unique)
+            new GenericTensor<CpuPagedKVBorrowingAllocator>(
+                shape, type, true, CpuPagedKVBorrowingAllocator(layerIdx, length, isKey, isWrapNewBlock)));
         break;
 
     default:

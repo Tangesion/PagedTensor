@@ -68,7 +68,7 @@ namespace paged_tensor::runtime
 
         [[nodiscard]] virtual MemoryType getMemoryType() const = 0;
 
-        static MemoryType memoryType(void const *data);
+        static MemoryType memoryType();
 
         [[nodiscard]] virtual std::size_t getSize() const = 0;
 

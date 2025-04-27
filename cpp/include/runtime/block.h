@@ -97,6 +97,33 @@ namespace paged_tensor::runtime
             return type;
         }
 
+        void printStatus() const
+        {
+            size_t totalBlocks = blockNum;
+            size_t freeBlockCount = freeBlocks.size();
+            size_t usedBlockCount = totalBlocks - freeBlockCount;
+            size_t mainPoolSize = blockSize * typeSize * (blockNum - (additionalPools.empty() ? 0 : additionalPools.size() * blockNum / (additionalPools.size() + 1)));
+            size_t additionalPoolsSize = 0;
+
+            for (size_t i = 0; i < additionalPools.size(); i++)
+            {
+                additionalPoolsSize += blockSize * typeSize * blockNum / (i + 2);
+            }
+
+            size_t totalMemorySize = mainPoolSize + additionalPoolsSize;
+
+            std::cout << "BlockManager Status:" << std::endl;
+            std::cout << "  Total Blocks: " << totalBlocks << std::endl;
+            std::cout << "  Used Blocks: " << usedBlockCount << std::endl;
+            std::cout << "  Free Blocks: " << freeBlockCount << std::endl;
+            std::cout << "  Block Size: " << blockSize << " elements (" << blockSize * typeSize << " bytes)" << std::endl;
+            std::cout << "  Data Type: " << " (" << typeSize << " bytes)" << std::endl;
+            std::cout << "  Main Memory Pool: " << mainPoolSize << " bytes" << std::endl;
+            std::cout << "  Additional Memory Pools: " << additionalPoolsSize << " bytes" << std::endl;
+            std::cout << "  Total Memory: " << totalMemorySize << " bytes (" << totalMemorySize / (1024.0 * 1024.0) << " MB)" << std::endl;
+            std::cout << std::endl;
+        }
+
     private:
         BlockManager() = default;
         ~BlockManager()
@@ -199,6 +226,51 @@ namespace paged_tensor::runtime
                 vec->at(0) = isKey ? kvLayerLists[layerid]->tail->kBlock : kvLayerLists[layerid]->tail->vBlock;
             }
             return vec;
+        }
+
+        void printStatus() const
+        {
+            std::cout << "KVCacheManager Status:" << std::endl;
+            std::cout << "  Number of Layers: " << layerNums << std::endl;
+
+            size_t totalKVPairs = 0;
+            size_t totalMemoryUsed = 0;
+            size_t blockSize = BlockManager::getInstance().getBlockSize();
+            size_t typeSize = BlockManager::getInstance().getTypeSize();
+            size_t bytesPerBlock = blockSize * typeSize;
+
+            std::cout << "  Per-Layer KV Cache:" << std::endl;
+            for (size_t i = 0; i < layerNums; i++)
+            {
+                size_t kvLength = 0;
+                KVListNode *curr = kvLayerLists[i]->head->next;
+
+                while (curr)
+                {
+                    kvLength++;
+                    curr = curr->next;
+                }
+
+                totalKVPairs += kvLength;
+                size_t layerMemory = kvLength * 2 * bytesPerBlock; // *2 because each KV pair has K and V blocks
+                totalMemoryUsed += layerMemory;
+
+                std::cout << "    Layer " << i << ": " << kvLength << " KV pairs ("
+                          << (layerMemory / 1024.0) << " KB)" << std::endl;
+            }
+
+            std::cout << "  Total KV Pairs: " << totalKVPairs << std::endl;
+            std::cout << "  Block Size: " << blockSize << " elements (" << bytesPerBlock << " bytes)" << std::endl;
+            std::cout << "  Total Memory Used: " << (totalMemoryUsed / (1024.0 * 1024.0)) << " MB" << std::endl;
+
+            // Calculate memory efficiency
+            if (totalKVPairs > 0)
+            {
+                size_t avgBytesPerToken = totalMemoryUsed / totalKVPairs;
+                std::cout << "  Avg Memory per KV Pair: " << avgBytesPerToken / (1024.0) << " KB" << std::endl;
+            }
+
+            std::cout << std::endl;
         }
 
     private:

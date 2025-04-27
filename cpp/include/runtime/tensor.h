@@ -38,6 +38,7 @@ namespace paged_tensor::runtime
         {
             return wrap(data, type, shape, volume(shape));
         }
+        static UniquePtr kvCacheWrap(DataType type, Shape const &shape, std::size_t length, std::size_t layerIdx, bool isKey, bool isWrapNewBlock);
         Tensor &operator=(Tensor const &) = delete;
         Tensor(Tensor const &) = delete;
         ~Tensor() override = default;

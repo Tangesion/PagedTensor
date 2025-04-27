@@ -28,6 +28,7 @@ set(TEST_SOURCES
     ffn.cpp
     transpose.cpp
     tensorTest.cpp
+    KVCache.cpp
 )
 
 

@@ -6,7 +6,7 @@
 
 using namespace paged_tensor::runtime;
 
-MemoryType Buffer::memoryType(void const *data)
+MemoryType Buffer::memoryType()
 {
     cudaPointerAttributes attributes{};
     // TLLM_CUDA_CHECK(::cudaPointerGetAttributes(&attributes, data));

@@ -153,7 +153,7 @@ namespace paged_tensor::runtime
         BorrowingPagedKVAllocator(size_t layerIdx, size_t length, bool isKey, bool isWrapNewBlock)
             : mLayerIdx(layerIdx), mLength(length), mIsKey(isKey), mIsWrapNewBlock(isWrapNewBlock)
         {
-            CHECK_WITH_INFO(mLength == 1 && !mIsWrapNewBlock, "when wrapNewBlock is True, length must to be 1");
+            CHECK_WITH_INFO(mLength == 1 || !mIsWrapNewBlock, "when wrapNewBlock is True, length must to be 1");
         }
 
     protected:
@@ -175,6 +175,7 @@ namespace paged_tensor::runtime
     };
 
     using CpuBorrowingAllocator = BorrowingAllocator<MemoryType::kCPU>;
+    using CpuPagedKVBorrowingAllocator = BorrowingPagedKVAllocator<MemoryType::kCPU>;
 
     template <typename TAllocator>
     class GenericBuffer : virtual public Buffer
