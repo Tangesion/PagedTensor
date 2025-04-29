@@ -35,45 +35,57 @@ namespace paged_tensor::kernel::launch
             case DataType::kFLOAT:
             {
                 DataPtr outData = out->dataPaged();
-                DataPtr inpData = inp->dataPaged();
 
                 auto *biasData = bias == nullptr ? nullptr : static_cast<float *>(bias->data());
                 switch (matmulType)
                 {
                 case kernel_cpu::MatmulType::kMatmulOneThread:
                 {
+                    DataPtr inpData = inp->dataPaged();
                     auto weightData = static_cast<float *>(weight->data());
                     kernel_cpu::matmulWeightPaged(outData, inpData, weightData, biasData, B, H, C, OC);
                     break;
                 }
                 case kernel_cpu::MatmulType::kMatmulMultiThread:
                 {
+                    DataPtr inpData = inp->dataPaged();
                     auto weightData = static_cast<float *>(weight->data());
                     kernel_cpu::matmulWeightPagedMultiThread(outData, inpData, weightData, biasData, B, H, C, OC);
                     break;
                 }
                 case kernel_cpu::MatmulType::kMatmulBlock:
                 {
+                    DataPtr inpData = inp->dataPaged();
                     auto weightData = static_cast<float *>(weight->data());
                     kernel_cpu::matmulWeightPagedBlock(outData, inpData, weightData, biasData, B, H, C, OC);
                     break;
                 }
                 case kernel_cpu::MatmulType::KMatmulBlockMultiThread:
                 {
+                    DataPtr inpData = inp->dataPaged();
                     auto weightData = static_cast<float *>(weight->data());
                     kernel_cpu::matmulWeightPagedBlockMultiThread(outData, inpData, weightData, biasData, B, H, C, OC);
                     break;
                 }
                 case kernel_cpu::MatmulType::kMatmulInternBlock:
                 {
+                    DataPtr inpData = inp->dataPaged();
                     auto weightData = static_cast<float *>(weight->data());
                     kernel_cpu::matmulWeightPagedInternBlock(outData, inpData, weightData, biasData, B, H, C, OC);
                     break;
                 }
                 case kernel_cpu::MatmulType::kMatmulBothBlock:
                 {
+                    DataPtr inpData = inp->dataPaged();
                     DataPtr weightData = weight->dataPaged();
                     kernel_cpu::matmulWeightBothPagedBlock(outData, inpData, weightData, biasData, B, H, C, OC);
+                    break;
+                }
+                case kernel_cpu::MatmulType::kMatmulPagedOutMultiThread:
+                {
+                    float *inpData = static_cast<float *>(inp->data());
+                    auto weightData = static_cast<float *>(weight->data());
+                    kernel_cpu::matmulWeightPagedOutMultiThread(outData, inpData, weightData, biasData, B, H, C, OC);
                     break;
                 }
                 }

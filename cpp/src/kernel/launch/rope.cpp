@@ -62,25 +62,44 @@ namespace paged_tensor::kernel::launch
         int64_t H = inp->getShape().d[1];
         int64_t D = inp->getShape().d[3];
 
-        switch (dataTypeInp)
+        if (!inp->isPaged())
         {
-        case DataType::kFLOAT:
-        {
-            auto *inpData = static_cast<float *>(inp->data());
-            auto *freqsCosSinData = static_cast<float *>(freqsCosSin->data());
-            auto *posData = static_cast<size_t *>(pos->data());
-            if (isMultiThread)
+            switch (dataTypeInp)
             {
-                kernel_cpu::applyRopeMultiThread(inpData, freqsCosSinData, B, NH, H, D, posData);
-            }
-            else
+            case DataType::kFLOAT:
             {
-                kernel_cpu::applyRopeOneThread(inpData, freqsCosSinData, B, NH, H, D, posData);
+                auto *inpData = static_cast<float *>(inp->data());
+                auto *freqsCosSinData = static_cast<float *>(freqsCosSin->data());
+                auto *posData = static_cast<size_t *>(pos->data());
+                if (isMultiThread)
+                {
+                    kernel_cpu::applyRopeMultiThread(inpData, freqsCosSinData, B, NH, H, D, posData);
+                }
+                else
+                {
+                    kernel_cpu::applyRopeOneThread(inpData, freqsCosSinData, B, NH, H, D, posData);
+                }
+                break;
             }
-            break;
+            default:
+                break;
+            }
         }
-        default:
-            break;
+        else
+        {
+            switch (dataTypeInp)
+            {
+            case DataType::kFLOAT:
+            {
+                DataPtr inpData = inp->dataPaged();
+                auto *freqsCosSinData = static_cast<float *>(freqsCosSin->data());
+                auto *posData = static_cast<size_t *>(pos->data());
+                kernel_cpu::applyRopePagedOneThread(inpData, freqsCosSinData, B, NH, H, D, posData);
+                break;
+            }
+            default:
+                break;
+            }
         }
     }
 }

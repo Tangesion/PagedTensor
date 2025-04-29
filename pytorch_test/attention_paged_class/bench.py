@@ -6,14 +6,14 @@ from transformers import LlamaForCausalLM, LlamaConfig as LlamaConfigTorch
 from transformers.cache_utils import DynamicCache
 from model import LlamaAttention as LlamaAttentionTorch, get_cos_sin
 
-#sys.path.append('../build/attention_class')
+#sys.path.append('../build/attention_paged_class')
 current_dir = os.path.dirname(os.path.abspath(__file__))
-lib_path = os.path.join(os.path.dirname(__file__), '../build/attention_class/attention_class.cpython-310-x86_64-linux-gnu.so')
+lib_path = os.path.join(os.path.dirname(__file__), '../build/attention_paged_class/attention_paged_class.cpython-310-x86_64-linux-gnu.so')
 if not os.path.exists(lib_path):
     raise ImportError(f"Cannot find shared library: {lib_path}")
-sys.path.append(os.path.join(current_dir, '../build/attention_class'))
+sys.path.append(os.path.join(current_dir, '../build/attention_paged_class'))
 print(f"sys.path: {sys.path}")
-from attention_class import AttentionTest, LlamaConfig, DataType, runtimeParams
+from attention_paged_class import AttentionTest, LlamaConfig, DataType
 
 config = LlamaConfig(
     32000,  # vocabSize
@@ -27,15 +27,12 @@ config = LlamaConfig(
     DataType.FLOAT32,  # dataType
 )
 
-params = runtimeParams(
-    1,  # batch size
-    2048,  # sequence length
-)
+
 
 config_torch = LlamaConfigTorch()
 config_torch.max_position_embeddings = 4096
 heads_num = 32
-length = 2048
+length = 4096
 bsz = 1
 hidden_size = 4096
 position_ids = torch.arange(length).unsqueeze(0)
@@ -52,7 +49,7 @@ attention_pytorch = LlamaAttentionTorch(config_torch, 0)
 model_path_golden = os.path.abspath(os.path.join(current_dir, "../../weight/test_weights_pytorch.bin"))
 model_path_test = os.path.abspath(os.path.join(current_dir, "../../weight/test_weights_numpy.bin"))
 
-attention_test = AttentionTest(config, params, model_path_test)
+attention_test = AttentionTest(config, model_path_test)
 # test if binded
 attention_test.printMessage()
 
@@ -102,7 +99,7 @@ print(f"pytorch prefill time: {end_time - start_time}")
 output_test = torch.zeros_like(output_golden)
 pos = torch.arange(length)
 start_time = time.time()
-output = attention_test.forwardTest(output_test, hidden_states, 0, pos, 0)
+output = attention_test.forwardTest(output_test, hidden_states, 0, pos, True)
 end_time = time.time()
 print(f"paged_tensor prefill time: {end_time - start_time}")
 
@@ -122,12 +119,12 @@ print(cache.key_cache[0].shape)
 print(f"pytorch decode time: {end_time - start_time}")
 output_test = torch.zeros(bsz, 1, hidden_size, dtype=torch.float32)
 start_time = time.time()
-output = attention_test.forwardTest(output_test, hidden_states_decode, 0, position_ids_decode, length)
+output = attention_test.forwardTest(output_test, hidden_states_decode, 0, position_ids_decode, False)
 end_time = time.time()
 print(f"paged_tensor decode time: {end_time - start_time}")
 result = torch.allclose(output_golden ,output, atol=1e-4)
-#print(output_golden)
-#print(output)
+print(output_golden)
+print(output)
 print("output_decode test result: ", result)
 
 

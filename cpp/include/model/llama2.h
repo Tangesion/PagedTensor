@@ -176,21 +176,28 @@ namespace paged_tensor::llama2
     class PagedAttentionSpace
     {
     public:
-        PagedAttentionSpace(LlamaConfig &config, runtimeParams &params);
-        void transToDecode();
+        PagedAttentionSpace(LlamaConfig &config) : config(config) {}
         void printMemory();
+        void allocateForwardBuffers(size_t batch, size_t length, size_t allocateLength, bool isPrefill);
+        void releaseForwardBuffers();
+        ~PagedAttentionSpace() { releaseForwardBuffers(); }
 
     public:
+        Tensor::UniquePtr &getQueryStates() { return queryStates; }
+        Tensor::UniquePtr &getAttentionScores() { return attentionScores; }
+        Tensor::UniquePtr &getAttentionOutput() { return attentionOutput; }
+        Tensor::UniquePtr &getKcache() { return kCache; }
+        Tensor::UniquePtr &getVcache() { return vCache; }
+
+    private:
         Tensor::UniquePtr queryStates;
         Tensor::UniquePtr attentionScores;
         Tensor::UniquePtr attentionOutput;
-        Tensor::UniquePtr attentionOutputProjected;
         Tensor::UniquePtr kCache;
         Tensor::UniquePtr vCache;
 
     private:
         LlamaConfig config;
-        runtimeParams params;
     };
 
     class LlamaPagedAttention
@@ -214,6 +221,16 @@ namespace paged_tensor::llama2
         Tensor::UniquePtr &getKProjWeight() { return kProjWeight; }
         Tensor::UniquePtr &getVProjWeight() { return vProjWeight; }
         Tensor::UniquePtr &getOProjWeight() { return oProjWeight; }
+
+        void forward(Tensor::UniquePtr &hiddenStatesOut,
+                     Tensor::UniquePtr &hiddenStatesIn,
+                     const size_t layerIdx,
+                     Tensor::UniquePtr &pos,
+                     LlamaRotaryEmbedding &rotaryEmbedding,
+                     PagedAttentionSpace &pagedAttentionSpace,
+                     bool isPrefill);
+
+        void asyncLoadWeight();
     };
 
     class LlamaMLP

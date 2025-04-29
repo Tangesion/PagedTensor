@@ -24,10 +24,10 @@ find_package(OpenMP REQUIRED)
 #set(CMAKE_BUILD_TYPE Debug)
 
 # 添加调试信息并禁用优化
-#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0")
 # 启用优化
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O2 -fopenmp")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O2 -fopenmp")
 #include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 #include_directories(${CUDA_INCLUDE_DIRS})
 

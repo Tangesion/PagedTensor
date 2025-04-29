@@ -5,6 +5,7 @@ set(SRC
     buffer.cpp
     bufferManager.cpp
     tensor.cpp
+    block.cpp
 )
 set(LIBRARY_OUTPUT_PATH ${LIB_PATH})
 add_library(runtime SHARED ${SRC})

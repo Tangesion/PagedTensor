@@ -60,6 +60,35 @@ namespace paged_tensor::kernel::cpu
         }
     }
 
+    void applyRopePagedOneThread(DataPtr inp, const float *freqsCosSin, const size_t B, const size_t NH, const size_t H, const size_t D, const size_t *pos)
+    {
+        for (size_t b = 0; b < B; b++)
+        {
+            for (size_t h = 0; h < H; h++)
+            {
+                DataPtr inpBN = inp + b * NH * H * D + h * NH * D;
+                float *inpBNData = inpBN.data<float>();
+                for (size_t nh = 0; nh < NH; nh++)
+                {
+                    float *inpBNH = inpBNData + nh * D;
+                    const float *freqsCosSinH = freqsCosSin + pos[h] * D;
+                    for (size_t qd = 0; qd < D / 2; qd++)
+                    {
+                        float rotaCosUp = inpBNH[qd] * freqsCosSinH[qd];
+                        float rotaCosDown = inpBNH[qd + D / 2] * freqsCosSinH[qd];
+
+                        float rotaSinUp = -inpBNH[qd + D / 2] * freqsCosSinH[D / 2 + qd];
+                        float rotaSinDown = inpBNH[qd] * freqsCosSinH[D / 2 + qd];
+
+                        // 将计算结果存储到 outBNH 中
+                        inpBNH[qd] = rotaCosUp + rotaSinUp;
+                        inpBNH[qd + D / 2] = rotaCosDown + rotaSinDown;
+                    }
+                }
+            }
+        }
+    }
+
     void applyRopeMultiThread(float *inp, const float *freqsCosSin, const size_t B, const size_t NH, const size_t H, const size_t D, const size_t *pos)
     {
         // inp (B, H, NH , D)

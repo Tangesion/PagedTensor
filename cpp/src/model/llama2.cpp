@@ -180,18 +180,25 @@ void LlamaAttention::forward(Tensor::UniquePtr &hiddenStatesOut,
     func::reShape(hiddenStatesOut, {CastInt64(bsz), CastInt64(qLen), CastInt64(hiddenSize)});
 }
 
-PagedAttentionSpace::PagedAttentionSpace(LlamaConfig &config, runtimeParams &params) : config(config), params(params)
+void PagedAttentionSpace::allocateForwardBuffers(size_t batch, size_t length, size_t allocateLength, bool isPrefill)
 {
     // TODO: add multi batchs
     queryStates = func::createTensor(
-        {CastInt64(params.batch), CastInt64(params.length), CastInt64(config.hiddenSize)},
+        {CastInt64(batch), CastInt64(length), CastInt64(config.hiddenSize)},
         config.dataType, MemoryType::kCPU);
     attentionScores = func::createTensor(
-        {CastInt64(params.batch), CastInt64(config.numAttentionHeads), CastInt64(params.length), CastInt64(params.length)},
+        {CastInt64(batch), CastInt64(config.numAttentionHeads), CastInt64(length), CastInt64(allocateLength)},
         config.dataType, MemoryType::kCPU);
     attentionOutput = func::createTensor(
-        {CastInt64(params.batch), CastInt64(params.length), CastInt64(config.numAttentionHeads), CastInt64(config.hiddenSize / config.numAttentionHeads)},
+        {CastInt64(batch), CastInt64(length), CastInt64(config.numAttentionHeads), CastInt64(config.hiddenSize / config.numAttentionHeads)},
         config.dataType, MemoryType::kCPU);
+}
+
+void PagedAttentionSpace::releaseForwardBuffers()
+{
+    queryStates.reset();
+    attentionScores.reset();
+    attentionOutput.reset();
 }
 
 LlamaMLP::LlamaMLP(LlamaConfig &config, char *modelWeight, const size_t start)
@@ -207,6 +214,73 @@ LlamaMLP::LlamaMLP(LlamaConfig &config, char *modelWeight, const size_t start)
         upProjWeight = Tensor::wrap(modelWeight + (start + config.intermediateSize * config.hiddenSize) * config.typeSize, config.dataType, upWeightShape, config.intermediateSize * config.hiddenSize);
         downProjWeight = Tensor::wrap(modelWeight + (start + 2 * config.intermediateSize * config.hiddenSize) * config.typeSize, config.dataType, downWeightShape, config.intermediateSize * config.hiddenSize);
     }
+}
+
+LlamaPagedAttention::LlamaPagedAttention(LlamaConfig &config, const size_t layerIdx, char *modelWeight, const size_t start)
+    : hiddenSize(config.hiddenSize), numAttentionHeads(config.numAttentionHeads), headDims(config.hiddenSize / config.numAttentionHeads), maxPos(config.maxPositionEmbeddings), typeSize(config.typeSize)
+
+{
+    // attentionSpace = AttentionSpace::getInstance(config);
+    Tensor::Shape weightShape = Tensor::makeShape({CastInt64(config.hiddenSize), CastInt64(config.hiddenSize)});
+    qProjWeight = Tensor::wrap(modelWeight + start * config.typeSize, config.dataType, weightShape, config.hiddenSize * config.hiddenSize);
+    kProjWeight = Tensor::wrap(modelWeight + (start + config.hiddenSize * config.hiddenSize) * config.typeSize, config.dataType, weightShape, config.hiddenSize * config.hiddenSize);
+    vProjWeight = Tensor::wrap(modelWeight + (start + 2 * config.hiddenSize * config.hiddenSize) * config.typeSize, config.dataType, weightShape, config.hiddenSize * config.hiddenSize);
+    oProjWeight = Tensor::wrap(modelWeight + (start + 3 * config.hiddenSize * config.hiddenSize) * config.typeSize, config.dataType, weightShape, config.hiddenSize * config.hiddenSize);
+
+    // qStatesPrefill = func::createTensor()
+}
+
+void LlamaPagedAttention::forward(Tensor::UniquePtr &hiddenStatesOut,
+                                  Tensor::UniquePtr &hiddenStatesIn,
+                                  const size_t layerIdx,
+                                  Tensor::UniquePtr &pos,
+                                  LlamaRotaryEmbedding &rotaryEmbedding,
+                                  PagedAttentionSpace &pagedAttentionSpace,
+                                  bool isPrefill)
+{
+
+    size_t bsz = hiddenStatesIn->getShape().d[0];
+    size_t qLen = hiddenStatesIn->getShape().d[1];
+
+    size_t cacheLength = KVCacheManager::getInstance().getCacheLength(layerIdx);
+    size_t allocateLength = cacheLength + qLen;
+    pagedAttentionSpace.allocateForwardBuffers(bsz, qLen, allocateLength, isPrefill);
+    KVCacheManager::getInstance().allocate(layerIdx, allocateLength);
+
+    Tensor::Shape kvShape = Tensor::makeShape({CastInt64(bsz), CastInt64(qLen), CastInt64(numAttentionHeads) * CastInt64(headDims)});
+
+    Tensor::UniquePtr keyStates = Tensor::kvCacheWrap(DataType::kFLOAT, kvShape, isPrefill ? allocateLength : 1, layerIdx, true, !isPrefill);
+    Tensor::UniquePtr valueStates = Tensor::kvCacheWrap(DataType::kFLOAT, kvShape, isPrefill ? allocateLength : 1, layerIdx, false, !isPrefill);
+
+    kernel::launch::matmulWeight(pagedAttentionSpace.getQueryStates(), hiddenStatesIn, qProjWeight, nullptr, kernel::cpu::MatmulType::kMatmulMultiThread);
+    kernel::launch::matmulWeight(keyStates, hiddenStatesIn, kProjWeight, nullptr, kernel::cpu::MatmulType::kMatmulPagedOutMultiThread);
+    kernel::launch::matmulWeight(valueStates, hiddenStatesIn, vProjWeight, nullptr, kernel::cpu::MatmulType::kMatmulPagedOutMultiThread);
+
+    func::reShape(pagedAttentionSpace.getQueryStates(), {CastInt64(bsz), CastInt64(qLen), CastInt64(numAttentionHeads), CastInt64(headDims)});
+    func::reShape(keyStates, {CastInt64(bsz), CastInt64(qLen), CastInt64(numAttentionHeads), CastInt64(headDims)});
+    func::reShape(valueStates, {CastInt64(bsz), CastInt64(qLen), CastInt64(numAttentionHeads), CastInt64(headDims)});
+
+    rotaryEmbedding.forward(pagedAttentionSpace.getQueryStates(), pos);
+    rotaryEmbedding.forward(keyStates, pos);
+
+    if (!isPrefill)
+    {
+        kvShape = Tensor::makeShape({CastInt64(bsz), CastInt64(allocateLength), CastInt64(numAttentionHeads), CastInt64(headDims)});
+        keyStates = Tensor::kvCacheWrap(DataType::kFLOAT, kvShape, allocateLength, layerIdx, true, false);
+        valueStates = Tensor::kvCacheWrap(DataType::kFLOAT, kvShape, allocateLength, layerIdx, false, false);
+    }
+
+    kernel::launch::attentionForward(pagedAttentionSpace.getAttentionOutput(),
+                                     pagedAttentionSpace.getQueryStates(),
+                                     keyStates, valueStates,
+                                     pagedAttentionSpace.getAttentionScores(),
+                                     isPrefill, kernel::cpu::AttentionType::kAttentionMultiThread);
+
+    func::reShape(pagedAttentionSpace.getAttentionOutput(), {CastInt64(bsz), CastInt64(qLen), CastInt64(numAttentionHeads) * CastInt64(headDims)});
+
+    kernel::launch::matmulWeight(hiddenStatesOut,
+                                 pagedAttentionSpace.getAttentionOutput(),
+                                 oProjWeight, nullptr, kernel::cpu::MatmulType::kMatmulMultiThread);
 }
 
 void LlamaMLP::forward(Tensor::UniquePtr &hiddenStatesOut, Tensor::UniquePtr &hiddenStatesIn)
