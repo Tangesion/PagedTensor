@@ -245,7 +245,7 @@ void LlamaPagedAttention::forward(Tensor::UniquePtr &hiddenStatesOut,
     size_t cacheLength = KVCacheManager::getInstance().getCacheLength(layerIdx);
     size_t allocateLength = cacheLength + qLen;
     pagedAttentionSpace.allocateForwardBuffers(bsz, qLen, allocateLength, isPrefill);
-    KVCacheManager::getInstance().allocate(layerIdx, allocateLength);
+    KVCacheManager::getInstance().allocate(layerIdx, qLen);
 
     Tensor::Shape kvShape = Tensor::makeShape({CastInt64(bsz), CastInt64(qLen), CastInt64(numAttentionHeads) * CastInt64(headDims)});
 
@@ -256,12 +256,16 @@ void LlamaPagedAttention::forward(Tensor::UniquePtr &hiddenStatesOut,
     kernel::launch::matmulWeight(keyStates, hiddenStatesIn, kProjWeight, nullptr, kernel::cpu::MatmulType::kMatmulPagedOutMultiThread);
     kernel::launch::matmulWeight(valueStates, hiddenStatesIn, vProjWeight, nullptr, kernel::cpu::MatmulType::kMatmulPagedOutMultiThread);
 
+    // keyStates->printShape();
+
     func::reShape(pagedAttentionSpace.getQueryStates(), {CastInt64(bsz), CastInt64(qLen), CastInt64(numAttentionHeads), CastInt64(headDims)});
     func::reShape(keyStates, {CastInt64(bsz), CastInt64(qLen), CastInt64(numAttentionHeads), CastInt64(headDims)});
     func::reShape(valueStates, {CastInt64(bsz), CastInt64(qLen), CastInt64(numAttentionHeads), CastInt64(headDims)});
 
     rotaryEmbedding.forward(pagedAttentionSpace.getQueryStates(), pos);
     rotaryEmbedding.forward(keyStates, pos);
+    // if (!isPrefill)
+    //     std::cout << *keyStates << std::endl;
 
     if (!isPrefill)
     {
@@ -276,11 +280,16 @@ void LlamaPagedAttention::forward(Tensor::UniquePtr &hiddenStatesOut,
                                      pagedAttentionSpace.getAttentionScores(),
                                      isPrefill, kernel::cpu::AttentionType::kAttentionMultiThread);
 
+    // if (!isPrefill)
+    //     // std::cout << *keyStates << std::endl;
+    //     keyStates->printShape();
+
     func::reShape(pagedAttentionSpace.getAttentionOutput(), {CastInt64(bsz), CastInt64(qLen), CastInt64(numAttentionHeads) * CastInt64(headDims)});
 
     kernel::launch::matmulWeight(hiddenStatesOut,
                                  pagedAttentionSpace.getAttentionOutput(),
                                  oProjWeight, nullptr, kernel::cpu::MatmulType::kMatmulMultiThread);
+    pagedAttentionSpace.releaseForwardBuffers();
 }
 
 void LlamaMLP::forward(Tensor::UniquePtr &hiddenStatesOut, Tensor::UniquePtr &hiddenStatesIn)

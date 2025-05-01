@@ -53,7 +53,7 @@ AttentionTest::AttentionTest(LlamaConfig &config, std::string modelPath)
 
     std::cout << "Initializing memory managers..." << std::endl;
     KVCacheManager::getInstance().initialize(32); // 确保与config.numHiddenLayers兼容
-    BlockManager::getInstance().initialize(4096, 4096, paged_tensor::common::DataType::kFLOAT);
+    BlockManager::getInstance().initialize(2048, 4096, paged_tensor::common::DataType::kFLOAT);
 
     std::ifstream file(modelPath, std::ios::binary | std::ios::ate);
     if (!file.is_open())

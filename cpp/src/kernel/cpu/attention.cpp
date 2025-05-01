@@ -469,6 +469,11 @@ namespace paged_tensor::kernel::cpu
                         // score @ value
                         float *outBNH = out + b * H * NH * D + h * NH * D + nh * D;
 
+                        for (size_t d = 0; d < D; d++)
+                        {
+                            outBNH[d] = 0.0f;
+                        }
+
                         for (size_t h2 = 0; h2 < H; h2++)
                         {
                             DataPtr valueBH = value + b * H * NH * D + h2 * NH * D;
@@ -529,6 +534,10 @@ namespace paged_tensor::kernel::cpu
                     }
                     // score @ value
                     float *outBN = out + b * NH * D + nh * D;
+                    for (size_t d = 0; d < D; d++)
+                    {
+                        outBN[d] = 0.0f;
+                    }
                     for (size_t h = 0; h < H; h++)
                     {
                         DataPtr valueBH = value + b * H * NH * D + h * NH * D;
